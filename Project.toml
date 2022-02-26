@@ -1,0 +1,27 @@
+name = "UnsupervisedLearning"
+uuid = "c6b3b713-2a2b-4e07-a35c-d57ac4f46186"
+authors = ["raphasampaio"]
+version = "0.1.0"
+
+[deps]
+Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
+Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+Hungarian = "e91730f6-4275-51fb-a7a0-7064cfbd3b39"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+RegularizedCovariances = "5bfb50f7-5e0c-48f2-b6cf-e6e905952022"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
+
+[compat]
+julia = "1.6"
+Clustering = "0.14.2"
+Distances = "0.10.4"
+Hungarian = "0.6.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
