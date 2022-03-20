@@ -10,13 +10,12 @@ end
 function Base.println(generation::Generation)
     for i in 1:length(generation.population)
         print("$(i) - ")
-        if in(i, generation.empty) == false 
+        if in(i, generation.empty) == false
             println(generation.population[i])
         else
             println("")
         end
     end
-
 end
 
 function population_size(generation::Generation)
@@ -30,6 +29,7 @@ end
 function remove(generation, i::Int)
     invalidate!(generation.population[i])
     push!(generation.empty, i)
+    return nothing
 end
 
 function add!(generation::Generation, result)
@@ -43,23 +43,24 @@ end
 function add_random!(data::ClusteringData, generation::Generation, method::Function)
     result = method(data)
     add!(generation, result)
+    return nothing
 end
 
 function binary_tournament(generation::Generation)
     size = population_size(generation)
-    indices = sample(1:size, aweights([(in(i, generation.empty) ? 0 : 1) for i in 1:size]), 4, replace=false)
+    indices = sample(1:size, aweights([(in(i, generation.empty) ? 0 : 1) for i in 1:size]), 4, replace = false)
     parent1 = generation.population[indices[1]]
     parent2 = generation.population[indices[2]]
     parent3 = generation.population[indices[3]]
     parent4 = generation.population[indices[4]]
-    
+
     return isbetter(parent1, parent2) ? parent1 : parent2, isbetter(parent3, parent4) ? parent3 : parent4
 end
 
 function crossover(data::ClusteringData, parent1::Result, parent2::Result)
     d = data.d
     k = data.k
-    
+
     weights = zeros(k, k)
     for i in 1:k
         for j in 1:k
@@ -78,7 +79,7 @@ function crossover(data::ClusteringData, parent1::Result, parent2::Result)
             copy_clusters!(result, i, parent2, assignment[i])
         end
     end
-    
+
     update_weights!(result, parent1, parent2, assignment)
 
     return result
@@ -112,7 +113,7 @@ function eliminate(generation::Generation, to_remove::Int)
 
     if to_remove > removed
         size = population_size(generation)
-        threshold = partialsort(generation.population, active_population_size(generation) - (to_remove-removed), lt=isbetter)
+        threshold = partialsort(generation.population, active_population_size(generation) - (to_remove - removed), lt = isbetter)
 
         for i in 1:size
             if in(i, generation.empty) == false && isbetter(threshold, generation.population[i])

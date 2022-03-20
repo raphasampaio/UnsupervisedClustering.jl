@@ -6,9 +6,9 @@ mutable struct ClusteringData
     X::Matrix{Float64}
 
     n::Int
-	d::Int
+    d::Int
     k::Int
-    
+
     function ClusteringData(X::Matrix{Float64}, k::Int)
         n = size(X, 1)
         d = size(X, 2)
@@ -23,7 +23,7 @@ function sum_diagonal!(matrix::Matrix{Float64}, value::Float64)
     for i in 1:n
         matrix[i, i] += value
     end
-end    
+end
 
 function fix(matrix::Matrix{Float64}, eps::Float64)
     eigen_matrix = eigen(Symmetric(matrix))

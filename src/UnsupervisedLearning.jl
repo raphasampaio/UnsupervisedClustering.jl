@@ -24,11 +24,10 @@ using StatsFuns
 # using Arpack
 # 
 
-export 
-    kmeans,
+export kmeans,
     kmeans_ms,
     kmeans_rs,
-    kmeans_hg,    
+    kmeans_hg,
     gmm,
     gmm_shrunk,
     gmm_oas,
