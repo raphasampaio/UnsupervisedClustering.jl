@@ -1,4 +1,4 @@
-kmeans(X::Matrix{T}, k::Int) where T  = _kmeans!(ClusteringData(X, k))
+kmeans(X::Matrix{T}, k::Int) where {T} = _kmeans!(ClusteringData(X, k))
 
 function _kmeans!(data::ClusteringData)
     result = HardSphericalResult(data)
@@ -20,7 +20,7 @@ function _kmeans!(data::ClusteringData, result::HardSphericalResult)
         end
     end
 
-    fitted = Clustering.kmeans!(data.X', centers, maxiter=MAX_ITERATIONS, tol=1e-3)
+    fitted = Clustering.kmeans!(data.X', centers, maxiter = MAX_ITERATIONS, tol = 1e-3)
 
     result.assignments = fitted.assignments
     for i in 1:data.d
@@ -28,7 +28,7 @@ function _kmeans!(data::ClusteringData, result::HardSphericalResult)
             result.centers[j][i] = fitted.centers[i, j]
         end
     end
-    result.totalcost = fitted.totalcost
+    return result.totalcost = fitted.totalcost
 
     # method = KMeans(
     #     n_clusters=k, 
