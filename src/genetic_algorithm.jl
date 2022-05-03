@@ -24,7 +24,7 @@ function _geneticalgorithm(data::ClusteringData, method::Function) where {T}
         add_random!(data, generation, method)
     end
 
-    for i in 1:MAX_ITERATIONS
+    for i in 1:DEFAULT_GLOBAL_ITERATIONS
         parent1, parent2 = binary_tournament(generation)
         child = crossover(data, parent1, parent2)
 
@@ -47,7 +47,7 @@ function _geneticalgorithm(data::ClusteringData, method::Function) where {T}
         if leader.totalcost == best_totalcost
             iterations_without_improvement += 1
 
-            if iterations_without_improvement > METAHEURISTIC_ITERATIONS
+            if iterations_without_improvement > DEFAULT_GLOBAL_ITERATIONS
                 return leader
             end
         else

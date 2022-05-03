@@ -187,19 +187,19 @@ function initialize_responsibilities(data::ClusteringData, result::SoftResult) w
     return responsibilities
 end
 
-gmm(X::Matrix{T}, k::Int) where {T} = _gmm!(ClusteringData(X, k))
+gmm(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm!(ClusteringData(X, k, max_iterations))
 _gmm!(data::ClusteringData) = _gmm!(data, empirical_covariance!)
 _gmm!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, empirical_covariance!)
 
-gmm_shrunk(X::Matrix{T}, k::Int) where {T} = _gmm_shrunk!(ClusteringData(X, k))
+gmm_shrunk(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm_shrunk!(ClusteringData(X, k, max_iterations))
 _gmm_shrunk!(data::ClusteringData) = _gmm!(data, shrunk_covariance!)
 _gmm_shrunk!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, shrunk_covariance!)
 
-gmm_oas(X::Matrix{T}, k::Int) where {T} = _gmm_oas!(ClusteringData(X, k))
+gmm_oas(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm_oas!(ClusteringData(X, k, max_iterations))
 _gmm_oas!(data::ClusteringData) = _gmm!(data, oas_covariance!)
 _gmm_oas!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, oas_covariance!)
 
-gmm_ledoitwolf(X::Matrix{T}, k::Int) where {T} = _gmm_ledoitwolf!(ClusteringData(X, k))
+gmm_ledoitwolf(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm_ledoitwolf!(ClusteringData(X, k, max_iterations))
 _gmm_ledoitwolf!(data::ClusteringData) = _gmm!(data, ledoitwolf_covariance!)
 _gmm_ledoitwolf!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, ledoitwolf_covariance!)
 
@@ -224,6 +224,7 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
     n = data.n
     d = data.d
     k = data.k
+    max_iterations = data.max_iterations
 
     cache = CovarianceCache(n, d)
 
@@ -235,7 +236,7 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
     precisions_cholesky = [zeros(d, d) for i in 1:k]
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    for i in 1:MAX_ITERATIONS
+    for i in 1:max_iterations
         previous_lowerbound = lowerbound
 
         lowerbound = expectation_step!(data, result, precisions_cholesky, log_resp)

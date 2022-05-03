@@ -10,21 +10,8 @@ using Statistics
 using StatsBase
 using StatsFuns
 
-# using TimerOutputs
-# using Colors
-# using DataFrames
-
-# 
-# 
-# 
-# using DataStructures
-# using Dates
-# using CSV
-# using ScikitLearn: @sk_import, fit!, fit_transform!, predict, score
-# using Arpack
-# 
-
-export kmeans,
+export 
+    kmeans,
     kmeans_ms,
     kmeans_rs,
     kmeans_hg,
@@ -45,7 +32,8 @@ export kmeans,
     gmm_hg_oas,
     gmm_hg_ledoitwolf
 
-# const A = 1
+const DEFAULT_LOCAL_ITERATIONS = 10000
+const DEFAULT_GLOBAL_ITERATIONS = 100
 
 include("common.jl")
 include("results.jl")

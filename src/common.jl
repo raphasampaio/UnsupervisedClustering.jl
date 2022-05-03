@@ -1,19 +1,15 @@
-global MAX_ITERATIONS = 10000
-
-global METAHEURISTIC_ITERATIONS = 100
-
 mutable struct ClusteringData
     X::Matrix{Float64}
-
     n::Int
     d::Int
     k::Int
+    max_iterations::Int
 
-    function ClusteringData(X::Matrix{Float64}, k::Int)
+    function ClusteringData(X::Matrix{Float64}, k::Int, max_iterations::Integer = DEFAULT_LOCAL_ITERATIONS)
         n = size(X, 1)
         d = size(X, 2)
 
-        return new(X, n, d, k)
+        return new(X, n, d, k, max_iterations)
     end
 end
 
