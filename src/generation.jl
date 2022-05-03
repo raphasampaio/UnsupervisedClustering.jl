@@ -69,20 +69,20 @@ function crossover(data::ClusteringData, parent1::Result, parent2::Result)
     end
     assignment, cost = hungarian(weights)
 
-    result = copy(parent1)
-    invalidate!(result)
+    offspring = copy(parent1)
+    invalidate!(offspring)
 
     for i in 1:k
         if rand() > 0.5
-            copy_clusters!(result, i, parent1, i)
+            copy_clusters!(offspring, i, parent1, i)
         else
-            copy_clusters!(result, i, parent2, assignment[i])
+            copy_clusters!(offspring, i, parent2, assignment[i])
         end
     end
 
-    update_weights!(result, parent1, parent2, assignment)
+    update_weights!(offspring, parent1, parent2, assignment)
 
-    return result
+    return offspring
 end
 
 function eliminate(generation::Generation, to_remove::Int)
