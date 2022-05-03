@@ -65,7 +65,6 @@ uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 [[Distances]]
 deps = ["LinearAlgebra", "Statistics", "StatsAPI"]
 git-tree-sha1 = "9f46deb4d4ee4494ffb5a40a27a2aced67bdd838"
-pinned = true
 uuid = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 version = "0.10.4"
 
