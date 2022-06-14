@@ -10,8 +10,7 @@ using Statistics
 using StatsBase
 using StatsFuns
 
-export 
-    kmeans,
+export kmeans,
     kmeans_ms,
     kmeans_rs,
     kmeans_hg,
