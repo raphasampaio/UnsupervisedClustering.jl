@@ -99,7 +99,7 @@ function eliminate(generation::Generation, to_remove::Int)
             end
 
             if in(i, generation.empty) == false && in(j, generation.empty) == false
-                if generation.population[i].totalcost == generation.population[j].totalcost
+                if isapprox(generation.population[i].totalcost, generation.population[j].totalcost) # rtol=1e-10
                     removed += 1
                     if rand() > 0.5
                         remove(generation, i)
