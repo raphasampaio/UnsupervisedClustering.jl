@@ -1,14 +1,13 @@
 module UnsupervisedLearning
 
-using Clustering
 using Distances
 using Hungarian
 using LinearAlgebra
+using LogExpFunctions
 using Random
 using RegularizedCovariances
 using Statistics
 using StatsBase
-using StatsFuns
 
 export kmeans,
     kmeans_ms,
