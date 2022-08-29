@@ -1,4 +1,4 @@
-module UnsupervisedLearning
+module UnsupervisedClustering
 
 using Distances
 using Hungarian

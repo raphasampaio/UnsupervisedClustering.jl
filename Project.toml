@@ -1,4 +1,4 @@
-name = "UnsupervisedLearning"
+name = "UnsupervisedClustering"
 uuid = "c6b3b713-2a2b-4e07-a35c-d57ac4f46186"
 authors = ["raphasampaio"]
 version = "0.1.0"

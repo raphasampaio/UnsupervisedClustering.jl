@@ -1,5 +1,5 @@
 using Test
-using UnsupervisedLearning
+using UnsupervisedClustering
 using Random
 
 k = 3
