@@ -306,53 +306,30 @@ data = [
     27.71244569513649 -26.647196650632257
 ]
 
-functions = [
-    kmeans,
-    kmeans_ms,
-    kmeans_rs,
-    kmeans_hg,
-    gmm,
-    gmm_shrunk,
-    gmm_oas,
-    gmm_ledoitwolf,
-    gmm_ms,
-    gmm_ms_shrunk,
-    gmm_ms_oas,
-    gmm_ms_ledoitwolf,
-    gmm_rs,
-    gmm_rs_shrunk,
-    gmm_rs_oas,
-    gmm_rs_ledoitwolf,
-    gmm_hg,
-    gmm_hg_shrunk,
-    gmm_hg_oas,
-    gmm_hg_ledoitwolf
+tests = [
+    (kmeans, 75954.58376820412),       
+    (kmeans_ms, 75940.76295535408),
+    (kmeans_rs, 75940.76295535408),
+    (kmeans_hg, 75940.76295535408),
+    (gmm, -8.518197227893912),
+    (gmm_shrunk, -8.530343278829495),
+    (gmm_oas, -8.519724197498986),
+    (gmm_ledoitwolf, -8.522435878195157),
+    (gmm_ms, -8.518077892571354),
+    (gmm_ms_shrunk, -8.52834828693898),
+    (gmm_ms_oas, -8.518899071008791),
+    (gmm_ms_ledoitwolf, -8.52143323297397),
+    (gmm_rs, -8.518039743363916),
+    (gmm_rs_shrunk, -8.528496447382114),
+    (gmm_rs_oas, -8.518844556374447),
+    (gmm_rs_ledoitwolf, -8.521812128894373),
+    (gmm_hg, -8.518077892571354),
+    (gmm_hg_shrunk, -8.52834828693898),
+    (gmm_hg_oas, -8.518899071008791),
+    (gmm_hg_ledoitwolf, -8.5214332329739),         
 ]
 
-totalcosts = [
-    75954.58376820412,
-    75940.76295535408,
-    75940.76295535408,
-    75940.76295535408,
-    -8.518197227893912,
-    -8.530343278829495,
-    -8.519724197498986,
-    -8.522435878195157,
-    -8.518077892571354,
-    -8.52834828693898,
-    -8.518899071008791,
-    -8.52143323297397,
-    -8.518039743363916,
-    -8.528496447382114,
-    -8.518844556374447,
-    -8.521812128894373,
-    -8.518077892571354,
-    -8.52834828693898,
-    -8.518899071008791,
-    -8.52143323297397
-]
-
-for i in 1:length(functions)
+for test in tests
     Random.seed!(1)
-    @test functions[i](data, k).totalcost ≈ totalcosts[i]
+    @test test[1](data, k).totalcost ≈ test[2]
 end
