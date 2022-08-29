@@ -236,7 +236,7 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
     precisions_cholesky = [zeros(d, d) for i in 1:k]
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    for i in 1:max_iterations
+    for _ in 1:max_iterations
         previous_lowerbound = lowerbound
 
         lowerbound = expectation_step!(data, result, precisions_cholesky, log_resp)
