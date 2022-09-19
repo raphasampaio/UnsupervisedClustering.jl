@@ -32,7 +32,7 @@ export kmeans,
 
 const DEFAULT_LOCAL_ITERATIONS = 10000
 const MAX_GLOBAL_ITERATIONS = 1000
-const MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 100
+const MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 250
 
 include("common.jl")
 include("results.jl")
