@@ -16,8 +16,7 @@ function _randomswap(data::ClusteringData, method::Function)
 
     iterations_without_improvement = 0
 
-    max_iterations = DEFAULT_GLOBAL_ITERATIONS^2
-    for _ in 1:max_iterations
+    for _ in 1:MAX_GLOBAL_ITERATIONS
         result = copy(best_result)
 
         random_swap!(data, result)
@@ -28,7 +27,7 @@ function _randomswap(data::ClusteringData, method::Function)
             iterations_without_improvement = 0
         else
             iterations_without_improvement += 1
-            if iterations_without_improvement > DEFAULT_GLOBAL_ITERATIONS
+            if iterations_without_improvement > MAX_ITERATIONS_WITHOUT_IMPROVEMENT
                 break
             end
         end
