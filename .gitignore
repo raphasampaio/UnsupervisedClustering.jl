@@ -24,3 +24,5 @@ docs/site/
 # Manifest.toml
 /docs/Manifest.toml
 /formatter/Manifest.toml
+
+/revise/Manifest.toml
