@@ -24,7 +24,8 @@ function _geneticalgorithm(data::ClusteringData, method::Function) where {T}
         add_random!(data, generation, method)
     end
 
-    for i in 1:DEFAULT_GLOBAL_ITERATIONS
+    max_iterations = DEFAULT_GLOBAL_ITERATIONS^2
+    for _ in 1:max_iterations
         parent1, parent2 = binary_tournament(generation)
         child = crossover(data, parent1, parent2)
 
