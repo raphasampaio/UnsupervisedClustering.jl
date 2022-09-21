@@ -31,8 +31,8 @@ export kmeans,
     gmm_hg_ledoitwolf
 
 const DEFAULT_LOCAL_ITERATIONS = 1000
-const MAX_GLOBAL_ITERATIONS = 200
-const MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 50
+const MAX_GLOBAL_ITERATIONS = 100
+const MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 25
 
 include("common.jl")
 include("results.jl")

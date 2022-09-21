@@ -117,7 +117,7 @@ uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[RegularizedCovariances]]
 deps = ["LinearAlgebra", "Statistics"]
-git-tree-sha1 = "f7999f72f2f9193175c40c3f93c6dfdd33cf6b54"
+git-tree-sha1 = "d8f9d89b2423f54d7771684a6bf2851e8a59ced8"
 repo-rev = "master"
 repo-url = "https://github.com/raphasampaio/RegularizedCovariances.jl.git"
 uuid = "5bfb50f7-5e0c-48f2-b6cf-e6e905952022"
