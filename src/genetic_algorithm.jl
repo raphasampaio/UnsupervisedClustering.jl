@@ -1,10 +1,4 @@
 kmeans_hg(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _kmeans!)
-cmeans_hg(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _cmeans!)
-
-kellipses_hg(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _kellipses!)
-kellipses_hg_shrunk(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _kellipses_shrunk!)
-kellipses_hg_oas(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _kellipses_oas!)
-kellipses_hg_ledoitwolf(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _kellipses_ledoitwolf!)
 
 gmm_hg(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _gmm!)
 gmm_hg_shrunk(X::Matrix{T}, k::Int) where {T} = _geneticalgorithm(ClusteringData(X, k), _gmm_shrunk!)

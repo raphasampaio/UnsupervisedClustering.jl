@@ -1,10 +1,4 @@
 kmeans_rs(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _kmeans!)
-cmeans_rs(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _cmeans!)
-
-kellipses_rs(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _kellipses!)
-kellipses_rs_shrunk(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _kellipses_shrunk!)
-kellipses_rs_oas(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _kellipses_oas!)
-kellipses_rs_ledoitwolf(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _kellipses_ledoitwolf!)
 
 gmm_rs(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _gmm!)
 gmm_rs_shrunk(X::Matrix{T}, k::Int) where {T} = _randomswap(ClusteringData(X, k), _gmm_shrunk!)
