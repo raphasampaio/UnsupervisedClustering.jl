@@ -238,6 +238,12 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
     compute_precision_cholesky!(result, precisions_cholesky)
 
     for _ in 1:max_iterations
+        if lowerbound < best_lowerbound && lowerbound > previous_lowerbound
+            best_lowerbound = lowerbound
+        else
+            best_lowerbound = max(best_lowerbound, lowerbound)
+        end
+
         previous_lowerbound = lowerbound
         best_lowerbound = max(best_lowerbound, lowerbound)
 
@@ -245,7 +251,7 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
 
         maximization_step!(data, result, log_resp, precisions_cholesky, method, cache)
 
-        if abs(lowerbound - previous_lowerbound) < 1e-3 || best_lowerbound == lowerbound
+        if abs(lowerbound - previous_lowerbound) < 1e-3 || isapprox(best_lowerbound, lowerbound)
             break
         end
     end
