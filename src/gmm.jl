@@ -245,7 +245,6 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
         end
 
         previous_lowerbound = lowerbound
-        best_lowerbound = max(best_lowerbound, lowerbound)
 
         lowerbound = expectation_step!(data, result, precisions_cholesky, log_resp)
 
