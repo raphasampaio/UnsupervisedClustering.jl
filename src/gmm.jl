@@ -4,7 +4,7 @@ function estimate_gaussian_parameters!(
     responsibilities::Matrix{Float64},
     method::Function,
     cache::CovarianceCache
-) where {T}
+)
     n = data.n
     d = data.d
     k = data.k
@@ -162,7 +162,7 @@ function maximization_step!(
     return nothing
 end
 
-function initialize_responsibilities(data::ClusteringData, result::SoftResult) where {T}
+function initialize_responsibilities(data::ClusteringData, result::SoftResult)
     centers = result.centers
 
     n = data.n
@@ -230,6 +230,7 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
 
     lowerbound = -Inf
     previous_lowerbound = Inf
+    best_lowerbound = -Inf
 
     log_resp = zeros(n, k)
 
@@ -238,12 +239,13 @@ function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
 
     for _ in 1:max_iterations
         previous_lowerbound = lowerbound
+        best_lowerbound = max(best_lowerbound, lowerbound)
 
         lowerbound = expectation_step!(data, result, precisions_cholesky, log_resp)
 
         maximization_step!(data, result, log_resp, precisions_cholesky, method, cache)
 
-        if abs(lowerbound - previous_lowerbound) < 1e-3
+        if abs(lowerbound - previous_lowerbound) < 1e-3 || best_lowerbound == lowerbound
             break
         end
     end
