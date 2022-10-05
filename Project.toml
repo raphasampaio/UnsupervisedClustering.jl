@@ -14,14 +14,21 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
+Clustering = "=0.14.3"
 Distances = "=0.10.4"
 Hungarian = "=0.6.0"
+GaussianMixtures = "0.3.7"
 LogExpFunctions = "=0.3.15"
+ScikitLearn = "=0.6.4"
 StatsBase = "=0.33.18"
 julia = "1.6"
 
 [extras]
+Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+GaussianMixtures = "cc18c42c-b769-54ff-9e2a-b28141a64aae"
+ScikitLearn = "3646fa90-6ef7-5e7e-9f22-8aca16db6324"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Clustering", "DelimitedFiles", "GaussianMixtures", "ScikitLearn", "Test"]

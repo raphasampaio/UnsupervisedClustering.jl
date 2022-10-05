@@ -33,12 +33,12 @@ function _kmeans!(data::ClusteringData, result::HardSphericalResult)
     previous_totalcost = -Inf
     elements = zeros(k)
 
-    for _ in 1:max_iterations
+    for i in 1:max_iterations
         previous_totalcost = result.totalcost
 
-        # Assignment Step
+        # assignment step
         result.totalcost = 0
-        distances = pairwise(SqEuclidean(), centers, points, dims=2)
+        distances = pairwise(SqEuclidean(), centers, points, dims = 2)
         for i in 1:n
             assignment = argmin(distances[:, i])
 
@@ -46,12 +46,12 @@ function _kmeans!(data::ClusteringData, result::HardSphericalResult)
             result.totalcost += distances[assignment, i]
         end
 
-        # Stopping Condition
+        # stopping condition
         if abs(result.totalcost - previous_totalcost) < 1e-3
             break
         end
 
-        # Update Step
+        # update step
         for i in 1:k
             elements[i] = 0
             centers[:, i] .= 0
@@ -63,7 +63,7 @@ function _kmeans!(data::ClusteringData, result::HardSphericalResult)
             centers[:, assignment] += points[:, i]
             elements[assignment] += 1
         end
-    
+
         for i in 1:k
             centers[:, i] ./= max(1, elements[i])
         end
