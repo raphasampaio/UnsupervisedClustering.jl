@@ -1,17 +1,104 @@
-function estimate_gaussian_parameters!(
-    data::ClusteringData,
-    result::SoftResult,
+Base.@kwdef struct GMM <: Algorithm
+    verbose::Bool = false
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
+    tolerance::Float64 = 1e-3
+    max_iterations::Integer = 1000
+end
+
+mutable struct GMMResult <: Result
+    k::Int
+    assignments::Vector{Int}
+    weights::Vector{Float64}
+    centers::Vector{Vector{Float64}}
+    covariances::Vector{Hermitian{Float64, Matrix{Float64}}}
+
+    objective::Float64
+    iterations::Int
+    converged::Bool
+
+    function GMMResult(d::Integer, n::Integer, k::Integer)
+        return new(
+            k,
+            zeros(Int, n), 
+            ones(k) ./ k, 
+            [zeros(d) for _ in 1:k], 
+            [Hermitian(Matrix{Float64}(I, d, d)) for _ in 1:k],
+            -Inf, 
+            0, 
+            false
+        )
+    end
+
+    function GMMResult(    
+        k::Int,
+        assignments::Vector{Int},
+        weights::Vector{Float64},
+        centers::Vector{Vector{Float64}},
+        covariances::Vector{Hermitian{Float64, Matrix{Float64}}},
+        objective::Float64,
+        iterations::Int,
+        converged::Bool,
+    )
+        return new(k, assignments, weights, centers, covariances, objective, iterations, converged)    
+    end
+end
+
+function Base.copy(a::GMMResult)
+    return GMMResult(
+        a.k, 
+        copy(a.assignments),
+        copy(a.weights), 
+        deepcopy(a.centers), 
+        deepcopy(a.covariances),
+        a.objective, 
+        a.iterations, 
+        a.converged
+    )
+end
+
+function isbetter(a::GMMResult, b::GMMResult)
+    return isless(b.objective, a.objective)
+end
+
+function reset_objective!(result::GMMResult)
+    result.objective = -Inf
+    return
+end
+
+function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    k = result.k
+    n, d = size(data)
+
+    to = rand(rng, 1:k)
+    from = rand(rng, 1:n)
+
+    result.centers[to] = copy(data[from, :])
+
+    m = mean([det(result.covariances[j]) for j in 1:k])
+    value = (m > 0 ? m : 1.0)^(1 / d)
+    result.covariances[to] = Hermitian(value .* Matrix{Float64}(I, d, d))
+
+    reset_objective!(result)
+    return
+end
+
+function fix(matrix::AbstractMatrix{<:Real}, eps::Float64)
+    eigen_matrix = eigen(matrix)
+    new_matrix = eigen_matrix.vectors * Matrix(Diagonal(max.(eigen_matrix.values, eps))) * eigen_matrix.vectors'
+    return Hermitian(new_matrix)
+end
+
+function estimate_gaussian_parameters(
+    parameters::GMM,
+    data::AbstractMatrix{<:Real},
+    k::Int,
     responsibilities::Matrix{Float64},
-    method::Function,
-    cache::CovarianceCache
 )
-    n = data.n
-    d = data.d
-    k = data.k
+    n, d = size(data)
 
+    weights = ones(k) * 10 * eps(Float64)
     for i in 1:k
-        result.weights[i] = 10 * eps(Float64)
-
         sum_weights = sum(responsibilities[:, i])
         if sum_weights < 1e-32
             for j in 1:n
@@ -20,49 +107,50 @@ function estimate_gaussian_parameters!(
         end
 
         for j in 1:n
-            result.weights[i] += responsibilities[j, i]
+            weights[i] += responsibilities[j, i]
         end
-        result.weights[i] /= n
+        # result.weights[i] /= n
     end
+    weights = weights / sum(weights)
+
+    centers = [zeros(d) for _ in 1:k]
+    covariances = [Hermitian(Matrix{Float64}(I, d, d)) for _ in 1:k]
 
     # nk = sum(responsibilities, dims=1) .+ 10 * eps(Float64)
     for i in 1:k
-        method(data.X, responsibilities[:, i], result.covariances[i], result.centers[i], cache)
-        # result.covariances[i] += 1e-6 * Matrix{Float64}(I, d, d)
+        # covariances[i], centers[i] = RegularizedCovarianceMatrices.fit(parameters.estimator, data, responsibilities[:, i])
+
+        covariances_i, centers[i] = RegularizedCovarianceMatrices.fit(parameters.estimator, data, responsibilities[:, i])
+        covariances[i] = Hermitian(covariances_i)
+
+        # RegularizedCovariances.fit!(parameters.estimator, data, responsibilities[:, i], result.covariances[i], result.centers[i])
+        # covariances[i], centers[i] = empirical_covariance(data, responsibilities[:, i])
+        # covariances[i], centers[i] = shrunk_covariance(data, responsibilities[:, i])
+        # covariances[i] += 1e-6 * Matrix{Float64}(I, d, d)
     end
-    return nothing
+    return weights, centers, covariances
 end
 
-function compute_precision_cholesky!(result::SoftResult, precisions_cholesky::Vector{Matrix{Float64}})
+function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vector{Matrix{Float64}})
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
 
     for i in 1:k
         try
-            covariances_cholesky = cholesky(Symmetric(result.covariances[i]))
-            result.L[i] = covariances_cholesky.L
+            covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         catch
-            # a = max(0.4 * tr(result.covariances[i])/d, 1e-6)
-            # result.covariances[i] = reset_model(result.model, result.covariances[i], a)
-
             result.covariances[i] = fix(result.covariances[i], 1e-6)
 
-            # result.covariances[i] = solve_model(result.model)
-            # result.covariances[i] = reset_model(result.model, result.covariances[i])
-
-            # model = init_model(result.covariances[i], 1e-3)
-            # result.covariances[i] = solve_model(model)
-
-            covariances_cholesky = cholesky(Symmetric(result.covariances[i]))
-            result.L[i] = covariances_cholesky.L
+            covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         end
     end
 
-    return nothing
+    return
 end
 
+# https://math.stackexchange.com/questions/3158303/using-cholesky-decomposition-to-compute-covariance-matrix-determinant
 function compute_log_det_cholesky(precisions_cholesky::Vector{Matrix{Float64}})
     k = length(precisions_cholesky)
     d = size(precisions_cholesky[1], 1)
@@ -76,191 +164,140 @@ function compute_log_det_cholesky(precisions_cholesky::Vector{Matrix{Float64}})
     return log_det_cholesky
 end
 
-# function _estimate_log_gaussian_prob(data::ClusteringData, result::SoftResult, precisions_cholesky::Vector{Matrix{Float64}})
-#     centers = result.centers
-
-#     n = data.n
-#     d = data.d
-#     k = data.k
-
-#     log_det = compute_log_det_cholesky(precisions_cholesky)
-
-#     log_prob = zeros(n, k) # (n_samples, n_components)
-#     for i in 1:k
-#         y = data.X * precisions_cholesky[i] .- (centers[i]' * precisions_cholesky[i])
-#         log_prob[:, i] = sum(y.^2, dims=2)
-#     end
-
-#     return -0.5 * (d * log(2 * pi) .+ log_prob) .+ (log_det')
-# end
-
-function estimate_weighted_log_prob(data::ClusteringData, result::SoftResult, precisions_cholesky::Vector{Matrix{Float64}})
-    centers = result.centers
-
-    n = data.n
-    d = data.d
-    k = data.k
-
+function estimate_weighted_log_probability(
+    data::AbstractMatrix{<:Real}, 
+    k::Int, 
+    result::GMMResult, 
+    precisions_cholesky::Vector{Matrix{Float64}}
+)
+    n, d = size(data)
+    
     log_det = compute_log_det_cholesky(precisions_cholesky)
 
-    log_prob = zeros(n, k) # (n_samples, n_components)
+    log_prob = zeros(n, k)
     for i in 1:k
-        y = data.X * precisions_cholesky[i] .- (centers[i]' * precisions_cholesky[i])
+        y = data * precisions_cholesky[i] .- (result.centers[i]' * precisions_cholesky[i])
         log_prob[:, i] = sum(y .^ 2, dims = 2)
     end
 
     return -0.5 * (d * log(2 * pi) .+ log_prob) .+ (log_det') .+ log.(result.weights)'
 end
 
-function logsumexp2(X::Matrix{Float64})
-    array = zeros(size(X, 1))
-    for i in 1:size(X, 1)
-        array[i] += logsumexp(X[i, :])
+function estimate_log_prob_responsibilities(
+    data::AbstractMatrix{<:Real},
+    k::Int,
+    result::GMMResult,
+    precisions_cholesky::Vector{Matrix{Float64}},
+)
+    n, d = size(data)
+
+    weighted_log_prob = estimate_weighted_log_probability(data, k, result, precisions_cholesky)
+
+    log_prob_norm = zeros(n)
+    for i in 1:n
+        log_prob_norm[i] += LogExpFunctions.logsumexp(weighted_log_prob[i, :])
     end
-    return array
+
+    log_resp = weighted_log_prob .- log_prob_norm
+    return log_prob_norm, log_resp
 end
 
-function estimate_log_prob_responsibilities!(
-    data::ClusteringData,
-    result::SoftResult,
+function expectation_step(
+    data::AbstractMatrix{<:Real},
+    k::Int,
+    result::GMMResult,
     precisions_cholesky::Vector{Matrix{Float64}},
-    log_resp::Matrix{Float64}
 )
-    weighted_log_prob = estimate_weighted_log_prob(data, result, precisions_cholesky)
-    log_prob_norm = logsumexp2(weighted_log_prob)
-    log_resp .= weighted_log_prob .- log_prob_norm
-    return log_prob_norm
-end
-
-function expectation_step!(
-    data::ClusteringData,
-    result::SoftResult,
-    precisions_cholesky::Vector{Matrix{Float64}},
-    log_resp::Matrix{Float64}
-)
-    log_prob_norm = estimate_log_prob_responsibilities!(data, result, precisions_cholesky, log_resp)
-    return mean(log_prob_norm)
+    log_prob_norm, log_resp = estimate_log_prob_responsibilities(data, k, result, precisions_cholesky)
+    return mean(log_prob_norm), log_resp
 end
 
 function maximization_step!(
-    data::ClusteringData,
-    result::SoftResult,
+    parameters::GMM, 
+    data::AbstractMatrix{<:Real},
+    k::Int,
+    result::GMMResult,
     log_resp::Matrix{Float64},
-    precisions_cholesky,
-    method::Function,
-    cache::CovarianceCache
+    precisions_cholesky::Vector{Matrix{Float64}},
 )
-    n = data.n
-    d = data.d
-    k = data.k
-
     responsibilities = exp.(log_resp)
 
-    estimate_gaussian_parameters!(data, result, responsibilities, method, cache)
+    result.weights, result.centers, result.covariances = estimate_gaussian_parameters(parameters, data, k, responsibilities)
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    return nothing
+    return
 end
 
-function initialize_responsibilities(data::ClusteringData, result::SoftResult)
-    centers = result.centers
+function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+    n, d = size(data)
+    k = length(result.centers)
 
-    n = data.n
-    k = data.k
-
-    responsibilities = zeros(n, k)
-    for i in 1:n
-        min_distance = Inf
-        min_index = -1
-
-        for j in 1:k
-            distance = euclidean(data.X[i, :], centers[j])
-            if distance < min_distance
-                min_distance = distance
-                min_index = j
-            end
-        end
-
-        responsibilities[i, min_index] = 1.0
-    end
-
-    return responsibilities
-end
-
-gmm(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm!(ClusteringData(X, k, max_iterations))
-_gmm!(data::ClusteringData) = _gmm!(data, empirical_covariance!)
-_gmm!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, empirical_covariance!)
-
-gmm_shrunk(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm_shrunk!(ClusteringData(X, k, max_iterations))
-_gmm_shrunk!(data::ClusteringData) = _gmm!(data, shrunk_covariance!)
-_gmm_shrunk!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, shrunk_covariance!)
-
-gmm_oas(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm_oas!(ClusteringData(X, k, max_iterations))
-_gmm_oas!(data::ClusteringData) = _gmm!(data, oas_covariance!)
-_gmm_oas!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, oas_covariance!)
-
-gmm_ledoitwolf(X::Matrix{T}, k::Int, max_iterations::Int = DEFAULT_LOCAL_ITERATIONS) where {T} = _gmm_ledoitwolf!(ClusteringData(X, k, max_iterations))
-_gmm_ledoitwolf!(data::ClusteringData) = _gmm!(data, ledoitwolf_covariance!)
-_gmm_ledoitwolf!(data::ClusteringData, result::SoftResult) = _gmm!(data, result, ledoitwolf_covariance!)
-
-function _gmm!(data::ClusteringData, method::Function)
-    result = SoftResult(data)
-
-    cache = CovarianceCache(data.n, data.d)
-
-    initialize_centers!(data, result)
-    responsibilities = initialize_responsibilities(data, result)
-    estimate_gaussian_parameters!(data, result, responsibilities, method, cache)
-
-    # @show sum(result.weights)
-    # result.weights ./= sum(result.weights) # TODO RETI
-
-    _gmm!(data, result, method)
-
-    return result
-end
-
-function _gmm!(data::ClusteringData, result::SoftResult, method::Function)
-    n = data.n
-    d = data.d
-    k = data.k
-    max_iterations = data.max_iterations
-
-    cache = CovarianceCache(n, d)
-
-    lowerbound = -Inf
-    previous_lowerbound = Inf
-    best_lowerbound = -Inf
+    previous_objective = Inf
+    result.objective = -Inf
+    result.iterations = parameters.max_iterations
+    result.converged = false
 
     log_resp = zeros(n, k)
 
-    precisions_cholesky = [zeros(d, d) for i in 1:k]
+    precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    for i in 1:max_iterations
-        if lowerbound < best_lowerbound && lowerbound > previous_lowerbound
-            best_lowerbound = lowerbound
-        else
-            best_lowerbound = max(best_lowerbound, lowerbound)
+    for iteration in 1:parameters.max_iterations
+        previous_objective = result.objective
+
+        result.objective, log_resp = expectation_step(data, k, result, precisions_cholesky)
+
+        maximization_step!(parameters, data, k, result, log_resp, precisions_cholesky)
+
+        change = abs(result.objective - previous_objective)
+        if parameters.verbose
+            println("\t$iteration - $(result.objective) - $change")
         end
 
-        previous_lowerbound = lowerbound
-
-        lowerbound = expectation_step!(data, result, precisions_cholesky, log_resp)
-
-        maximization_step!(data, result, log_resp, precisions_cholesky, method, cache)
-
-        if abs(lowerbound - previous_lowerbound) < 1e-3 || isapprox(best_lowerbound, lowerbound)
+        if change < parameters.tolerance
+            result.converged = true
+            result.iterations = iteration
             break
         end
     end
 
-    weighted_log_prob = estimate_weighted_log_prob(data, result, precisions_cholesky)
+    weighted_log_prob = estimate_weighted_log_probability(data, k, result, precisions_cholesky)
     result.assignments = zeros(Int, n)
     for i in 1:n
         result.assignments[i] = argmax(weighted_log_prob[i, :])
     end
-    result.totalcost = lowerbound
 
-    return nothing
+    return
+end
+
+function train(parameters::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+    n, d = size(data)
+
+    result = GMMResult(d, n, k)
+    permutation = randperm(parameters.rng, n)
+    for i in 1:k
+        for j in 1:d
+            result.centers[i][j] = data[permutation[i], j]
+        end
+    end
+
+    # responsibilities = zeros(n, k)
+    # for i in 1:n
+    #     min_distance = Inf
+    #     min_index = -1
+        
+    #     for j in 1:k
+    #         distance = euclidean(data[i, :], result.centers[j])
+    #         if distance < min_distance
+    #             min_distance = distance
+    #             min_index = j
+    #         end
+    #     end
+    #     responsibilities[i, min_index] = 1.0
+    # end
+    # result.weights, result.centers, result.covariances = estimate_gaussian_parameters(parameters, data, k, responsibilities)
+
+    train!(parameters, data, result)
+
+    return result
 end

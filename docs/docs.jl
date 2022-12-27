@@ -11,7 +11,13 @@ makedocs(;
     modules = [UnsupervisedClustering],
     doctest = true,
     clean = true,
-    format = Documenter.HTML(mathengine = Documenter.MathJax2()),
+    format = Documenter.HTML(
+        # assets = ["assets/favicon.ico"],
+        mathengine = Documenter.MathJax2()
+    ),
     sitename = "UnsupervisedClustering.jl",
-    pages = ["Home" => "index.md"],
+    authors = "Raphael Araujo Sampaio, and contributors",
+    pages = [
+        "Home" => "index.md",
+    ],
 )

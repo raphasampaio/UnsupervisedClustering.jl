@@ -1,65 +1,74 @@
-function test_gmm(data::Matrix{Float64}, k::Integer, expected::Vector{Int}, seed::Integer = 1, verbose::Bool = false)
-    n = size(data, 1)
-    d = size(data, 2)
+function run_algorithm(
+    label::String, 
+    algorithm::UnsupervisedClustering.Algorithm, 
+    data::AbstractMatrix{<:Real}, 
+    k::Int, 
+    expected::AbstractVector{<:Integer},
+)
+    @timeit label result = UnsupervisedClustering.train(algorithm, data, k)
+    objective = result.objective
+    assignments = result.assignments
+    ari = Clustering.randindex(assignments, expected)[1]
 
-    Random.seed!(seed)
-    permutation = randperm(n)
+    println("$label - $objective - $ari")
+    return objective, assignments, ari
+end
 
-    μ = zeros(k, d)
-    for i in 1:k
-        for j in 1:d
-            μ[i, j] = data[permutation[i], j]
-        end
-    end
+function test_gmm(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVector{<:Integer})
+    n, d = size(data)
 
-    Σ1 = zeros(k, d, d)
-    for i in 1:k
-        for j in 1:d
-            Σ1[i, j, j] = 1.0
-        end
-    end
+    empirical = EmpiricalCovarianceMatrix(n, d)
+    shrunk = ShrunkCovarianceMatrix(n, d)
+    oas = OASCovarianceMatrix(n, d)
+    lw = LedoitWolfCovarianceMatrix(n, d)
 
-    Σ2 = Vector{UpperTriangular{Float64,Matrix{Float64}}}()
-    for i in 1:k
-        push!(Σ2, cholesky(Matrix{Float64}(I, d, d)).U)
-    end
+    gmm_sk = GMMSK(rng = StableRNG(123))
 
-    weights = ones(k) ./ k
+    gmm = GMM(estimator = empirical, rng = StableRNG(123))
+    gmm_ms = MultiStart(local_search = gmm)
+    gmm_rs = RandomSwap(local_search = gmm)
+    gmm_hg = GeneticAlgorithm(local_search = gmm)
 
-    Random.seed!(seed)
-    assignments1 = UnsupervisedClustering.gmm(data, k).assignments
+    gmm_shrunk = GMM(estimator = shrunk, rng = StableRNG(123))
+    gmm_shrunk_ms = MultiStart(local_search = gmm_shrunk)
+    gmm_shrunk_rs = RandomSwap(local_search = gmm_shrunk)
+    gmm_shrunk_hg = GeneticAlgorithm(local_search = gmm_shrunk)
 
-    Random.seed!(seed)
-    model2 = GaussianMixture(
-        n_components = k,
-        covariance_type = "full",
-        tol = 1e-3,
-        reg_covar = 0.0,
-        max_iter = 10000,
-        n_init = 1,
-        weights_init = weights,
-        means_init = μ,
-        precisions_init = Σ1,
-        verbose = verbose ? 1 : 0,
-        verbose_interval = 1
-    )
-    assignments2 = fit_predict!(model2, data)
+    gmm_oas = GMM(estimator = oas, rng = StableRNG(123))
+    gmm_oas_ms = MultiStart(local_search = gmm_oas)
+    gmm_oas_rs = RandomSwap(local_search = gmm_oas)
+    gmm_oas_hg = GeneticAlgorithm(local_search = gmm_oas)
 
-    Random.seed!(seed)
-    history = Vector{History}()
-    model3 = GMM(weights, μ, Σ2, history, 0)
-    em!(model3, data, nIter = 40, varfloor = 1e-3)
-    likelihood = llpg(model3, data)
-    assignments3 = zeros(Int, n)
-    for i in 1:n
-        assignments3[i] = argmax(likelihood[i, :])
-    end
+    gmm_lw = GMM(estimator = lw, rng = StableRNG(123))
+    gmm_lw_ms = MultiStart(local_search = gmm_lw)
+    gmm_lw_rs = RandomSwap(local_search = gmm_lw)
+    gmm_lw_hg = GeneticAlgorithm(local_search = gmm_lw)
 
-    @show ari1 = Clustering.randindex(assignments1, expected)[1]
-    @show ari2 = Clustering.randindex(assignments2, expected)[1]
-    @show ari3 = Clustering.randindex(assignments3, expected)[1]
+    objective_sk, assignments_sk, ari_sk = run_algorithm("gmm_sk       ", gmm_sk, data, k, expected)
+    objective_ss, assignments_ss, ari_ss = run_algorithm("gmm          ", gmm, data, k, expected)
+    objective_ms, assignments_ms, ari_ms = run_algorithm("gmm_ms       ", gmm_ms, data, k, expected)
+    objective_rs, assignments_rs, ari_rs = run_algorithm("gmm_rs       ", gmm_rs, data, k, expected)
+    objective_hg, assignments_hg, ari_hg = run_algorithm("gmm_hg       ", gmm_hg, data, k, expected)
 
-    @test ari1 ≈ ari2
+    objective_shrunk_ss, assignments_shrunk_ss, ari_shrunk_ss  = run_algorithm("gmm_shrunk   ", gmm_shrunk, data, k, expected)
+    objective_shrunk_ms, assignments_shrunk_ms, ari_shrunk_ms  = run_algorithm("gmm_shrunk_ms", gmm_shrunk_ms, data, k, expected)
+    objective_shrunk_rs, assignments_shrunk_rs, ari_shrunk_rs  = run_algorithm("gmm_shrunk_rs", gmm_shrunk_rs, data, k, expected)
+    objective_shrunk_hg, assignments_shrunk_hg, ari_shrunk_hg  = run_algorithm("gmm_shrunk_hg", gmm_shrunk_hg, data, k, expected)
 
-    return nothing
+    objective_oas_ss, assignments_oas_ss, ari_oas_ss  = run_algorithm("gmm_oas   ", gmm_oas, data, k, expected)
+    objective_oas_ms, assignments_oas_ms, ari_oas_ms  = run_algorithm("gmm_oas_ms", gmm_oas_ms, data, k, expected)
+    objective_oas_rs, assignments_oas_rs, ari_oas_rs  = run_algorithm("gmm_oas_rs", gmm_oas_rs, data, k, expected)
+    objective_oas_hg, assignments_oas_hg, ari_oas_hg  = run_algorithm("gmm_oas_hg", gmm_oas_hg, data, k, expected)
+
+    objective_lw_ss, assignments_lw_ss, ari_lw_ss  = run_algorithm("gmm_lw   ", gmm_lw, data, k, expected)
+    objective_lw_ms, assignments_lw_ms, ari_lw_ms  = run_algorithm("gmm_lw_ms", gmm_lw_ms, data, k, expected)
+    objective_lw_rs, assignments_lw_rs, ari_lw_rs  = run_algorithm("gmm_lw_rs", gmm_lw_rs, data, k, expected)
+    objective_lw_hg, assignments_lw_hg, ari_lw_hg  = run_algorithm("gmm_lw_hg", gmm_lw_hg, data, k, expected)
+
+    @test ari_ss ≈ ari_sk
+    # @test objective_ss <= objective_ms
+    # @test objective_ss <= objective_rs
+    # @test objective_ss <= objective_hg
+
+    return
 end

@@ -2,4 +2,4 @@
 
 SET FORMATTER_DIR=%~dp0
 
-julia --project=%FORMATTER_DIR% %FORMATTER_DIR%\format.jl
+%JULIA_184% --project=%FORMATTER_DIR% %FORMATTER_DIR%\format.jl
