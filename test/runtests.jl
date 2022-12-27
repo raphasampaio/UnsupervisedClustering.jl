@@ -6,7 +6,6 @@ using Printf
 using Random
 using RegularizedCovarianceMatrices
 using ScikitLearn
-using StableRNGs
 using Test
 using TimerOutputs
 using UnsupervisedClustering
@@ -17,6 +16,8 @@ using UnsupervisedClustering
 include("kmeans.jl")
 include("gmm.jl")
 include("gmmsk.jl")
+
+ENV["OMP_NUM_THREADS"] = 1
 
 function get_data(filename::String)
     open(joinpath("data", "$filename.csv")) do file
