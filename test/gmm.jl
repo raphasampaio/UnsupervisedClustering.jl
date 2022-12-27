@@ -14,7 +14,7 @@ function run_algorithm(
     return objective, assignments, ari
 end
 
-function test_gmm(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVector{<:Integer})
+function test_gmm(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVector{<:Integer}, seed::Integer)
     n, d = size(data)
 
     empirical = EmpiricalCovarianceMatrix(n, d)
@@ -22,24 +22,24 @@ function test_gmm(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVector
     oas = OASCovarianceMatrix(n, d)
     lw = LedoitWolfCovarianceMatrix(n, d)
 
-    gmm_sk = GMMSK(rng = StableRNG(123))
+    gmm_sk = GMMSK(rng = MersenneTwister(seed))
 
-    gmm = GMM(estimator = empirical, rng = StableRNG(123))
+    gmm = GMM(estimator = empirical, rng = MersenneTwister(seed))
     gmm_ms = MultiStart(local_search = gmm)
     gmm_rs = RandomSwap(local_search = gmm)
     gmm_hg = GeneticAlgorithm(local_search = gmm)
 
-    gmm_shrunk = GMM(estimator = shrunk, rng = StableRNG(123))
+    gmm_shrunk = GMM(estimator = shrunk, rng = MersenneTwister(seed))
     gmm_shrunk_ms = MultiStart(local_search = gmm_shrunk)
     gmm_shrunk_rs = RandomSwap(local_search = gmm_shrunk)
     gmm_shrunk_hg = GeneticAlgorithm(local_search = gmm_shrunk)
 
-    gmm_oas = GMM(estimator = oas, rng = StableRNG(123))
+    gmm_oas = GMM(estimator = oas, rng = MersenneTwister(seed))
     gmm_oas_ms = MultiStart(local_search = gmm_oas)
     gmm_oas_rs = RandomSwap(local_search = gmm_oas)
     gmm_oas_hg = GeneticAlgorithm(local_search = gmm_oas)
 
-    gmm_lw = GMM(estimator = lw, rng = StableRNG(123))
+    gmm_lw = GMM(estimator = lw, rng = MersenneTwister(seed))
     gmm_lw_ms = MultiStart(local_search = gmm_lw)
     gmm_lw_rs = RandomSwap(local_search = gmm_lw)
     gmm_lw_hg = GeneticAlgorithm(local_search = gmm_lw)
