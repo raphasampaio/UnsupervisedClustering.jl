@@ -50,8 +50,8 @@ function test_all()
                 data, k, expected = get_data(filename)
                 n, d = size(data)
         
-                # test_kmeans(data', k, expected)
-                test_gmm(data, k, expected)
+                test_kmeans(data, k, expected)
+                # test_gmm(data, k, expected)
             end
         end
     end

@@ -1,5 +1,5 @@
 function test_kmeans(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVector{<:Integer})
-    d, n = size(data)
+    n, d = size(data)
     Random.seed!(1)
     permutation = randperm(n)
 
@@ -7,7 +7,7 @@ function test_kmeans(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVec
     result_ss = UnsupervisedClustering.KmeansResult(d, n, k)
     for i in 1:d
         for j in 1:k
-            result_ss.centers[i, j] = data[i, permutation[j]]
+            result_ss.centers[i, j] = data[permutation[j], i]
         end
     end
     Random.seed!(1)
@@ -24,7 +24,7 @@ function test_kmeans(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVec
     # KMEANS - CLUSTERING.JL
     Random.seed!(1)
     @timeit "kmeans - jl" result_jl = Clustering.kmeans(
-        data,
+        data',
         k,
         init = permutation[1:k],
         display = :none,
@@ -39,7 +39,7 @@ function test_kmeans(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVec
     centers_sk = zeros(k, d)
     for i in 1:k
         for j in 1:d
-            centers_sk[i, j] = data[i, permutation[j]]
+            centers_sk[i, j] = data[permutation[i], j]
         end
     end
     Random.seed!(1)
@@ -54,8 +54,8 @@ function test_kmeans(data::AbstractMatrix{<:Real}, k::Int, expected::AbstractVec
         # copy_x=true, 
         algorithm = "lloyd"
     )
-    @timeit "kmeans - sk" assignments_sk = fit_predict!(kmeans_sk, data')
-    objective_sk = -score(kmeans_sk, data')
+    @timeit "kmeans - sk" assignments_sk = fit_predict!(kmeans_sk, data)
+    objective_sk = -score(kmeans_sk, data)
 
     # KMEANS - MULTI-START
     Random.seed!(1)

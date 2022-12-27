@@ -46,19 +46,19 @@ function reset_objective!(result::KmeansResult)
 end
 
 function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    d, n = size(data)
+    n, d = size(data)
     k = size(result.centers, 2)
 
     to = rand(rng, 1:k)
     from = rand(rng, 1:n)
 
-    result.centers[:, to] = copy(data[:, from])
+    result.centers[:, to] = copy(data[from, :])
     reset_objective!(result)
     return
 end
 
 function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
-    d, n = size(data)
+    n, d = size(data)
     k = size(result.centers, 2)
 
     previous_objective = -Inf
@@ -71,7 +71,7 @@ function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::Kmeans
 
         # assignment step
         result.objective = 0
-        distances = pairwise(parameters.metric, result.centers, data, dims = 2)
+        distances = pairwise(parameters.metric, result.centers, data', dims = 2)
         for i in 1:n
             assignment = argmin(distances[:, i])
 
@@ -98,7 +98,7 @@ function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::Kmeans
 
         for i in 1:n
             assignment = result.assignments[i]
-            result.centers[:, assignment] += data[:, i]
+            result.centers[:, assignment] += data[i, :]
             result.count[assignment] += 1
         end
 
@@ -110,32 +110,14 @@ function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::Kmeans
     return
 end
 
-# """
-#     kmeans(data::Matrix{Float64}, k::Integer)::KmeansResult
-
-# TODO.
-# # Keyword Arguments
-# - `rng`
-# - `verbose` 
-# - `metric`
-# - `tolerance`
-# - `max_iterations`
-
-# # Example
-
-# ```jldoctest; setup=:(using UnsupervisedClustering)
-# julia> data = rand(10, 2);
-# julia> result = kmeans(data, 3);
-# ```
-# """
 function train(parameters::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
-    d, n = size(data)
+    n, d = size(data)
 
     result = KmeansResult(d, n, k)
     permutation = randperm(parameters.rng, n)
     for i in 1:d
         for j in 1:k
-            result.centers[i, j] = data[i, permutation[j]]
+            result.centers[i, j] = data[permutation[j], i]
         end
     end
     train!(parameters, data, result)
