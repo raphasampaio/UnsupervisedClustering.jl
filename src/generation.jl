@@ -127,7 +127,11 @@ function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
 end
 
 function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int)
-    return Distances.evaluate(Euclidean(), a.centers[:, i], b.centers[:, j])
+    return Distances.evaluate(
+        Euclidean(), 
+        a.centers[:, i], 
+        b.centers[:, j]
+    )
 end
 
 function distance(a::GMMResult, i::Int, b::GMMResult, j::Int)
@@ -160,8 +164,8 @@ end
 function updateweights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
     k = length(assignment)
     for i in 1:k
-        # child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2
-        child.weights[i] = 1 / k
+        child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2
+        # child.weights[i] = 1 / k
     end
     return
 end
