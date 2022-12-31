@@ -2,14 +2,13 @@ module UnsupervisedClustering
 
 using Distances
 using Hungarian
+using LinearAlgebra
 using LogExpFunctions
 using Printf
-using RegularizedCovarianceMatrices
-using StatsBase
-
-using LinearAlgebra
 using Random
+using RegularizedCovarianceMatrices
 using Statistics
+using StatsBase
 
 export train, 
     train!, 
@@ -29,5 +28,6 @@ include("multistart.jl")
 include("randomswap.jl")
 include("generation.jl")
 include("geneticalgorithm.jl")
+include("print.jl")
 
 end

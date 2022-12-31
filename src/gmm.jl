@@ -15,6 +15,7 @@ mutable struct GMMResult <: Result
 
     objective::Float64
     iterations::Int
+    elapsed::Float64
     converged::Bool
 
     function GMMResult(d::Integer, n::Integer, k::Integer)
@@ -25,7 +26,8 @@ mutable struct GMMResult <: Result
             [zeros(d) for _ in 1:k], 
             [Hermitian(Matrix{Float64}(I, d, d)) for _ in 1:k],
             -Inf, 
-            0, 
+            0,
+            0,
             false
         )
     end
@@ -38,9 +40,10 @@ mutable struct GMMResult <: Result
         covariances::Vector{Hermitian{Float64, Matrix{Float64}}},
         objective::Float64,
         iterations::Int,
+        elapsed::Float64,
         converged::Bool,
     )
-        return new(k, assignments, weights, centers, covariances, objective, iterations, converged)    
+        return new(k, assignments, weights, centers, covariances, objective, iterations, elapsed, converged)    
     end
 end
 
@@ -53,6 +56,7 @@ function Base.copy(a::GMMResult)
         deepcopy(a.covariances),
         a.objective, 
         a.iterations, 
+        a.elapsed, 
         a.converged
     )
 end
@@ -229,6 +233,8 @@ function maximization_step!(
 end
 
 function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+    t = time()
+
     n, d = size(data)
     k = length(result.centers)
 
@@ -245,13 +251,18 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     for iteration in 1:parameters.max_iterations
         previous_objective = result.objective
 
-        result.objective, log_resp = expectation_step(data, k, result, precisions_cholesky)
+        t1 = @elapsed result.objective, log_resp = expectation_step(data, k, result, precisions_cholesky)
 
-        maximization_step!(parameters, data, k, result, log_resp, precisions_cholesky)
+        t2 = @elapsed maximization_step!(parameters, data, k, result, log_resp, precisions_cholesky)
 
         change = abs(result.objective - previous_objective)
+
         if parameters.verbose
-            println("\t$iteration - $(result.objective) - $change")
+            print_iteration(iteration)
+            print_objective(result)
+            print_change(change)
+            print_elapsed(t1 + t2)
+            print_newline()
         end
 
         if change < parameters.tolerance
@@ -266,6 +277,8 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     for i in 1:n
         result.assignments[i] = argmax(weighted_log_prob[i, :])
     end
+
+    result.elapsed = time() - t
 
     return
 end
