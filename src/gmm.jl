@@ -11,7 +11,7 @@ mutable struct GMMResult <: Result
     assignments::Vector{Int}
     weights::Vector{Float64}
     centers::Vector{Vector{Float64}}
-    covariances::Vector{Hermitian{Float64, Matrix{Float64}}}
+    covariances::Vector{Symmetric{Float64}}
 
     objective::Float64
     iterations::Int
@@ -24,7 +24,7 @@ mutable struct GMMResult <: Result
             zeros(Int, n), 
             ones(k) ./ k, 
             [zeros(d) for _ in 1:k], 
-            [Hermitian(Matrix{Float64}(I, d, d)) for _ in 1:k],
+            [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k],
             -Inf, 
             0,
             0,
@@ -37,13 +37,23 @@ mutable struct GMMResult <: Result
         assignments::Vector{Int},
         weights::Vector{Float64},
         centers::Vector{Vector{Float64}},
-        covariances::Vector{Hermitian{Float64, Matrix{Float64}}},
+        covariances::Vector{Symmetric{Float64}},
         objective::Float64,
         iterations::Int,
         elapsed::Float64,
         converged::Bool,
     )
-        return new(k, assignments, weights, centers, covariances, objective, iterations, elapsed, converged)    
+        return new(
+            k, 
+            assignments, 
+            weights, 
+            centers, 
+            covariances, 
+            objective, 
+            iterations, 
+            elapsed, 
+            converged
+        )
     end
 end
 
@@ -81,7 +91,7 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
 
     m = mean([det(result.covariances[j]) for j in 1:k])
     value = (m > 0 ? m : 1.0)^(1 / d)
-    result.covariances[to] = Hermitian(value .* Matrix{Float64}(I, d, d))
+    result.covariances[to] = Symmetric(value .* Matrix{Float64}(I, d, d))
 
     reset_objective!(result)
     return
@@ -90,7 +100,7 @@ end
 function fix(matrix::AbstractMatrix{<:Real}, eps::Float64)
     eigen_matrix = eigen(matrix)
     new_matrix = eigen_matrix.vectors * Matrix(Diagonal(max.(eigen_matrix.values, eps))) * eigen_matrix.vectors'
-    return Hermitian(new_matrix)
+    return Symmetric(new_matrix)
 end
 
 function estimate_gaussian_parameters(
@@ -113,24 +123,16 @@ function estimate_gaussian_parameters(
         for j in 1:n
             weights[i] += responsibilities[j, i]
         end
-        # result.weights[i] /= n
+        # weights[i] /= n
     end
     weights = weights / sum(weights)
 
     centers = [zeros(d) for _ in 1:k]
-    covariances = [Hermitian(Matrix{Float64}(I, d, d)) for _ in 1:k]
+    covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
 
-    # nk = sum(responsibilities, dims=1) .+ 10 * eps(Float64)
     for i in 1:k
-        # covariances[i], centers[i] = RegularizedCovarianceMatrices.fit(parameters.estimator, data, responsibilities[:, i])
-
         covariances_i, centers[i] = RegularizedCovarianceMatrices.fit(parameters.estimator, data, responsibilities[:, i])
-        covariances[i] = Hermitian(covariances_i)
-
-        # RegularizedCovariances.fit!(parameters.estimator, data, responsibilities[:, i], result.covariances[i], result.centers[i])
-        # covariances[i], centers[i] = empirical_covariance(data, responsibilities[:, i])
-        # covariances[i], centers[i] = shrunk_covariance(data, responsibilities[:, i])
-        # covariances[i] += 1e-6 * Matrix{Float64}(I, d, d)
+        covariances[i] = Symmetric(covariances_i)
     end
     return weights, centers, covariances
 end
@@ -145,7 +147,6 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         catch
             result.covariances[i] = fix(result.covariances[i], 1e-6)
-
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         end
@@ -238,8 +239,10 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     n, d = size(data)
     k = length(result.centers)
 
+    best_objective = -Inf
     previous_objective = Inf
     result.objective = -Inf
+    
     result.iterations = parameters.max_iterations
     result.converged = false
 
@@ -249,23 +252,31 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     compute_precision_cholesky!(result, precisions_cholesky)
 
     for iteration in 1:parameters.max_iterations
+        # if result.objective < best_objective && result.objective > previous_objective
+        #     best_objective = result.objective
+        # else
+        #     best_objective = max(best_objective, result.objective)
+        # end
+
         previous_objective = result.objective
 
         t1 = @elapsed result.objective, log_resp = expectation_step(data, k, result, precisions_cholesky)
 
         t2 = @elapsed maximization_step!(parameters, data, k, result, log_resp, precisions_cholesky)
 
-        change = abs(result.objective - previous_objective)
+        # change = abs(result.objective - previous_objective)
+        change = abs((previous_objective - result.objective) / previous_objective)
 
         if parameters.verbose
             print_iteration(iteration)
             print_objective(result)
+            print_objective(best_objective)
             print_change(change)
             print_elapsed(t1 + t2)
             print_newline()
         end
 
-        if change < parameters.tolerance
+        if change < parameters.tolerance || best_objective ≈ result.objective
             result.converged = true
             result.iterations = iteration
             break
@@ -273,7 +284,6 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     end
 
     weighted_log_prob = estimate_weighted_log_probability(data, k, result, precisions_cholesky)
-    result.assignments = zeros(Int, n)
     for i in 1:n
         result.assignments[i] = argmax(weighted_log_prob[i, :])
     end
