@@ -79,12 +79,17 @@ function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::Kmeans
             result.objective += distances[assignment, i]
         end
 
+        change = abs(result.objective - previous_objective)
+
         if parameters.verbose
-            println("$iteration - $(result.objective)")
+            print_iteration(iteration)
+            print_objective(result)
+            print_change(change)
+            print_newline()
         end
 
         # stopping condition
-        if abs(result.objective - previous_objective) < parameters.tolerance
+        if change < parameters.tolerance
             result.converged = true
             result.iterations = iteration
             break

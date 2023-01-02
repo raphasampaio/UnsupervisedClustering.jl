@@ -113,8 +113,7 @@ function estimate_gaussian_parameters(
 
     weights = ones(k) * 10 * eps(Float64)
     for i in 1:k
-        sum_weights = sum(responsibilities[:, i])
-        if sum_weights < 1e-32
+        if sum(responsibilities[:, i]) < 1e-32
             for j in 1:n
                 responsibilities[j, i] = 1.0 / n
             end
@@ -229,7 +228,6 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     n, d = size(data)
     k = length(result.centers)
 
-    best_objective = -Inf
     previous_objective = Inf
     result.objective = -Inf
     
@@ -242,31 +240,23 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     compute_precision_cholesky!(result, precisions_cholesky)
 
     for iteration in 1:parameters.max_iterations
-        # if result.objective < best_objective && result.objective > previous_objective
-        #     best_objective = result.objective
-        # else
-        #     best_objective = max(best_objective, result.objective)
-        # end
-
         previous_objective = result.objective
 
         t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
 
         t2 = @elapsed maximization_step!(parameters, data, k, result, log_responsibilities, precisions_cholesky)
 
-        # change = abs(result.objective - previous_objective)
-        change = abs((previous_objective - result.objective) / previous_objective)
+        change = abs(result.objective - previous_objective)
 
         if parameters.verbose
             print_iteration(iteration)
             print_objective(result)
-            print_objective(best_objective)
             print_change(change)
             print_elapsed(t1 + t2)
             print_newline()
         end
 
-        if change < parameters.tolerance || best_objective ≈ result.objective
+        if change < parameters.tolerance
             result.converged = true
             result.iterations = iteration
             break

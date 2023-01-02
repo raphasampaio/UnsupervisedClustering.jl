@@ -14,7 +14,15 @@ function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::In
     iterations_without_improvement = 0
 
     for _ in 1:parameters.π_max
-        add_random!(generation, parameters.local_search, data, k)
+        result = train(parameters.local_search, data, k)
+        add!(generation, result)
+
+        if parameters.verbose
+            print_iteration(0)
+            print_result(result)
+            print_string("(initial population)")
+            print_newline()
+        end
     end
 
     for iteration in 1:parameters.max_iterations
@@ -29,8 +37,13 @@ function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::In
 
         # LOCAL SEARCH
         train!(parameters.local_search, data, child)
-
         add!(generation, child)
+
+        if parameters.verbose
+            print_iteration(iteration)
+            print_result(result)
+            print_newline()
+        end
 
         size = active_population_size(generation)
         if size > parameters.π_max

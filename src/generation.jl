@@ -38,12 +38,6 @@ function add!(generation::Generation, result::Result)
     end
 end
 
-function add_random!(generation::Generation, local_search::Algorithm, data::AbstractMatrix{<:Real}, k::Int)
-    result = train(local_search, data, k)
-    add!(generation, result)
-    return
-end
-
 function binary_tournament(generation::Generation, rng::AbstractRNG)
     size = population_size(generation)
     indices = sample(
