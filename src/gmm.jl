@@ -99,6 +99,7 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
     result.covariances[to] = Symmetric(value .* Matrix{Float64}(I, d, d))
 
     reset_objective!(result)
+
     return
 end
 

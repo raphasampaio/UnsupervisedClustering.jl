@@ -13,15 +13,17 @@ end
 
 mutable struct KmeansResult <: Result
     k::Int
-    assignments::Vector{Int} # n
-    centers::Matrix{Float64} # d x k
-    count::Vector{Int} # k
+    assignments::Vector{Int}
+    centers::Matrix{Float64}
+    count::Vector{Int}
+
     objective::Float64
     iterations::Int
+    elapsed::Float64
     converged::Bool
 
     function KmeansResult(d::Integer, n::Integer, k::Integer)
-        return new(k, zeros(Int, n), zeros(Float64, d, k), zeros(Int, k), Inf, 0, false)
+        return new(k, zeros(Int, n), zeros(Float64, d, k), zeros(Int, k), Inf, 0, 0, false)
     end
 
     function KmeansResult(
@@ -31,14 +33,24 @@ mutable struct KmeansResult <: Result
         count::Vector{Int},
         objective::Float64,
         iterations::Int,
+        elapsed::Float64,
         converged::Bool,
     )
-        return new(k, assignments, centers, count, objective, iterations, converged)
+        return new(k, assignments, centers, count, objective, iterations, elapsed, converged)
     end
 end
 
 function Base.copy(a::KmeansResult)
-    return KmeansResult(a.k, copy(a.assignments), copy(a.centers), copy(a.count), a.objective, a.iterations, a.converged)
+    return KmeansResult(
+        a.k, 
+        copy(a.assignments), 
+        copy(a.centers), 
+        copy(a.count), 
+        a.objective, 
+        a.iterations, 
+        a.elapsed, 
+        a.converged
+    )
 end
 
 function isbetter(a::KmeansResult, b::KmeansResult)
@@ -63,6 +75,8 @@ function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::A
 end
 
 function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+    t = time()
+
     n, d = size(data)
     k = size(result.centers, 2)
 
@@ -116,6 +130,8 @@ function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRe
             result.centers[:, i] ./= max(1, result.count[i])
         end
     end
+
+    result.elapsed = time() - t
 
     return
 end
