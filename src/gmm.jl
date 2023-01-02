@@ -169,7 +169,7 @@ function compute_log_det_cholesky(precisions_cholesky::Vector{Matrix{Float64}})
     return log_det_cholesky
 end
 
-function estimate_weighted_log_probability(
+function estimate_weighted_log_probabilities(
     data::AbstractMatrix{<:Real}, 
     k::Int, 
     result::GMMResult, 
@@ -177,34 +177,15 @@ function estimate_weighted_log_probability(
 )
     n, d = size(data)
     
-    log_det = compute_log_det_cholesky(precisions_cholesky)
+    log_det_cholesky = compute_log_det_cholesky(precisions_cholesky)
 
-    log_prob = zeros(n, k)
+    log_probabilities = zeros(n, k)
     for i in 1:k
         y = data * precisions_cholesky[i] .- (result.centers[i]' * precisions_cholesky[i])
-        log_prob[:, i] = sum(y .^ 2, dims = 2)
+        log_probabilities[:, i] = sum(y .^ 2, dims = 2)
     end
 
-    return -0.5 * (d * log(2 * pi) .+ log_prob) .+ (log_det') .+ log.(result.weights)'
-end
-
-function estimate_log_prob_responsibilities(
-    data::AbstractMatrix{<:Real},
-    k::Int,
-    result::GMMResult,
-    precisions_cholesky::Vector{Matrix{Float64}},
-)
-    n, d = size(data)
-
-    weighted_log_prob = estimate_weighted_log_probability(data, k, result, precisions_cholesky)
-
-    log_prob_norm = zeros(n)
-    for i in 1:n
-        log_prob_norm[i] += LogExpFunctions.logsumexp(weighted_log_prob[i, :])
-    end
-
-    log_resp = weighted_log_prob .- log_prob_norm
-    return log_prob_norm, log_resp
+    return -0.5 * (d * log(2 * pi) .+ log_probabilities) .+ (log_det_cholesky') .+ log.(result.weights)'
 end
 
 function expectation_step(
@@ -213,8 +194,17 @@ function expectation_step(
     result::GMMResult,
     precisions_cholesky::Vector{Matrix{Float64}},
 )
-    log_prob_norm, log_resp = estimate_log_prob_responsibilities(data, k, result, precisions_cholesky)
-    return mean(log_prob_norm), log_resp
+    n, d = size(data)
+
+    weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
+
+    log_probabilities_norm = zeros(n)
+    for i in 1:n
+        log_probabilities_norm[i] += LogExpFunctions.logsumexp(weighted_log_probabilities[i, :])
+    end
+
+    log_responsibilities = weighted_log_probabilities .- log_probabilities_norm
+    return mean(log_probabilities_norm), log_responsibilities
 end
 
 function maximization_step!(
@@ -222,10 +212,10 @@ function maximization_step!(
     data::AbstractMatrix{<:Real},
     k::Int,
     result::GMMResult,
-    log_resp::Matrix{Float64},
+    log_responsibilities::Matrix{Float64},
     precisions_cholesky::Vector{Matrix{Float64}},
 )
-    responsibilities = exp.(log_resp)
+    responsibilities = exp.(log_responsibilities)
 
     result.weights, result.centers, result.covariances = estimate_gaussian_parameters(parameters, data, k, responsibilities)
     compute_precision_cholesky!(result, precisions_cholesky)
@@ -246,7 +236,7 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     result.iterations = parameters.max_iterations
     result.converged = false
 
-    log_resp = zeros(n, k)
+    log_responsibilities = zeros(n, k)
 
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(result, precisions_cholesky)
@@ -260,9 +250,9 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
 
         previous_objective = result.objective
 
-        t1 = @elapsed result.objective, log_resp = expectation_step(data, k, result, precisions_cholesky)
+        t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
 
-        t2 = @elapsed maximization_step!(parameters, data, k, result, log_resp, precisions_cholesky)
+        t2 = @elapsed maximization_step!(parameters, data, k, result, log_responsibilities, precisions_cholesky)
 
         # change = abs(result.objective - previous_objective)
         change = abs((previous_objective - result.objective) / previous_objective)
@@ -283,9 +273,9 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
         end
     end
 
-    weighted_log_prob = estimate_weighted_log_probability(data, k, result, precisions_cholesky)
+    weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
     for i in 1:n
-        result.assignments[i] = argmax(weighted_log_prob[i, :])
+        result.assignments[i] = argmax(weighted_log_probabilities[i, :])
     end
 
     result.elapsed = time() - t
