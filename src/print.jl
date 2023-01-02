@@ -1,5 +1,5 @@
 function total_digits(number::Integer)
-    return (number == 0) ? 1  : (log10(number) + 1)
+    return (number == 0) ? 1 : (log10(number) + 1)
 end
 
 print_objective(result::Result) = print_objective(result.objective)
@@ -29,6 +29,7 @@ function print_result(result::Result)
     print_objective(result)
     print_iterations(result)
     print_elapsed(result)
+    return
 end
 
 function print_newline()
@@ -38,5 +39,3 @@ end
 function print_string(str::String)
     @printf("%s ", str)
 end
-
-

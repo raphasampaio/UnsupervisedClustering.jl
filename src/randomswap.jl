@@ -5,6 +5,11 @@ Base.@kwdef struct RandomSwap <: Algorithm
     max_iterations_without_improvement::Integer = 150
 end
 
+function seed!(algorithm::RandomSwap, seed::Integer)
+    Random.seed!(algorithm.local_search.rng, seed)
+    return
+end
+
 function train(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::Result
     iterations_without_improvement = 0
 

@@ -4,6 +4,11 @@ Base.@kwdef struct MultiStart <: Algorithm
     max_iterations::Integer = 200
 end
 
+function seed!(algorithm::MultiStart, seed::Integer)
+    Random.seed!(algorithm.local_search.rng, seed)
+    return
+end
+
 function train(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::Result
     best_result = train(parameters.local_search, data, k)
 

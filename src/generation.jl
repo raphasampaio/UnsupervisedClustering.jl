@@ -40,13 +40,7 @@ end
 
 function binary_tournament(generation::Generation, rng::AbstractRNG)
     size = population_size(generation)
-    indices = sample(
-        rng, 
-        1:size, 
-        aweights([(in(i, generation.empty) ? 0 : 1) for i in 1:size]), 
-        4, 
-        replace = false
-    )
+    indices = sample(rng, 1:size, aweights([(in(i, generation.empty) ? 0 : 1) for i in 1:size]), 4, replace = false)
     parent1 = generation.population[indices[1]]
     parent2 = generation.population[indices[2]]
     parent3 = generation.population[indices[3]]
@@ -121,22 +115,12 @@ function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
 end
 
 function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int)
-    return Distances.evaluate(
-        Euclidean(), 
-        a.centers[:, i], 
-        b.centers[:, j]
-    )
+    return Distances.evaluate(Euclidean(), a.centers[:, i], b.centers[:, j])
 end
 
 function distance(a::GMMResult, i::Int, b::GMMResult, j::Int)
-    distance1 = Distances.evaluate(
-        SqMahalanobis(a.covariances[i], skipchecks = true), 
-        a.centers[i], b.centers[j]
-    )
-    distance2 = Distances.evaluate(
-        SqMahalanobis(b.covariances[j], skipchecks = true), 
-        a.centers[i], b.centers[j]
-    )
+    distance1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.centers[i], b.centers[j])
+    distance2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.centers[i], b.centers[j])
     return (distance1 + distance2) / 2
 end
 

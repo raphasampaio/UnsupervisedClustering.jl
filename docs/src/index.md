@@ -1,6 +1,6 @@
 # UnsupervisedClustering
 
 ```@docs
-UnsupervisedClustering.kmeans
-UnsupervisedClustering.kmeans!
+UnsupervisedClustering.train
+UnsupervisedClustering.train!
 ```

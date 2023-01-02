@@ -5,7 +5,14 @@ Base.@kwdef struct GMMSK <: UnsupervisedClustering.Algorithm
     max_iterations::Integer = 1000
 end
 
+function seed!(algorithm::GMMSK, seed::Integer)
+    Random.seed!(algorithm.rng, seed)
+    return
+end
+
 function UnsupervisedClustering.train!(parameters::GMMSK, data::AbstractMatrix{<:Real}, result::GMMResult)
+    t = time()
+
     n, d = size(data)
     k = length(result.centers)
 
@@ -29,7 +36,7 @@ function UnsupervisedClustering.train!(parameters::GMMSK, data::AbstractMatrix{<
         n_components = k,
         covariance_type = "full",
         tol = parameters.tolerance,
-        reg_covar = 0.0,
+        reg_covar = 1e-12,
         max_iter = parameters.max_iterations,
         n_init = 1,
         weights_init = result.weights,
@@ -50,13 +57,13 @@ function UnsupervisedClustering.train!(parameters::GMMSK, data::AbstractMatrix{<
     end
     
     for i in 1:k
-        matrix = zeros(d, d)
+        covariance_matrix = zeros(d, d)
         for j in 1:d
             for l in 1:d
-                matrix[j, l] = gmm.covariances_[i, j, l]
+                covariance_matrix[j, l] = gmm.covariances_[i, j, l]
             end
         end
-        result.covariances[i] = Hermitian(matrix)
+        result.covariances[i] = Hermitian(covariance_matrix)
     end
 
     result.weights = copy(gmm.weights_)
@@ -64,6 +71,8 @@ function UnsupervisedClustering.train!(parameters::GMMSK, data::AbstractMatrix{<
     if parameters.verbose
         println("\t$(result.iterations) - $(result.objective)")
     end
+
+    result.elapsed = time() - t
 
     return
 end

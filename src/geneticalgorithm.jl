@@ -7,6 +7,11 @@ Base.@kwdef struct GeneticAlgorithm <: Algorithm
     π_min::Integer = 40
 end
 
+function seed!(algorithm::GeneticAlgorithm, seed::Integer)
+    Random.seed!(algorithm.local_search.rng, seed)
+    return
+end
+
 function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::Result
     generation = Generation()
 
@@ -41,7 +46,8 @@ function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::In
 
         if parameters.verbose
             print_iteration(iteration)
-            print_result(result)
+            print_iteration(iterations_without_improvement)
+            print_result(child)
             print_newline()
         end
 
@@ -62,10 +68,6 @@ function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::In
         else
             best_objective = leader.objective
             iterations_without_improvement = 0
-        end
-
-        if parameters.verbose
-            println("Iteration $iteration - $(leader.objective) ($iterations_without_improvement)")
         end
     end
 

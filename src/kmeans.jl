@@ -6,6 +6,11 @@ Base.@kwdef struct Kmeans <: Algorithm
     max_iterations::Integer = 1000
 end
 
+function seed!(algorithm::Kmeans, seed::Integer)
+    Random.seed!(algorithm.rng, seed)
+    return
+end
+
 mutable struct KmeansResult <: Result
     k::Int
     assignments::Vector{Int} # n

@@ -6,6 +6,11 @@ Base.@kwdef struct GMM <: Algorithm
     max_iterations::Integer = 1000
 end
 
+function seed!(algorithm::GMM, seed::Integer)
+    Random.seed!(algorithm.rng, seed)
+    return
+end
+
 mutable struct GMMResult <: Result
     k::Int
     assignments::Vector{Int}
@@ -104,7 +109,7 @@ function fix(matrix::AbstractMatrix{<:Real}, eps::Float64)
 end
 
 function estimate_gaussian_parameters(
-    parameters::GMM,
+    algorithm::GMM,
     data::AbstractMatrix{<:Real},
     k::Int,
     responsibilities::Matrix{Float64},
@@ -130,7 +135,7 @@ function estimate_gaussian_parameters(
     covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
 
     for i in 1:k
-        covariances_i, centers[i] = RegularizedCovarianceMatrices.fit(parameters.estimator, data, responsibilities[:, i])
+        covariances_i, centers[i] = RegularizedCovarianceMatrices.fit(algorithm.estimator, data, responsibilities[:, i])
         covariances[i] = Symmetric(covariances_i)
     end
     return weights, centers, covariances
@@ -207,7 +212,7 @@ function expectation_step(
 end
 
 function maximization_step!(
-    parameters::GMM, 
+    algorithm::GMM, 
     data::AbstractMatrix{<:Real},
     k::Int,
     result::GMMResult,
@@ -216,13 +221,13 @@ function maximization_step!(
 )
     responsibilities = exp.(log_responsibilities)
 
-    result.weights, result.centers, result.covariances = estimate_gaussian_parameters(parameters, data, k, responsibilities)
+    result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
     compute_precision_cholesky!(result, precisions_cholesky)
 
     return
 end
 
-function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+function train!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     t = time()
 
     n, d = size(data)
@@ -231,7 +236,7 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     previous_objective = Inf
     result.objective = -Inf
     
-    result.iterations = parameters.max_iterations
+    result.iterations = algorithm.max_iterations
     result.converged = false
 
     log_responsibilities = zeros(n, k)
@@ -239,16 +244,16 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    for iteration in 1:parameters.max_iterations
+    for iteration in 1:algorithm.max_iterations
         previous_objective = result.objective
 
         t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
 
-        t2 = @elapsed maximization_step!(parameters, data, k, result, log_responsibilities, precisions_cholesky)
+        t2 = @elapsed maximization_step!(algorithm, data, k, result, log_responsibilities, precisions_cholesky)
 
         change = abs(result.objective - previous_objective)
 
-        if parameters.verbose
+        if algorithm.verbose
             print_iteration(iteration)
             print_objective(result)
             print_change(change)
@@ -256,7 +261,7 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
             print_newline()
         end
 
-        if change < parameters.tolerance
+        if change < algorithm.tolerance
             result.converged = true
             result.iterations = iteration
             break
@@ -273,11 +278,11 @@ function train!(parameters::GMM, data::AbstractMatrix{<:Real}, result::GMMResult
     return
 end
 
-function train(parameters::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+function train(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)
 
     result = GMMResult(d, n, k)
-    permutation = randperm(parameters.rng, n)
+    permutation = randperm(algorithm.rng, n)
     for i in 1:k
         for j in 1:d
             result.centers[i][j] = data[permutation[i], j]
@@ -298,9 +303,9 @@ function train(parameters::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMRe
     #     end
     #     responsibilities[i, min_index] = 1.0
     # end
-    # result.weights, result.centers, result.covariances = estimate_gaussian_parameters(parameters, data, k, responsibilities)
+    # result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
 
-    train!(parameters, data, result)
+    train!(algorithm, data, result)
 
     return result
 end
