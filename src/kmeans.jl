@@ -74,7 +74,7 @@ function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::A
     return
 end
 
-function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
 
     n, d = size(data)
@@ -82,15 +82,15 @@ function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRe
 
     previous_objective = -Inf
     result.objective = Inf
-    result.iterations = parameters.max_iterations
+    result.iterations = algorithm.max_iterations
     result.converged = false
 
-    for iteration in 1:parameters.max_iterations
+    for iteration in 1:algorithm.max_iterations
         previous_objective = result.objective
 
         # assignment step
         result.objective = 0
-        distances = pairwise(parameters.metric, result.centers, data', dims = 2)
+        distances = pairwise(algorithm.metric, result.centers, data', dims = 2)
         for i in 1:n
             assignment = argmin(distances[:, i])
 
@@ -100,7 +100,7 @@ function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRe
 
         change = abs(result.objective - previous_objective)
 
-        if parameters.verbose
+        if algorithm.verbose
             print_iteration(iteration)
             print_objective(result)
             print_change(change)
@@ -108,7 +108,7 @@ function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRe
         end
 
         # stopping condition
-        if change < parameters.tolerance
+        if change < algorithm.tolerance
             result.converged = true
             result.iterations = iteration
             break
@@ -136,17 +136,17 @@ function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRe
     return
 end
 
-function fit(parameters::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 
     result = KmeansResult(d, n, k)
-    permutation = randperm(parameters.rng, n)
+    permutation = randperm(algorithm.rng, n)
     for i in 1:d
         for j in 1:k
             result.centers[i, j] = data[permutation[j], i]
         end
     end
-    fit!(parameters, data, result)
+    fit!(algorithm, data, result)
 
     return result
 end

@@ -49,13 +49,13 @@ function binary_tournament(generation::Generation, rng::AbstractRNG)
     return isbetter(parent1, parent2) ? parent1 : parent2, isbetter(parent3, parent4) ? parent3 : parent4
 end
 
-function crossover(parent1::Result, parent2::Result, rng::AbstractRNG)
+function crossover(parent1::Result, parent2::Result, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     k = parent1.k
 
     weights = zeros(k, k)
     for i in 1:k
         for j in 1:k
-            weights[i, j] = distance(parent1, i, parent2, j)
+            weights[i, j] = distance(parent1, i, parent2, j, data)
         end
     end
     assignment, _ = hungarian(weights)
@@ -65,13 +65,13 @@ function crossover(parent1::Result, parent2::Result, rng::AbstractRNG)
 
     for i in 1:k
         if rand(rng) > 0.5
-            copyclusters!(offspring, i, parent1, i)
+            copy_clusters!(offspring, i, parent1, i)
         else
-            copyclusters!(offspring, i, parent2, assignment[i])
+            copy_clusters!(offspring, i, parent2, assignment[i])
         end
     end
 
-    updateweights!(offspring, parent1, parent2, assignment)
+    update_weights!(offspring, parent1, parent2, assignment)
 
     return offspring
 end
@@ -114,32 +114,45 @@ function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
     end
 end
 
-function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int)
+function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int, data::AbstractMatrix{<:Real})
     return Distances.evaluate(Euclidean(), a.centers[:, i], b.centers[:, j])
 end
 
-function distance(a::GMMResult, i::Int, b::GMMResult, j::Int)
+function distance(a::KmedoidsResult, i::Int, b::KmedoidsResult, j::Int, data::AbstractMatrix{<:Real})
+    return Distances.evaluate(Euclidean(), data[a.centers[i], :], data[b.centers[j], :])
+end
+
+function distance(a::GMMResult, i::Int, b::GMMResult, j::Int, data::AbstractMatrix{<:Real})
     distance1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.centers[i], b.centers[j])
     distance2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.centers[i], b.centers[j])
     return (distance1 + distance2) / 2
 end
 
-function copyclusters!(destiny::KmeansResult, destiny_i::Int, source::KmeansResult, source_i::Int)
+function copy_clusters!(destiny::KmeansResult, destiny_i::Int, source::KmeansResult, source_i::Int)
     destiny.centers[:, destiny_i] = copy(source.centers[:, source_i])
     return
 end
 
-function copyclusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, source_i::Int)
+function copy_clusters!(destiny::KmedoidsResult, destiny_i::Int, source::KmedoidsResult, source_i::Int)
+    destiny.centers[destiny_i] = source.centers[source_i]
+    return
+end
+
+function copy_clusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, source_i::Int)
     destiny.centers[destiny_i] = copy(source.centers[source_i])
     destiny.covariances[destiny_i] = copy(source.covariances[source_i])
     return
 end
 
-function updateweights!(child::KmeansResult, parent1::KmeansResult, parent2::KmeansResult, assignment::AbstractVector{<:Integer})
+function update_weights!(child::KmeansResult, parent1::KmeansResult, parent2::KmeansResult, assignment::AbstractVector{<:Integer})
     return
 end
 
-function updateweights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
+function update_weights!(child::KmedoidsResult, parent1::KmedoidsResult, parent2::KmedoidsResult, assignment::AbstractVector{<:Integer})
+    return
+end
+
+function update_weights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
     k = length(assignment)
     for i in 1:k
         child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2

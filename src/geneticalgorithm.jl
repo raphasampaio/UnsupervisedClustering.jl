@@ -35,7 +35,7 @@ function fit(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Inte
         parent1, parent2 = binary_tournament(generation, parameters.local_search.rng)
 
         # CROSSOVER
-        child = crossover(parent1, parent2, parameters.local_search.rng)
+        child = crossover(parent1, parent2, data, parameters.local_search.rng)
 
         # MUTATE
         random_swap!(child, data, parameters.local_search.rng)

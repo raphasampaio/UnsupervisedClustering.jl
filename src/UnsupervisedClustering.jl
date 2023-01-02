@@ -16,6 +16,8 @@ export fit,
     KmeansResult,
     GMM, 
     GMMResult,
+    Kmedoids, 
+    KmedoidsResult,
     RandomSwap, 
     MultiStart,
     GeneticAlgorithm
@@ -24,6 +26,7 @@ include("algorithm.jl")
 include("result.jl")
 include("kmeans.jl")
 include("gmm.jl")
+include("kmedoids.jl")
 include("multistart.jl")
 include("randomswap.jl")
 include("generation.jl")
