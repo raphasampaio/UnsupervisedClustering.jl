@@ -290,6 +290,15 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResul
         end
     end
 
+    if algorithm.verbose
+        print_string("Initial points = [")
+        for i in 1:k
+            print_string("$(permutation[i]),")
+        end
+        print_string("]")
+        print_newline()
+    end
+
     # responsibilities = zeros(n, k)
     # for i in 1:n
     #     min_distance = Inf
