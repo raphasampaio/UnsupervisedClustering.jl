@@ -1,15 +1,18 @@
-import Pkg
-Pkg.activate(dirname(@__DIR__))
-Pkg.instantiate()
+using Documenter
 using UnsupervisedClustering
 
-using Documenter
-
-DocMeta.setdocmeta!(UnsupervisedClustering, :DocTestSetup, :(using UnsupervisedClustering); recursive=true)
+DocMeta.setdocmeta!(
+    UnsupervisedClustering, 
+    :DocTestSetup, 
+    :(using UnsupervisedClustering);
+    recursive=true
+)
 
 makedocs(;
     modules=[UnsupervisedClustering],
-    authors="raphasampaio, joaquimg, mvpoggi, and vidalt",
+    doctest=true,
+    clean=true,
+    authors="Raphael Araujo Sampaio and Joaquim Dias Garcia and Marcus Poggi and Thibaut Vidal",
     repo="https://github.com/raphasampaio/UnsupervisedClustering.jl/blob/{commit}{path}#{line}",
     sitename="UnsupervisedClustering.jl",
     format=Documenter.HTML(;
@@ -24,6 +27,7 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/raphasampaio/UnsupervisedClustering.jl",
+    repo="github.com/raphasampaio/UnsupervisedClustering.jl.git",
     devbranch="main",
+    push_preview = true,
 )
