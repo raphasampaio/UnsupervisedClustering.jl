@@ -121,7 +121,8 @@ function test_all()
             UnsupervisedClustering.seed!(algorithm, 1)
             result = UnsupervisedClustering.fit(algorithm, data, k)
             # @printf("%.16f,", result.objective)
-            if result.objective ≆ benchmark[i]
+            
+            if !isapprox(result.objective, benchmark[i])
                 algorithm.verbose = true
                 UnsupervisedClustering.seed!(algorithm, 1)
                 @show result = UnsupervisedClustering.fit(algorithm, data, k)
