@@ -227,7 +227,7 @@ function maximization_step!(
     return
 end
 
-function train!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     t = time()
 
     n, d = size(data)
@@ -278,7 +278,7 @@ function train!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return
 end
 
-function train(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)
 
     result = GMMResult(d, n, k)
@@ -305,7 +305,7 @@ function train(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMRes
     # end
     # result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
 
-    train!(algorithm, data, result)
+    fit!(algorithm, data, result)
 
     return result
 end

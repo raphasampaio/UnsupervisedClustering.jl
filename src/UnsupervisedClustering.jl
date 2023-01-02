@@ -10,8 +10,8 @@ using RegularizedCovarianceMatrices
 using Statistics
 using StatsBase
 
-export train, 
-    train!, 
+export fit, 
+    fit!, 
     Kmeans, 
     KmeansResult,
     GMM, 

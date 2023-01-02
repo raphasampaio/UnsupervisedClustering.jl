@@ -62,7 +62,7 @@ function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::A
     return
 end
 
-function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+function fit!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     n, d = size(data)
     k = size(result.centers, 2)
 
@@ -120,7 +120,7 @@ function train!(parameters::Kmeans, data::AbstractMatrix{<:Real}, result::Kmeans
     return
 end
 
-function train(parameters::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+function fit(parameters::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 
     result = KmeansResult(d, n, k)
@@ -130,7 +130,7 @@ function train(parameters::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::Km
             result.centers[i, j] = data[permutation[j], i]
         end
     end
-    train!(parameters, data, result)
+    fit!(parameters, data, result)
 
     return result
 end

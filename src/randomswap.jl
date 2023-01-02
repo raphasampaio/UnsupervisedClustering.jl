@@ -10,10 +10,10 @@ function seed!(algorithm::RandomSwap, seed::Integer)
     return
 end
 
-function train(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::Result
+function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::Result
     iterations_without_improvement = 0
 
-    best_result = train(parameters.local_search, data, k)
+    best_result = fit(parameters.local_search, data, k)
 
     if parameters.verbose
         print_iteration(0)
@@ -28,7 +28,7 @@ function train(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)
 
         random_swap!(result, data, parameters.local_search.rng)
 
-        train!(parameters.local_search, data, result)
+        fit!(parameters.local_search, data, result)
 
         if parameters.verbose
             print_iteration(iteration)

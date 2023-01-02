@@ -15,20 +15,16 @@ using UnsupervisedClustering
 function get_data(filename::String)
     open(joinpath("data", "$filename.csv")) do file
         table = readdlm(file, ',')
-
         n = size(table, 1)
-        d = size(table, 2) - 1
 
         clusters = Set{Int}()
-        expected = zeros(Int, n)
-
         for i in 1:n
-            expected[i] = Int(table[i, 1])
-            push!(clusters, expected[i])
+            expected = Int(table[i, 1])
+            push!(clusters, expected)
         end
         k = length(clusters)
 
-        return table[:, 2:size(table, 2)], k, expected
+        return table[:, 2:size(table, 2)], k
     end
 end
 
@@ -55,7 +51,7 @@ function test_all()
     )
 
     for (dataset, benchmark) in datasets
-        data, k, expected = get_data(dataset)
+        data, k = get_data(dataset)
         n, d = size(data)
 
         empirical = EmpiricalCovarianceMatrix(n, d)
@@ -94,7 +90,7 @@ function test_all()
         # @printf("\"%s\" => [", dataset)
         for (i, algorithm) in enumerate(algorithms)
             UnsupervisedClustering.seed!(algorithm, 1)
-            result = UnsupervisedClustering.train(algorithm, data, k)
+            result = UnsupervisedClustering.fit(algorithm, data, k)
             # @printf("%.16f,", result.objective)
 
             @test result.objective ≈ benchmark[i]

@@ -12,14 +12,14 @@ function seed!(algorithm::GeneticAlgorithm, seed::Integer)
     return
 end
 
-function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::Result
+function fit(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::Result
     generation = Generation()
 
     best_objective = 0.0
     iterations_without_improvement = 0
 
     for _ in 1:parameters.π_max
-        result = train(parameters.local_search, data, k)
+        result = fit(parameters.local_search, data, k)
         add!(generation, result)
 
         if parameters.verbose
@@ -41,7 +41,7 @@ function train(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::In
         random_swap!(child, data, parameters.local_search.rng)
 
         # LOCAL SEARCH
-        train!(parameters.local_search, data, child)
+        fit!(parameters.local_search, data, child)
         add!(generation, child)
 
         if parameters.verbose

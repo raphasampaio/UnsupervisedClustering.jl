@@ -1,6 +1,6 @@
 # UnsupervisedClustering
 
 ```@docs
-UnsupervisedClustering.train
-UnsupervisedClustering.train!
+UnsupervisedClustering.fit
+UnsupervisedClustering.fit!
 ```

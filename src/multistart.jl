@@ -9,8 +9,8 @@ function seed!(algorithm::MultiStart, seed::Integer)
     return
 end
 
-function train(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::Result
-    best_result = train(parameters.local_search, data, k)
+function fit(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::Result
+    best_result = fit(parameters.local_search, data, k)
 
     if parameters.verbose
         print_iteration(0)
@@ -20,7 +20,7 @@ function train(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)
     end
 
     for iteration in 1:parameters.max_iterations
-        result = train(parameters.local_search, data, k)
+        result = fit(parameters.local_search, data, k)
 
         if parameters.verbose
             print_iteration(iteration)
