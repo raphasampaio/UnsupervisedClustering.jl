@@ -1,4 +1,4 @@
-Base.@kwdef struct RandomSwap <: Algorithm
+Base.@kwdef mutable struct RandomSwap <: Algorithm
     local_search::Algorithm
     verbose::Bool = false
     max_iterations::Integer = 200

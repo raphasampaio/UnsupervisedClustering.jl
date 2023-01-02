@@ -1,4 +1,4 @@
-Base.@kwdef struct GMM <: Algorithm
+Base.@kwdef mutable struct GMM <: Algorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator

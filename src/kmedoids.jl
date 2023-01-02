@@ -1,4 +1,4 @@
-Base.@kwdef struct Kmedoids <: Algorithm
+Base.@kwdef mutable struct Kmedoids <: Algorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     metric::SemiMetric = SqEuclidean()

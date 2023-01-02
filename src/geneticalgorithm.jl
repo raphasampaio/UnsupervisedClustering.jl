@@ -1,4 +1,4 @@
-Base.@kwdef struct GeneticAlgorithm <: Algorithm
+Base.@kwdef mutable struct GeneticAlgorithm <: Algorithm
     local_search::Algorithm
     verbose::Bool = false
     max_iterations::Integer = 200

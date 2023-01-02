@@ -1,4 +1,4 @@
-Base.@kwdef struct GMMSK <: UnsupervisedClustering.Algorithm
+Base.@kwdef mutable struct GMMSK <: UnsupervisedClustering.Algorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Float64 = 1e-3

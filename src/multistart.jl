@@ -1,4 +1,4 @@
-Base.@kwdef struct MultiStart <: Algorithm
+Base.@kwdef mutable struct MultiStart <: Algorithm
     local_search::Algorithm
     verbose::Bool = false
     max_iterations::Integer = 200

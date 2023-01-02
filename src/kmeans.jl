@@ -1,4 +1,4 @@
-Base.@kwdef struct Kmeans <: Algorithm
+Base.@kwdef mutable struct Kmeans <: Algorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     metric::SemiMetric = SqEuclidean()
