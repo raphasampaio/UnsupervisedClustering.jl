@@ -16,7 +16,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 Distances = "0.10.7"
-Hungarian = "0.6.0"
+Hungarian = "0.6.0, 0.7"
 LogExpFunctions = "0.3.19"
 RegularizedCovarianceMatrices = "0.1.1"
 StatsBase = "0.33.21"
