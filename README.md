@@ -2,8 +2,9 @@
 
 <div align="center">
     <a href="/docs/src/assets/">
-        <img src="/docs/src/assets/logo.svg" width=400px alt="UnsupervisedClustering.jl" />
+        <img src="/docs/src/assets/logo.svg" width=300px alt="UnsupervisedClustering.jl" />
     </a>
+    <br>
     <br>
     <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/stable">
         <img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Stable">
@@ -11,8 +12,8 @@
     <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/dev">
         <img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Dev">
     </a>
-    <a href="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml">
-        <img src="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/ci.yml/badge.svg?branch=main" alt="Build Status"/>
+    <a href="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml?query=branch%3Amain">
+        <img src="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg?branch=main" alt="CI"/>
     </a>
     <a href="https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl">
         <img src="https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/branch/main/graph/badge.svg" alt="Coverage"/>
