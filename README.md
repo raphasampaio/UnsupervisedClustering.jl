@@ -1,4 +1,4 @@
-# UnsupervisedClustering.jl 🟢🔴🟣
+# UnsupervisedClustering.jl
 
 <div align="center">
     <a href="/docs/src/assets/">
