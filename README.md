@@ -1,9 +1,23 @@
 # UnsupervisedClustering.jl 🟢🔴🟣
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://raphasampaio.github.io/UnsupervisedClustering.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://raphasampaio.github.io/UnsupervisedClustering.jl/dev/)
-[![Build Status](https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl)
+<div align="center">
+    <a href="/docs/src/assets/">
+        <img src="/docs/src/assets/logo.svg" width=400px alt="UnsupervisedClustering.jl" />
+    </a>
+    <br>
+    <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/stable">
+        <img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Stable">
+    </a>
+    <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/dev">
+        <img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Dev">
+    </a>
+    <a href="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml">
+        <img src="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/ci.yml/badge.svg?branch=main" alt="Build Status"/>
+    </a>
+    <a href="https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl">
+        <img src="https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/branch/main/graph/badge.svg" alt="Coverage"/>
+    </a>
+</div>
 
 ## Introduction
 UnsupervisedClustering.jl is a Julia package that implements several unsupervised clustering algorithms.
