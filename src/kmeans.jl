@@ -42,13 +42,13 @@ end
 
 function Base.copy(a::KmeansResult)
     return KmeansResult(
-        a.k, 
-        copy(a.assignments), 
-        copy(a.centers), 
-        copy(a.count), 
-        a.objective, 
-        a.iterations, 
-        a.elapsed, 
+        a.k,
+        copy(a.assignments),
+        copy(a.centers),
+        copy(a.count),
+        a.objective,
+        a.iterations,
+        a.elapsed,
         a.converged
     )
 end

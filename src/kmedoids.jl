@@ -78,7 +78,7 @@ end
 
 function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::KmedoidsResult)
     t = time()
-    
+
     n, d = size(data)
     k = length(result.centers)
 

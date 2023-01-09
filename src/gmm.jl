@@ -26,18 +26,18 @@ mutable struct GMMResult <: Result
     function GMMResult(d::Integer, n::Integer, k::Integer)
         return new(
             k,
-            zeros(Int, n), 
-            ones(k) ./ k, 
-            [zeros(d) for _ in 1:k], 
+            zeros(Int, n),
+            ones(k) ./ k,
+            [zeros(d) for _ in 1:k],
             [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k],
-            -Inf, 
+            -Inf,
             0,
             0,
             false
         )
     end
 
-    function GMMResult(    
+    function GMMResult(
         k::Int,
         assignments::Vector{Int},
         weights::Vector{Float64},
@@ -64,14 +64,14 @@ end
 
 function Base.copy(a::GMMResult)
     return GMMResult(
-        a.k, 
+        a.k,
         copy(a.assignments),
-        copy(a.weights), 
-        deepcopy(a.centers), 
+        copy(a.weights),
+        deepcopy(a.centers),
         deepcopy(a.covariances),
-        a.objective, 
-        a.iterations, 
-        a.elapsed, 
+        a.objective,
+        a.iterations,
+        a.elapsed,
         a.converged
     )
 end
@@ -177,7 +177,7 @@ function estimate_weighted_log_probabilities(
     precisions_cholesky::Vector{Matrix{Float64}}
 )
     n, d = size(data)
-    
+
     log_det_cholesky = compute_log_det_cholesky(precisions_cholesky)
 
     log_probabilities = zeros(n, k)
@@ -209,7 +209,7 @@ function expectation_step(
 end
 
 function maximization_step!(
-    algorithm::GMM, 
+    algorithm::GMM,
     data::AbstractMatrix{<:Real},
     k::Int,
     result::GMMResult,
@@ -232,7 +232,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
 
     previous_objective = Inf
     result.objective = -Inf
-    
+
     result.iterations = algorithm.max_iterations
     result.converged = false
 
@@ -299,7 +299,7 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResul
     # for i in 1:n
     #     min_distance = Inf
     #     min_index = -1
-        
+
     #     for j in 1:k
     #         distance = euclidean(data[i, :], result.centers[j])
     #         if distance < min_distance
