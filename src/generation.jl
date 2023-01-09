@@ -7,15 +7,6 @@ mutable struct Generation
     end
 end
 
-function Base.println(generation::Generation)
-    println("Population: ")
-    for i in 1:length(generation.population)
-        if in(i, generation.empty) == false
-            @printf("%i - %.2f\n", i, generation.population[i].objective)
-        end
-    end
-end
-
 function population_size(generation::Generation)
     return length(generation.population)
 end

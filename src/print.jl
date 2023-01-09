@@ -1,6 +1,6 @@
-function total_digits(number::Integer)
-    return (number == 0) ? 1 : (log10(number) + 1)
-end
+# function total_digits(number::Integer)
+#     return (number == 0) ? 1 : (log10(number) + 1)
+# end
 
 print_objective(result::Result) = print_objective(result.objective)
 function print_objective(objective::Float64)
