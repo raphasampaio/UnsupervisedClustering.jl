@@ -103,12 +103,6 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
     return
 end
 
-function fix(matrix::AbstractMatrix{<:Real}, eps::Float64)
-    eigen_matrix = eigen(matrix)
-    new_matrix = eigen_matrix.vectors * Matrix(Diagonal(max.(eigen_matrix.values, eps))) * eigen_matrix.vectors'
-    return Symmetric(new_matrix)
-end
-
 function estimate_gaussian_parameters(
     algorithm::GMM,
     data::AbstractMatrix{<:Real},
@@ -151,7 +145,9 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         catch
-            result.covariances[i] = fix(result.covariances[i], 1e-6)
+            decomposition = eigen(result.covariances[i], sortby = nothing)
+            result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
+
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         end
