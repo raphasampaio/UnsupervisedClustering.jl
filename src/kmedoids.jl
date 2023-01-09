@@ -1,4 +1,4 @@
-Base.@kwdef mutable struct Kmedoids <: Algorithm
+Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     metric::SemiMetric = SqEuclidean()
@@ -11,7 +11,7 @@ function seed!(algorithm::Kmedoids, seed::Integer)
     return
 end
 
-mutable struct KmedoidsResult <: Result
+mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
     centers::Vector{Int}

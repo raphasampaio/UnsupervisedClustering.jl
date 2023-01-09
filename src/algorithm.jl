@@ -1,1 +1,1 @@
-abstract type Algorithm end
+abstract type ClusteringAlgorithm end

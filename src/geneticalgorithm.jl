@@ -1,5 +1,5 @@
-Base.@kwdef mutable struct GeneticAlgorithm <: Algorithm
-    local_search::Algorithm
+Base.@kwdef mutable struct GeneticAlgorithm <: ClusteringAlgorithm
+    local_search::ClusteringAlgorithm
     verbose::Bool = false
     max_iterations::Integer = 200
     max_iterations_without_improvement::Integer = 150
@@ -12,7 +12,7 @@ function seed!(algorithm::GeneticAlgorithm, seed::Integer)
     return
 end
 
-function fit(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::Result
+function fit(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     generation = Generation()
 
     best_objective = 0.0
