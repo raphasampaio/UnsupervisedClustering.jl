@@ -1,5 +1,7 @@
 module UnsupervisedClustering
 
+using MKL
+
 using Distances
 using Hungarian
 using LinearAlgebra
