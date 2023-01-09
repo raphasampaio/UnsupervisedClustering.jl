@@ -1,18 +1,9 @@
 mutable struct Generation
-    population::Vector{Result}
+    population::Vector{ClusteringResult}
     empty::Set{Int}
 
     function Generation()
-        return new(Vector{Result}(), Set{Int}())
-    end
-end
-
-function Base.println(generation::Generation)
-    println("Population: ")
-    for i in 1:length(generation.population)
-        if in(i, generation.empty) == false
-            @printf("%i - %.2f\n", i, generation.population[i].objective)
-        end
+        return new(Vector{ClusteringResult}(), Set{Int}())
     end
 end
 
@@ -30,7 +21,7 @@ function remove(generation::Generation, i::Int)
     return
 end
 
-function add!(generation::Generation, result::Result)
+function add!(generation::Generation, result::ClusteringResult)
     if length(generation.empty) > 0
         generation.population[pop!(generation.empty)] = result
     else
@@ -49,7 +40,7 @@ function binary_tournament(generation::Generation, rng::AbstractRNG)
     return isbetter(parent1, parent2) ? parent1 : parent2, isbetter(parent3, parent4) ? parent3 : parent4
 end
 
-function crossover(parent1::Result, parent2::Result, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+function crossover(parent1::ClusteringResult, parent2::ClusteringResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     k = parent1.k
 
     weights = zeros(k, k)
