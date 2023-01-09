@@ -12,6 +12,10 @@
     <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/dev">
         <img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Dev">
     </a>
+    <a href="https://pkgs.genieframework.com?packages=UnsupervisedClustering">
+        <img src="https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/UnsupervisedClustering/label:-sep:">
+    </a>
+    <br>
     <a href="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml">
         <img src="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg" alt="CI"/>
     </a>
