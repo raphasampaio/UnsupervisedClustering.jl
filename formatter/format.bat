@@ -1,5 +1,5 @@
 @echo off
 
-SET FORMATTER_DIR=%~dp0
+SET FORMATTER_PATH=%~dp0
 
-%JULIA_184% --project=%FORMATTER_DIR% %FORMATTER_DIR%\format.jl
+%JULIA_184% --project=%FORMATTER_PATH% %FORMATTER_PATH%\format.jl

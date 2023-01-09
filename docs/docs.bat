@@ -1,5 +1,0 @@
-@echo off
-
-SET DOCUMENTER_DIR=%~dp0
-
-%JULIA_184% --project=%DOCUMENTER_DIR% %DOCUMENTER_DIR%\docs.jl

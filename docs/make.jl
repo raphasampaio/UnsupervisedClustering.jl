@@ -1,3 +1,6 @@
+import Pkg
+Pkg.instantiate()
+
 using Documenter
 using UnsupervisedClustering
 
