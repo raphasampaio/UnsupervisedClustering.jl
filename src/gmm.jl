@@ -145,8 +145,15 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         catch
+            println("====================================")
+            @show det(result.covariances[i])
+            @show result.covariances[i]
+
             decomposition = eigen(result.covariances[i], sortby = nothing)
             result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
+
+            @show det(result.covariances[i])
+            @show result.covariances[i]
 
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
