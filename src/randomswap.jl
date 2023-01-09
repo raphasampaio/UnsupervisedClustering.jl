@@ -1,5 +1,5 @@
-Base.@kwdef mutable struct RandomSwap <: Algorithm
-    local_search::Algorithm
+Base.@kwdef mutable struct RandomSwap <: ClusteringAlgorithm
+    local_search::ClusteringAlgorithm
     verbose::Bool = false
     max_iterations::Integer = 200
     max_iterations_without_improvement::Integer = 150
@@ -10,7 +10,7 @@ function seed!(algorithm::RandomSwap, seed::Integer)
     return
 end
 
-function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::Result
+function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     iterations_without_improvement = 0
 
     best_result = fit(parameters.local_search, data, k)

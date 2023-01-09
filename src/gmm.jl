@@ -1,4 +1,4 @@
-Base.@kwdef mutable struct GMM <: Algorithm
+Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
@@ -11,7 +11,7 @@ function seed!(algorithm::GMM, seed::Integer)
     return
 end
 
-mutable struct GMMResult <: Result
+mutable struct GMMResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
     weights::Vector{Float64}

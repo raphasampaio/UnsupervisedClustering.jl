@@ -1,5 +1,5 @@
-Base.@kwdef mutable struct MultiStart <: Algorithm
-    local_search::Algorithm
+Base.@kwdef mutable struct MultiStart <: ClusteringAlgorithm
+    local_search::ClusteringAlgorithm
     verbose::Bool = false
     max_iterations::Integer = 200
 end
@@ -9,7 +9,7 @@ function seed!(algorithm::MultiStart, seed::Integer)
     return
 end
 
-function fit(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::Result
+function fit(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     best_result = fit(parameters.local_search, data, k)
 
     if parameters.verbose

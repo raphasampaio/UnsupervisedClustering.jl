@@ -1,1 +1,1 @@
-abstract type Result end
+abstract type ClusteringResult end
