@@ -2,7 +2,7 @@
 
 <div align="center">
     <a href="/docs/src/assets/">
-        <img src="/docs/src/assets/logo.svg" width=200px alt="UnsupervisedClustering.jl" />
+        <img src="/docs/src/assets/logo.svg" width=250px alt="UnsupervisedClustering.jl" />
     </a>
     <br>
     <br>
