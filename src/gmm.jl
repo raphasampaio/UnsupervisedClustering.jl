@@ -122,7 +122,6 @@ function estimate_gaussian_parameters(
         for j in 1:n
             weights[i] += responsibilities[j, i]
         end
-        # weights[i] /= n
     end
     weights = weights / sum(weights)
 
@@ -156,20 +155,6 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
     return
 end
 
-# https://math.stackexchange.com/questions/3158303/using-cholesky-decomposition-to-compute-covariance-matrix-determinant
-function compute_log_det_cholesky(precisions_cholesky::Vector{Matrix{Float64}})
-    k = length(precisions_cholesky)
-    d = size(precisions_cholesky[1], 1)
-
-    log_det_cholesky = zeros(k)
-    for i in 1:k
-        for j in 1:d
-            log_det_cholesky[i] += log(precisions_cholesky[i][j, j])
-        end
-    end
-    return log_det_cholesky
-end
-
 function estimate_weighted_log_probabilities(
     data::AbstractMatrix{<:Real}, 
     k::Int, 
@@ -178,7 +163,12 @@ function estimate_weighted_log_probabilities(
 )
     n, d = size(data)
 
-    log_det_cholesky = compute_log_det_cholesky(precisions_cholesky)
+    log_det_cholesky = zeros(k)
+    for i in 1:k
+        for j in 1:d
+            log_det_cholesky[i] += log(precisions_cholesky[i][j, j])
+        end
+    end
 
     log_probabilities = zeros(n, k)
     for i in 1:k
