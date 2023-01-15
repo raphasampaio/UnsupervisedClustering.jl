@@ -32,7 +32,7 @@ function test_all()
     reset_timer!()
 
     @testset "Aqua.jl" begin
-        @testset "ambiguities" begin
+        @testset "Ambiguities" begin
             Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
         end
         Aqua.test_all(UnsupervisedClustering, ambiguities = false)
