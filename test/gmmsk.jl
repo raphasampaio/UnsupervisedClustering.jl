@@ -22,7 +22,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
             μ[i, j] = result.centers[i][j]
         end
     end
-    
+
     Σ = zeros(k, d, d)
     for i in 1:k
         for j in 1:d
@@ -31,7 +31,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
             end
         end
     end
-    
+
     gmm = GaussianMixture(
         n_components = k,
         covariance_type = "full",
@@ -43,7 +43,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
         means_init = μ,
         precisions_init = Σ,
         verbose = parameters.verbose ? 2 : 0,
-        verbose_interval = 1,
+        verbose_interval = 1
     )
 
     result.assignments = fit_predict!(gmm, data) .+ 1
@@ -55,7 +55,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
             result.centers[i][j] = gmm.means_[i, j]
         end
     end
-    
+
     for i in 1:k
         covariance_matrix = zeros(d, d)
         for j in 1:d

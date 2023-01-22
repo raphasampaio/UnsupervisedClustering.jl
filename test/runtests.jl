@@ -128,7 +128,7 @@ function test_all()
             gmm_lw,
             MultiStart(local_search = gmm_lw, verbose = verbose, max_iterations = max_iterations),
             RandomSwap(local_search = gmm_lw, verbose = verbose, max_iterations = max_iterations),
-            GeneticAlgorithm(local_search = gmm_lw, verbose = verbose, max_iterations = max_iterations),
+            GeneticAlgorithm(local_search = gmm_lw, verbose = verbose, max_iterations = max_iterations)
         ]
 
         # @printf("\"%s\" => [", dataset)

@@ -113,9 +113,9 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
 end
 
 function estimate_weighted_log_probabilities(
-    data::AbstractMatrix{<:Real}, 
-    k::Int, 
-    result::GMMResult, 
+    data::AbstractMatrix{<:Real},
+    k::Int,
+    result::GMMResult,
     precisions_cholesky::Vector{Matrix{Float64}}
 )
     n, d = size(data)
@@ -161,7 +161,7 @@ function maximization_step!(
     k::Int,
     result::GMMResult,
     log_responsibilities::Matrix{Float64},
-    precisions_cholesky::Vector{Matrix{Float64}},
+    precisions_cholesky::Vector{Matrix{Float64}}
 )
     responsibilities = exp.(log_responsibilities)
 
