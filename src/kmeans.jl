@@ -136,17 +136,24 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     return
 end
 
-function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmeansResult
     n, d = size(data)
+    k = length(initial_centers)
 
     result = KmeansResult(d, n, k)
-    permutation = randperm(algorithm.rng, n)
     for i in 1:d
         for j in 1:k
-            result.centers[i, j] = data[permutation[j], i]
+            result.centers[i, j] = data[initial_centers[j], i]
         end
     end
+
     fit!(algorithm, data, result)
 
     return result
+end
+
+function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+    n, d = size(data)
+    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_centers)
 end

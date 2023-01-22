@@ -265,43 +265,33 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return
 end
 
-function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::GMMResult
     n, d = size(data)
+    k = length(initial_centers)
 
     result = GMMResult(d, n, k)
-    permutation = randperm(algorithm.rng, n)
     for i in 1:k
         for j in 1:d
-            result.centers[i][j] = data[permutation[i], j]
+            result.centers[i][j] = data[initial_centers[i], j]
         end
     end
 
     if algorithm.verbose
-        print_string("Initial points = [")
+        print_string("Initial centers = [")
         for i in 1:k
-            print_string("$(permutation[i]),")
+            print_string("$(initial_centers[i]),")
         end
         print_string("]")
         print_newline()
     end
 
-    # responsibilities = zeros(n, k)
-    # for i in 1:n
-    #     min_distance = Inf
-    #     min_index = -1
-
-    #     for j in 1:k
-    #         distance = euclidean(data[i, :], result.centers[j])
-    #         if distance < min_distance
-    #             min_distance = distance
-    #             min_index = j
-    #         end
-    #     end
-    #     responsibilities[i, min_index] = 1.0
-    # end
-    # result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
-
     fit!(algorithm, data, result)
 
     return result
+end
+
+function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+    n, d = size(data)
+    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_centers)
 end

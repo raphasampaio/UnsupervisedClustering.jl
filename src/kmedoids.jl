@@ -148,16 +148,22 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
     return
 end
 
-function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
+function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmedoidsResult
     n, d = size(data)
+    k = length(initial_centers)
 
     result = KmedoidsResult(d, n, k)
-    permutation = randperm(algorithm.rng, n)
     for i in 1:k
-        result.centers[i] = permutation[i]
+        result.centers[i] = initial_centers[i]
     end
 
     fit!(algorithm, data, result)
 
     return result
+end
+
+function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
+    n, d = size(data)
+    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_centers)
 end
