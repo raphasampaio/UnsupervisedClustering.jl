@@ -1,5 +1,5 @@
 Base.@kwdef mutable struct MultiStart <: ClusteringAlgorithm
-    local_search::ClusteringAlgorithm
+    const local_search::ClusteringAlgorithm
     verbose::Bool = false
     max_iterations::Integer = 200
 end

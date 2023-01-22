@@ -68,25 +68,30 @@ function test_all()
             verbose = verbose, 
             rng = MersenneTwister(1),
         )
+
         kmedoids = Kmedoids(
             verbose = verbose, 
             rng = MersenneTwister(1),
         )
+
         gmm = GMM(
             verbose = verbose, 
             rng = MersenneTwister(1),
             estimator = EmpiricalCovarianceMatrix(n, d),
         )
+
         gmm_shrunk = GMM(
             verbose = verbose, 
             rng = MersenneTwister(1),
             estimator = ShrunkCovarianceMatrix(n, d),
         )
+
         gmm_oas = GMM(
             verbose = verbose, 
             rng = MersenneTwister(1),
             estimator = LedoitWolfCovarianceMatrix(n, d),
         )
+
         gmm_lw = GMM(
             verbose = verbose, 
             rng = MersenneTwister(1),
@@ -132,7 +137,7 @@ function test_all()
             result = UnsupervisedClustering.fit(algorithm, data, k)
             # @printf("%.16f,", result.objective)
 
-            @static if VERSION <= v"1.8"
+            @static if v"1.7" < VERSION && VERSION < v"1.9"
                 @test result.objective ≈ benchmark[i]
             else
                 @test result.objective ≈ benchmark[i] skip = true

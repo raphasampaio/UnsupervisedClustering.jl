@@ -12,6 +12,9 @@ using RegularizedCovarianceMatrices
 using Statistics
 using StatsBase
 
+const DEFAULT_TOLERANCE = 1e-3
+const DEFAULT_MAX_ITERATIONS = 1000
+
 export fit, 
     fit!, 
     Kmeans, 
