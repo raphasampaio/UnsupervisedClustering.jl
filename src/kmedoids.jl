@@ -8,7 +8,7 @@ end
 
 function seed!(algorithm::Kmedoids, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 mutable struct KmedoidsResult <: ClusteringResult
@@ -59,7 +59,7 @@ end
 
 function reset_objective!(result::KmedoidsResult)
     result.objective = Inf
-    return
+    return nothing
 end
 
 function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
@@ -73,7 +73,7 @@ function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng:
 
     reset_objective!(result)
 
-    return
+    return nothing
 end
 
 function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::KmedoidsResult)
@@ -145,19 +145,29 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
 
     result.elapsed = time() - t
 
-    return
+    return nothing
 end
 
-function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
+function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmedoidsResult
     n, d = size(data)
+    k = length(initial_centers)
 
     result = KmedoidsResult(d, n, k)
-    permutation = randperm(algorithm.rng, n)
     for i in 1:k
-        result.centers[i] = permutation[i]
+        result.centers[i] = initial_centers[i]
+    end
+
+    if algorithm.verbose
+        print_initial_centers(initial_centers)
     end
 
     fit!(algorithm, data, result)
 
     return result
+end
+
+function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
+    n, d = size(data)
+    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_centers)
 end

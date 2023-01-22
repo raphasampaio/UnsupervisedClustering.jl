@@ -8,7 +8,7 @@ end
 
 function seed!(algorithm::GMM, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 mutable struct GMMResult <: ClusteringResult
@@ -82,7 +82,7 @@ end
 
 function reset_objective!(result::GMMResult)
     result.objective = -Inf
-    return
+    return nothing
 end
 
 function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
@@ -100,7 +100,7 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
 
     reset_objective!(result)
 
-    return
+    return nothing
 end
 
 function estimate_gaussian_parameters(
@@ -152,7 +152,7 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
         end
     end
 
-    return
+    return nothing
 end
 
 function estimate_weighted_log_probabilities(
@@ -211,7 +211,7 @@ function maximization_step!(
     result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    return
+    return nothing
 end
 
 function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
@@ -262,46 +262,31 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
 
     result.elapsed = time() - t
 
-    return
+    return nothing
 end
 
-function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::GMMResult
     n, d = size(data)
+    k = length(initial_centers)
 
     result = GMMResult(d, n, k)
-    permutation = randperm(algorithm.rng, n)
     for i in 1:k
         for j in 1:d
-            result.centers[i][j] = data[permutation[i], j]
+            result.centers[i][j] = data[initial_centers[i], j]
         end
     end
 
     if algorithm.verbose
-        print_string("Initial points = [")
-        for i in 1:k
-            print_string("$(permutation[i]),")
-        end
-        print_string("]")
-        print_newline()
+        print_initial_centers(initial_centers)
     end
-
-    # responsibilities = zeros(n, k)
-    # for i in 1:n
-    #     min_distance = Inf
-    #     min_index = -1
-
-    #     for j in 1:k
-    #         distance = euclidean(data[i, :], result.centers[j])
-    #         if distance < min_distance
-    #             min_distance = distance
-    #             min_index = j
-    #         end
-    #     end
-    #     responsibilities[i, min_index] = 1.0
-    # end
-    # result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
 
     fit!(algorithm, data, result)
 
     return result
+end
+
+function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+    n, d = size(data)
+    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_centers)
 end

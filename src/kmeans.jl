@@ -8,7 +8,7 @@ end
 
 function seed!(algorithm::Kmeans, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 mutable struct KmeansResult <: ClusteringResult
@@ -59,7 +59,7 @@ end
 
 function reset_objective!(result::KmeansResult)
     result.objective = Inf
-    return
+    return nothing
 end
 
 function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
@@ -71,7 +71,7 @@ function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::A
 
     result.centers[:, to] = copy(data[from, :])
     reset_objective!(result)
-    return
+    return nothing
 end
 
 function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
@@ -133,20 +133,31 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
 
     result.elapsed = time() - t
 
-    return
+    return nothing
+end
+
+function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmeansResult
+    n, d = size(data)
+    k = length(initial_centers)
+
+    result = KmeansResult(d, n, k)
+    for i in 1:d
+        for j in 1:k
+            result.centers[i, j] = data[initial_centers[j], i]
+        end
+    end
+
+    if algorithm.verbose
+        print_initial_centers(initial_centers)
+    end
+
+    fit!(algorithm, data, result)
+
+    return result
 end
 
 function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
-
-    result = KmeansResult(d, n, k)
-    permutation = randperm(algorithm.rng, n)
-    for i in 1:d
-        for j in 1:k
-            result.centers[i, j] = data[permutation[j], i]
-        end
-    end
-    fit!(algorithm, data, result)
-
-    return result
+    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_centers)
 end

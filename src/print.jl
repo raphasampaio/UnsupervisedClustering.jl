@@ -19,23 +19,37 @@ end
 print_elapsed(result::ClusteringResult) = print_elapsed(result.elapsed)
 function print_elapsed(elapsed::Float64)
     @printf("%10.2fs ", elapsed)
+    return nothing
 end
 
 function print_change(change::Float64)
     @printf("%12.4f ", change)
+    return nothing
 end
 
 function print_result(result::ClusteringResult)
     print_objective(result)
     print_iterations(result)
     print_elapsed(result)
-    return
+    return nothing
 end
 
 function print_newline()
     @printf("\n")
+    return nothing
 end
 
 function print_string(str::String)
     @printf("%s ", str)
+    return nothing
+end
+
+function print_initial_centers(centers::Vector{<:Integer})
+    print_string("Initial centers = [")
+    for center in centers
+        print_string("$center,")
+    end
+    print_string("]")
+    print_newline()
+    return nothing
 end

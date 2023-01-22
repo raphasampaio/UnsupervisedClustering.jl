@@ -6,7 +6,7 @@ end
 
 function seed!(algorithm::MultiStart, seed::Integer)
     Random.seed!(algorithm.local_search.rng, seed)
-    return
+    return nothing
 end
 
 function fit(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult

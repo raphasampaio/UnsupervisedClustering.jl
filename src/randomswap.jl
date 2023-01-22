@@ -7,7 +7,7 @@ end
 
 function seed!(algorithm::RandomSwap, seed::Integer)
     Random.seed!(algorithm.local_search.rng, seed)
-    return
+    return nothing
 end
 
 function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult

@@ -9,7 +9,7 @@ end
 
 function seed!(algorithm::GeneticAlgorithm, seed::Integer)
     Random.seed!(algorithm.local_search.rng, seed)
-    return
+    return nothing
 end
 
 function fit(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult

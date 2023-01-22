@@ -18,7 +18,7 @@ end
 function remove(generation::Generation, i::Int)
     reset_objective!(generation.population[i])
     push!(generation.empty, i)
-    return
+    return nothing
 end
 
 function add!(generation::Generation, result::ClusteringResult)
@@ -121,26 +121,26 @@ end
 
 function copy_clusters!(destiny::KmeansResult, destiny_i::Int, source::KmeansResult, source_i::Int)
     destiny.centers[:, destiny_i] = copy(source.centers[:, source_i])
-    return
+    return nothing
 end
 
 function copy_clusters!(destiny::KmedoidsResult, destiny_i::Int, source::KmedoidsResult, source_i::Int)
     destiny.centers[destiny_i] = source.centers[source_i]
-    return
+    return nothing
 end
 
 function copy_clusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, source_i::Int)
     destiny.centers[destiny_i] = copy(source.centers[source_i])
     destiny.covariances[destiny_i] = copy(source.covariances[source_i])
-    return
+    return nothing
 end
 
 function update_weights!(child::KmeansResult, parent1::KmeansResult, parent2::KmeansResult, assignment::AbstractVector{<:Integer})
-    return
+    return nothing
 end
 
 function update_weights!(child::KmedoidsResult, parent1::KmedoidsResult, parent2::KmedoidsResult, assignment::AbstractVector{<:Integer})
-    return
+    return nothing
 end
 
 function update_weights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
@@ -149,5 +149,5 @@ function update_weights!(child::GMMResult, parent1::GMMResult, parent2::GMMResul
         child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2
         # child.weights[i] = 1 / k
     end
-    return
+    return nothing
 end
