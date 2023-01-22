@@ -42,8 +42,8 @@ end
 
 function print_initial_centers(centers::Vector{<:Integer})
     print_string("Initial centers = [")
-    for i in 1:k
-        print_string("$(centers[i]),")
+    for center in centers
+        print_string("$center,")
     end
     print_string("]")
     print_newline()
