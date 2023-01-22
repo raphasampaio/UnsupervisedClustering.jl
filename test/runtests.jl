@@ -126,19 +126,19 @@ function test_all()
             GeneticAlgorithm(local_search = gmm_lw, verbose = verbose, max_iterations = max_iterations),
         ]
 
-        @printf("\"%s\" => [", dataset)
+        # @printf("\"%s\" => [", dataset)
         for (i, algorithm) in enumerate(algorithms)
             UnsupervisedClustering.seed!(algorithm, 1)
             result = UnsupervisedClustering.fit(algorithm, data, k)
-            @printf("%.16f,", result.objective)
+            # @printf("%.16f,", result.objective)
 
-            # @static if VERSION <= v"1.8"
-            #     @test result.objective ≈ benchmark[i]
-            # else
-            #     @test result.objective ≈ benchmark[i] skip = true
-            # end
+            @static if VERSION <= v"1.8"
+                @test result.objective ≈ benchmark[i]
+            else
+                @test result.objective ≈ benchmark[i] skip = true
+            end
         end
-        @printf("],\n")
+        # @printf("],\n")
     end
 
     print_timer(sortby = :firstexec)
