@@ -1,5 +1,5 @@
 Base.@kwdef mutable struct GeneticAlgorithm <: ClusteringAlgorithm
-    const local_search::ClusteringAlgorithm
+    local_search::ClusteringAlgorithm
     verbose::Bool = false
     max_iterations::Integer = 200
     max_iterations_without_improvement::Integer = 150

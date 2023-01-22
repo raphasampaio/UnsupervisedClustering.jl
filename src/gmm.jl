@@ -1,5 +1,5 @@
 mutable struct GMMResult <: ClusteringResult
-    const k::Int
+    k::Int
     assignments::Vector{Int}
     weights::Vector{Float64}
     centers::Vector{Vector{Float64}}

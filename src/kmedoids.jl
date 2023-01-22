@@ -1,5 +1,5 @@
 mutable struct KmedoidsResult <: ClusteringResult
-    const k::Int
+    k::Int
     assignments::Vector{Int}
     centers::Vector{Int}
     count::Vector{Int}

@@ -1,5 +1,5 @@
 mutable struct KmeansResult <: ClusteringResult
-    const k::Int
+    k::Int
     assignments::Vector{Int}
     centers::Matrix{Float64}
     count::Vector{Int}
