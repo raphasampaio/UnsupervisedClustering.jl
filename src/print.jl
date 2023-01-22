@@ -39,3 +39,12 @@ end
 function print_string(str::String)
     @printf("%s ", str)
 end
+
+function print_initial_centers(centers::Vector{<:Integer})
+    print_string("Initial centers = [")
+    for i in 1:k
+        print_string("$(centers[i]),")
+    end
+    print_string("]")
+    print_newline()
+end

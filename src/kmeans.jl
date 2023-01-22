@@ -148,12 +148,7 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::V
     end
 
     if algorithm.verbose
-        print_string("Initial centers = [")
-        for i in 1:k
-            print_string("$(initial_centers[i]),")
-        end
-        print_string("]")
-        print_newline()
+        print_initial_centers(initial_centers)
     end
 
     fit!(algorithm, data, result)
