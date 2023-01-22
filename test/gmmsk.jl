@@ -7,7 +7,7 @@ end
 
 function seed!(algorithm::GMMSK, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:Real}, result::GMMResult)
@@ -74,7 +74,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
 
     result.elapsed = time() - t
 
-    return
+    return nothing
 end
 
 function UnsupervisedClustering.fit(parameters::GMMSK, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult

@@ -8,7 +8,7 @@ end
 
 function seed!(algorithm::Kmeans, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 mutable struct KmeansResult <: ClusteringResult
@@ -59,7 +59,7 @@ end
 
 function reset_objective!(result::KmeansResult)
     result.objective = Inf
-    return
+    return nothing
 end
 
 function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
@@ -71,7 +71,7 @@ function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::A
 
     result.centers[:, to] = copy(data[from, :])
     reset_objective!(result)
-    return
+    return nothing
 end
 
 function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
@@ -133,7 +133,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
 
     result.elapsed = time() - t
 
-    return
+    return nothing
 end
 
 function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmeansResult

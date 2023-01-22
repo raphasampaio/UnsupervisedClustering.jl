@@ -8,7 +8,7 @@ end
 
 function seed!(algorithm::GMM, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 mutable struct GMMResult <: ClusteringResult
@@ -82,7 +82,7 @@ end
 
 function reset_objective!(result::GMMResult)
     result.objective = -Inf
-    return
+    return nothing
 end
 
 function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
@@ -100,7 +100,7 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
 
     reset_objective!(result)
 
-    return
+    return nothing
 end
 
 function estimate_gaussian_parameters(
@@ -152,7 +152,7 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
         end
     end
 
-    return
+    return nothing
 end
 
 function estimate_weighted_log_probabilities(
@@ -211,7 +211,7 @@ function maximization_step!(
     result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
     compute_precision_cholesky!(result, precisions_cholesky)
 
-    return
+    return nothing
 end
 
 function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
@@ -262,7 +262,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
 
     result.elapsed = time() - t
 
-    return
+    return nothing
 end
 
 function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::GMMResult

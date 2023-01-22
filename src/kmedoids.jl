@@ -8,7 +8,7 @@ end
 
 function seed!(algorithm::Kmedoids, seed::Integer)
     Random.seed!(algorithm.rng, seed)
-    return
+    return nothing
 end
 
 mutable struct KmedoidsResult <: ClusteringResult
@@ -59,7 +59,7 @@ end
 
 function reset_objective!(result::KmedoidsResult)
     result.objective = Inf
-    return
+    return nothing
 end
 
 function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
@@ -73,7 +73,7 @@ function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng:
 
     reset_objective!(result)
 
-    return
+    return nothing
 end
 
 function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::KmedoidsResult)
@@ -145,7 +145,7 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
 
     result.elapsed = time() - t
 
-    return
+    return nothing
 end
 
 function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmedoidsResult
