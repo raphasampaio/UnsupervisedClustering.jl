@@ -157,6 +157,15 @@ function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers:
         result.centers[i] = initial_centers[i]
     end
 
+    if algorithm.verbose
+        print_string("Initial centers = [")
+        for i in 1:k
+            print_string("$(initial_centers[i]),")
+        end
+        print_string("]")
+        print_newline()
+    end
+
     fit!(algorithm, data, result)
 
     return result
