@@ -1,16 +1,3 @@
-Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
-    verbose::Bool = false
-    rng::AbstractRNG = Random.GLOBAL_RNG
-    metric::SemiMetric = SqEuclidean()
-    tolerance::Float64 = 1e-3
-    max_iterations::Integer = 1000
-end
-
-function seed!(algorithm::Kmedoids, seed::Integer)
-    Random.seed!(algorithm.rng, seed)
-    return nothing
-end
-
 mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -21,23 +8,10 @@ mutable struct KmedoidsResult <: ClusteringResult
     iterations::Int
     elapsed::Float64
     converged::Bool
+end
 
-    function KmedoidsResult(d::Integer, n::Integer, k::Integer)
-        return new(k, zeros(Int, n), zeros(Int, k), zeros(Int, k), Inf, 0, 0, false)
-    end
-
-    function KmedoidsResult(
-        k::Int,
-        assignments::Vector{Int},
-        centers::Vector{Int},
-        count::Vector{Int},
-        objective::Float64,
-        iterations::Int,
-        elapsed::Float64,
-        converged::Bool,
-    )
-        return new(k, assignments, centers, count, objective, iterations, elapsed, converged)
-    end
+function KmedoidsResult(d::Integer, n::Integer, k::Integer)
+    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), zeros(Int, k), Inf, 0, 0, false)
 end
 
 function Base.copy(a::KmedoidsResult)

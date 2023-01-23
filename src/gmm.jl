@@ -1,16 +1,3 @@
-Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
-    verbose::Bool = false
-    rng::AbstractRNG = Random.GLOBAL_RNG
-    estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
-    tolerance::Float64 = 1e-3
-    max_iterations::Integer = 1000
-end
-
-function seed!(algorithm::GMM, seed::Integer)
-    Random.seed!(algorithm.rng, seed)
-    return nothing
-end
-
 mutable struct GMMResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -22,44 +9,14 @@ mutable struct GMMResult <: ClusteringResult
     iterations::Int
     elapsed::Float64
     converged::Bool
+end
 
-    function GMMResult(d::Integer, n::Integer, k::Integer)
-        return new(
-            k,
-            zeros(Int, n),
-            ones(k) ./ k,
-            [zeros(d) for _ in 1:k],
-            [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k],
-            -Inf,
-            0,
-            0,
-            false
-        )
-    end
-
-    function GMMResult(
-        k::Int,
-        assignments::Vector{Int},
-        weights::Vector{Float64},
-        centers::Vector{Vector{Float64}},
-        covariances::Vector{Symmetric{Float64}},
-        objective::Float64,
-        iterations::Int,
-        elapsed::Float64,
-        converged::Bool,
-    )
-        return new(
-            k, 
-            assignments, 
-            weights, 
-            centers, 
-            covariances, 
-            objective, 
-            iterations, 
-            elapsed, 
-            converged
-        )
-    end
+function GMMResult(d::Integer, n::Integer, k::Integer)
+    assignments = zeros(Int, n)
+    weights = ones(k) ./ k
+    centers = [zeros(d) for _ in 1:k]
+    covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
+    return GMMResult(k, assignments, weights, centers, covariances, -Inf, 0, 0, false)
 end
 
 function Base.copy(a::GMMResult)
@@ -156,9 +113,9 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
 end
 
 function estimate_weighted_log_probabilities(
-    data::AbstractMatrix{<:Real}, 
-    k::Int, 
-    result::GMMResult, 
+    data::AbstractMatrix{<:Real},
+    k::Int,
+    result::GMMResult,
     precisions_cholesky::Vector{Matrix{Float64}}
 )
     n, d = size(data)
@@ -204,7 +161,7 @@ function maximization_step!(
     k::Int,
     result::GMMResult,
     log_responsibilities::Matrix{Float64},
-    precisions_cholesky::Vector{Matrix{Float64}},
+    precisions_cholesky::Vector{Matrix{Float64}}
 )
     responsibilities = exp.(log_responsibilities)
 

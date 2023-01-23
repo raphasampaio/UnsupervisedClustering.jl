@@ -12,7 +12,12 @@ using RegularizedCovarianceMatrices
 using Statistics
 using StatsBase
 
-export fit, 
+const DEFAULT_VERBOSE = false
+const DEFAULT_TOLERANCE = 1e-3
+const DEFAULT_MAX_ITERATIONS = 1000
+
+export 
+    fit, 
     fit!, 
     Kmeans, 
     KmeansResult,
@@ -26,6 +31,7 @@ export fit,
 
 include("algorithm.jl")
 include("result.jl")
+include("seeding.jl")
 include("kmeans.jl")
 include("gmm.jl")
 include("kmedoids.jl")
