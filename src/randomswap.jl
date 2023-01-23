@@ -1,15 +1,3 @@
-Base.@kwdef mutable struct RandomSwap <: ClusteringAlgorithm
-    local_search::ClusteringAlgorithm
-    verbose::Bool = false
-    max_iterations::Integer = 200
-    max_iterations_without_improvement::Integer = 150
-end
-
-function seed!(algorithm::RandomSwap, seed::Integer)
-    Random.seed!(algorithm.local_search.rng, seed)
-    return nothing
-end
-
 function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     iterations_without_improvement = 0
 
