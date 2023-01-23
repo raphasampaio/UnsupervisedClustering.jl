@@ -40,6 +40,16 @@ function binary_tournament(generation::Generation, rng::AbstractRNG)
     return isbetter(parent1, parent2) ? parent1 : parent2, isbetter(parent3, parent4) ? parent3 : parent4
 end
 
+function get_best_solution(generation::Generation)
+    best_solution = generation.population[1]
+    for (i, solution) in enumerate(generation.population)
+        if in(i, generation.empty) == false && isbetter(solution, best_solution)
+            best_solution = solution
+        end
+    end
+    return best_solution
+end
+
 function crossover(parent1::ClusteringResult, parent2::ClusteringResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     k = parent1.k
 

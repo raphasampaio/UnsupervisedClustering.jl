@@ -43,19 +43,19 @@ function fit(parameters::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Inte
             eliminate(generation, to_remove, parameters.local_search.rng)
         end
 
-        leader = partialsort(generation.population, 1, lt = isbetter)
+        best_solution = get_best_solution(generation)
 
-        if leader.objective ≈ best_objective
+        if best_solution.objective ≈ best_objective
             iterations_without_improvement += 1
 
             if iterations_without_improvement > parameters.max_iterations_without_improvement
-                return leader
+                return best_solution
             end
         else
-            best_objective = leader.objective
+            best_objective = best_solution.objective
             iterations_without_improvement = 0
         end
     end
 
-    return partialsort(generation.population, 1, lt = isbetter)
+    return get_best_solution(generation)
 end
