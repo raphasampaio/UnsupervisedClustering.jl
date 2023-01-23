@@ -38,7 +38,7 @@ function test_all()
         Aqua.test_all(UnsupervisedClustering, ambiguities = false)
     end
 
-    verbose = false
+    verbose = true
     max_iterations = 50
     max_iterations_without_improvement = 10
 
