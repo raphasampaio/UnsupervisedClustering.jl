@@ -16,6 +16,9 @@
         <img src="https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/UnsupervisedClustering/label:-sep:">
     </a>
     <br>
+    <a href="https://juliahub.com/ui/Packages/UnsupervisedClustering/sHGR0">
+        <img src="https://juliahub.com/docs/UnsupervisedClustering/version.svg" alt="Version"/>
+    </a>
     <a href="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml">
         <img src="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg" alt="CI"/>
     </a>
