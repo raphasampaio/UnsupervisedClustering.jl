@@ -1,6 +1,6 @@
 @echo off
 
-SET REVISE_PATH=%~dp0
-DEL "%REVISE_PATH%\Manifest.toml"
+SET BASEPATH=%~dp0
+DEL "%BASEPATH%\Manifest.toml"
 
-%JULIA_185% --color=yes --project=%REVISE_PATH% --load=%REVISE_PATH%\revise.jl
+%JULIA_185% --color=yes --project=%BASEPATH% --load=%BASEPATH%\revise.jl

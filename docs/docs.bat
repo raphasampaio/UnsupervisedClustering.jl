@@ -1,6 +1,6 @@
 @echo off
 
-SET DOCUMENTER_PATH=%~dp0
-DEL "%DOCUMENTER_PATH%\Manifest.toml"
+SET BASEPATH=%~dp0
+DEL "%BASEPATH%\Manifest.toml"
 
-%JULIA_185% --color=yes --project=%DOCUMENTER_PATH% %DOCUMENTER_PATH%\make.jl
+%JULIA_185% --color=yes --project=%BASEPATH% %BASEPATH%\make.jl

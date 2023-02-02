@@ -139,6 +139,11 @@ function test_all()
             result = UnsupervisedClustering.fit(algorithm, data, k)
             # @printf("%.16f,", result.objective)
 
+            counts = UnsupervisedClustering.counts(result)
+            for j in 1:k
+                @test counts[j] == count(==(j), result.assignments)
+            end
+
             @static if v"1.8" <= VERSION && VERSION < v"1.9"
                 @test result.objective ≈ benchmark[i]
             else
