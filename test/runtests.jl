@@ -29,14 +29,74 @@ end
 function test_all()
     println("BLAS: $(BLAS.get_config())")
 
-    reset_timer!()
-
     @testset "Aqua.jl" begin
         @testset "Ambiguities" begin
             Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
         end
         Aqua.test_all(UnsupervisedClustering, ambiguities = false)
     end
+
+    @testset "n = 0" begin
+        n, d, k = 0, 2, 3
+        data = zeros(n, d)
+
+        kmeans = Kmeans(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(kmeans, data, k)
+        @test length(result.assignments) == 0
+    
+        kmedoids = Kmedoids(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(kmedoids, data, k)
+        @test length(result.assignments) == 0
+    
+        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        result = UnsupervisedClustering.fit(gmm, data, k)
+        @test length(result.assignments) == 0
+    end
+
+    @testset "d = 0" begin
+        n, d, k = 3, 0, 3
+        data = zeros(n, d)
+
+        kmeans = Kmeans(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(kmeans, data, k)
+    
+        kmedoids = Kmedoids(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(kmedoids, data, k)
+    
+        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(gmm, data, k)
+    end   
+
+    @testset "k > n" begin
+        n, d, k = 2, 2, 3
+        data = zeros(n, d)
+
+        kmeans = Kmeans(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(kmeans, data, k)
+    
+        kmedoids = Kmedoids(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(kmedoids, data, k)
+    
+        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(gmm, data, k)
+    end  
+
+    @testset "n = k" begin
+        n, d, k = 3, 2, 3
+        data = rand(MersenneTwister(1), n, d)
+
+        kmeans = Kmeans(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(kmeans, data, k)
+        @test sort(result.assignments) == [i for i in 1:k]
+    
+        kmedoids = Kmedoids(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(kmedoids, data, k)
+        @test sort(result.assignments) == [i for i in 1:k]
+    
+        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        result = UnsupervisedClustering.fit(gmm, data, k)
+        @test sort(result.assignments) == [i for i in 1:k]
+    end   
 
     verbose = true
     max_iterations = 30
@@ -153,9 +213,9 @@ function test_all()
         # @printf("],\n")
     end
 
-    print_timer(sortby = :firstexec)
-
     return nothing
 end
 
-test_all()
+reset_timer!()
+@testset "UnsupervisedClustering" test_all()
+print_timer(sortby = :firstexec)

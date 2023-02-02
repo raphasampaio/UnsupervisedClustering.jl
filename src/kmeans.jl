@@ -82,7 +82,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         end
 
         # stopping condition
-        if change < algorithm.tolerance
+        if change < algorithm.tolerance || n == k
             result.converged = true
             result.iterations = iteration
             break
@@ -114,6 +114,13 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::V
     n, d = size(data)
     k = length(initial_centers)
 
+    if n == 0
+        return KmeansResult(d, n, k)
+    end
+
+    @assert d > 0
+    @assert n >= k
+
     result = KmeansResult(d, n, k)
     for i in 1:d
         for j in 1:k
@@ -132,6 +139,13 @@ end
 
 function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
+
+    if n == 0
+        return KmeansResult(d, n, k)
+    end
+
+    @assert n >= k
+
     initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
     return fit(algorithm, data, initial_centers)
 end
