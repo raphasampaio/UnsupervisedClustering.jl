@@ -108,10 +108,20 @@ function test_all()
     end   
 
     @testset "concatenate" begin
+        @test_throws MethodError UnsupervisedClustering.concatenate()
+
         result = UnsupervisedClustering.concatenate(
             KmeansResult(2, 1, 1),
             KmeansResult(2, 2, 2),
             KmeansResult(2, 3, 3),
+        )
+        @test result.k == 6
+        @test result.assignments == [0, 1, 1, 3, 3, 3]
+
+        result = UnsupervisedClustering.concatenate(
+            KmedoidsResult(2, 1, 1),
+            KmedoidsResult(2, 2, 2),
+            KmedoidsResult(2, 3, 3),
         )
         @test result.k == 6
         @test result.assignments == [0, 1, 1, 3, 3, 3]

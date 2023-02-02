@@ -1,2 +1,0 @@
-abstract type ClusteringAlgorithm end
-abstract type ClusteringResult end

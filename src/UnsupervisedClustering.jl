@@ -30,8 +30,8 @@ export
     MultiStart,
     GeneticAlgorithm
 
-include("abstract.jl")
 include("algorithm.jl")
+include("result.jl")
 include("seeding.jl")
 include("kmeans.jl")
 include("gmm.jl")
@@ -40,7 +40,8 @@ include("multistart.jl")
 include("randomswap.jl")
 include("generation.jl")
 include("geneticalgorithm.jl")
-include("result.jl")
 include("print.jl")
+include("concatenate.jl")
+include("copy.jl")
 
 end
