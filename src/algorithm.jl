@@ -1,5 +1,3 @@
-abstract type ClusteringAlgorithm end
-
 Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG

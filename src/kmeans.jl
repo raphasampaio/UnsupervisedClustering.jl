@@ -2,7 +2,6 @@ mutable struct KmeansResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
     centers::Matrix{Float64}
-    count::Vector{Int}
 
     objective::Float64
     iterations::Int
@@ -11,20 +10,7 @@ mutable struct KmeansResult <: ClusteringResult
 end
 
 function KmeansResult(d::Integer, n::Integer, k::Integer)
-    return KmeansResult(k, zeros(Int, n), zeros(Float64, d, k), zeros(Int, k), Inf, 0, 0, false)
-end
-
-function Base.copy(a::KmeansResult)
-    return KmeansResult(
-        a.k,
-        copy(a.assignments),
-        copy(a.centers),
-        copy(a.count),
-        a.objective,
-        a.iterations,
-        a.elapsed,
-        a.converged
-    )
+    return KmeansResult(k, zeros(Int, n), zeros(Float64, d, k), Inf, 0, 0, false)
 end
 
 function isbetter(a::KmeansResult, b::KmeansResult)
@@ -59,6 +45,8 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     result.iterations = algorithm.max_iterations
     result.converged = false
 
+    count = zeros(Int, k)
+
     for iteration in 1:algorithm.max_iterations
         previous_objective = result.objective
 
@@ -90,18 +78,18 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
 
         # update step
         for i in 1:k
-            result.count[i] = 0
+            count[i] = 0
             result.centers[:, i] .= 0
         end
 
         for i in 1:n
             assignment = result.assignments[i]
             result.centers[:, assignment] += data[i, :]
-            result.count[assignment] += 1
+            count[assignment] += 1
         end
 
         for i in 1:k
-            result.centers[:, i] ./= max(1, result.count[i])
+            result.centers[:, i] ./= max(1, count[i])
         end
     end
 

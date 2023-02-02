@@ -43,13 +43,22 @@ function test_all()
         kmeans = Kmeans(rng = MersenneTwister(1))
         result = UnsupervisedClustering.fit(kmeans, data, k)
         @test length(result.assignments) == 0
+
+        result = UnsupervisedClustering.fit(kmeans, data, Vector{Int}())
+        @test length(result.assignments) == 0
     
         kmedoids = Kmedoids(rng = MersenneTwister(1))
         result = UnsupervisedClustering.fit(kmedoids, data, k)
         @test length(result.assignments) == 0
+
+        result = UnsupervisedClustering.fit(kmeans, data, Vector{Int}())
+        @test length(result.assignments) == 0
     
         gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
         result = UnsupervisedClustering.fit(gmm, data, k)
+        @test length(result.assignments) == 0
+
+        result = UnsupervisedClustering.fit(kmeans, data, Vector{Int}())
         @test length(result.assignments) == 0
     end
 
@@ -98,7 +107,17 @@ function test_all()
         @test sort(result.assignments) == [i for i in 1:k]
     end   
 
-    verbose = true
+    @testset "concatenate" begin
+        result = UnsupervisedClustering.concatenate(
+            KmeansResult(2, 1, 1),
+            KmeansResult(2, 2, 2),
+            KmeansResult(2, 3, 3),
+        )
+        @test result.k == 6
+        @test result.assignments == [0, 1, 1, 3, 3, 3]
+    end
+
+    verbose = false
     max_iterations = 30
     max_iterations_without_improvement = 15
 

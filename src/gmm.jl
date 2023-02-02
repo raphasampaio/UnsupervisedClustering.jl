@@ -19,20 +19,6 @@ function GMMResult(d::Integer, n::Integer, k::Integer)
     return GMMResult(k, assignments, weights, centers, covariances, -Inf, 0, 0, false)
 end
 
-function Base.copy(a::GMMResult)
-    return GMMResult(
-        a.k,
-        copy(a.assignments),
-        copy(a.weights),
-        deepcopy(a.centers),
-        deepcopy(a.covariances),
-        a.objective,
-        a.iterations,
-        a.elapsed,
-        a.converged
-    )
-end
-
 function isbetter(a::GMMResult, b::GMMResult)
     return isless(b.objective, a.objective)
 end

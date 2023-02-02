@@ -2,7 +2,6 @@ mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
     centers::Vector{Int}
-    count::Vector{Int}
 
     objective::Float64
     iterations::Int
@@ -11,20 +10,7 @@ mutable struct KmedoidsResult <: ClusteringResult
 end
 
 function KmedoidsResult(d::Integer, n::Integer, k::Integer)
-    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), zeros(Int, k), Inf, 0, 0, false)
-end
-
-function Base.copy(a::KmedoidsResult)
-    return KmedoidsResult(
-        a.k,
-        copy(a.assignments),
-        copy(a.centers),
-        copy(a.count),
-        a.objective,
-        a.iterations,
-        a.elapsed,
-        a.converged
-    )
+    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, 0, 0, false)
 end
 
 function isbetter(a::KmedoidsResult, b::KmedoidsResult)
