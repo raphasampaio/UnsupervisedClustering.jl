@@ -17,15 +17,16 @@ const DEFAULT_TOLERANCE = 1e-3
 const DEFAULT_MAX_ITERATIONS = 1000
 
 export 
-    fit, 
-    fit!, 
-    Kmeans, 
+    fit,
+    fit!,
+    counts,
     KmeansResult,
-    GMM, 
-    GMMResult,
-    Kmedoids, 
     KmedoidsResult,
-    RandomSwap, 
+    GMMResult,
+    Kmeans,
+    Kmedoids,
+    GMM,
+    RandomSwap,
     MultiStart,
     GeneticAlgorithm
 
