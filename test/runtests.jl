@@ -26,16 +26,117 @@ function get_data(filename::String)
     end
 end
 
-function test_all()
+function test_all()   
     println("BLAS: $(BLAS.get_config())")
-
-    reset_timer!()
 
     @testset "Aqua.jl" begin
         @testset "Ambiguities" begin
             Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
         end
         Aqua.test_all(UnsupervisedClustering, ambiguities = false)
+    end
+
+    @testset "n = 0" begin
+        n, d, k = 0, 2, 3
+        data = zeros(n, d)
+
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test length(result.assignments) == 0
+
+        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
+        @test length(result.assignments) == 0
+    
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test length(result.assignments) == 0
+
+        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
+        @test length(result.assignments) == 0
+    
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test length(result.assignments) == 0
+
+        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
+        @test length(result.assignments) == 0
+    end
+
+    @testset "d = 0" begin
+        n, d, k = 3, 0, 3
+        data = zeros(n, d)
+
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+    
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+    
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+    end   
+
+    @testset "k > n" begin
+        n, d, k = 2, 2, 3
+        data = zeros(n, d)
+
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+    
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+    
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+    end  
+
+    @testset "n = k" begin
+        n, d, k = 3, 2, 3
+        data = rand(MersenneTwister(1), n, d)
+
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test sort(result.assignments) == [i for i in 1:k]
+    
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test sort(result.assignments) == [i for i in 1:k]
+    
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test sort(result.assignments) == [i for i in 1:k]
+    end   
+
+    @testset "concatenate" begin
+        @test_throws MethodError UnsupervisedClustering.concatenate()
+
+        result = UnsupervisedClustering.concatenate(    
+            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0], 1.0, 1, 1.0, true),
+            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0], 2.0, 2, 2.0, true),
+            KmeansResult(2, [1, 2, 2], [1.0 2.0; 1.0 2.0], 3.0, 3, 3.0, true),
+        )
+
+        @test result.k == 6
+        @test result.assignments ≈ [1, 2, 3, 4, 5, 6, 6]
+        @test result.centers ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
+        @test result.objective ≈ 6.0
+        @test result.iterations == 6
+        @test result.elapsed ≈ 6.0
+        @test result.converged == true
+
+        result = UnsupervisedClustering.concatenate(    
+            KmedoidsResult(2, [1, 2], [1, 2], 1.0, 1, 1.0, true),
+            KmedoidsResult(2, [1, 2], [1, 2], 2.0, 2, 2.0, true),
+            KmedoidsResult(2, [1, 2, 2], [1, 2], 3.0, 3, 3.0, true),
+        )
+
+        @test result.k == 6
+        @test result.assignments ≈ [1, 2, 3, 4, 5, 6, 6]
+        @test result.centers == [1, 2, 3, 4, 5, 6]
+        @test result.objective ≈ 6.0
+        @test result.iterations == 6
+        @test result.elapsed ≈ 6.0
+        @test result.converged == true
     end
 
     verbose = true
@@ -153,9 +254,9 @@ function test_all()
         # @printf("],\n")
     end
 
-    print_timer(sortby = :firstexec)
-
     return nothing
 end
 
+reset_timer!()
 test_all()
+print_timer(sortby = :firstexec)

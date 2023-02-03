@@ -19,20 +19,6 @@ function GMMResult(d::Integer, n::Integer, k::Integer)
     return GMMResult(k, assignments, weights, centers, covariances, -Inf, 0, 0, false)
 end
 
-function Base.copy(a::GMMResult)
-    return GMMResult(
-        a.k,
-        copy(a.assignments),
-        copy(a.weights),
-        deepcopy(a.centers),
-        deepcopy(a.covariances),
-        a.objective,
-        a.iterations,
-        a.elapsed,
-        a.converged
-    )
-end
-
 function isbetter(a::GMMResult, b::GMMResult)
     return isless(b.objective, a.objective)
 end
@@ -205,7 +191,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
             print_newline()
         end
 
-        if change < algorithm.tolerance
+        if change < algorithm.tolerance || n == k
             result.converged = true
             result.iterations = iteration
             break
@@ -226,6 +212,13 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vect
     n, d = size(data)
     k = length(initial_centers)
 
+    if n == 0
+        return GMMResult(d, n, k)
+    end
+
+    @assert d > 0
+    @assert n >= k
+
     result = GMMResult(d, n, k)
     for i in 1:k
         for j in 1:d
@@ -244,6 +237,13 @@ end
 
 function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)
+
+    if n == 0
+        return GMMResult(d, n, k)
+    end
+
+    @assert n >= k
+
     initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
     return fit(algorithm, data, initial_centers)
 end

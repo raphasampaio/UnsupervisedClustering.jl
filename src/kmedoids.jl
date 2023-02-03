@@ -2,7 +2,6 @@ mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
     centers::Vector{Int}
-    count::Vector{Int}
 
     objective::Float64
     iterations::Int
@@ -11,20 +10,7 @@ mutable struct KmedoidsResult <: ClusteringResult
 end
 
 function KmedoidsResult(d::Integer, n::Integer, k::Integer)
-    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), zeros(Int, k), Inf, 0, 0, false)
-end
-
-function Base.copy(a::KmedoidsResult)
-    return KmedoidsResult(
-        a.k,
-        copy(a.assignments),
-        copy(a.centers),
-        copy(a.count),
-        a.objective,
-        a.iterations,
-        a.elapsed,
-        a.converged
-    )
+    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, 0, 0, false)
 end
 
 function isbetter(a::KmedoidsResult, b::KmedoidsResult)
@@ -92,7 +78,7 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
         end
 
         # stopping condition
-        if change < algorithm.tolerance
+        if change < algorithm.tolerance || n == k
             result.converged = true
             result.iterations = iteration
             break
@@ -126,6 +112,13 @@ function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers:
     n, d = size(data)
     k = length(initial_centers)
 
+    if n == 0
+        return KmedoidsResult(d, n, k)
+    end
+
+    @assert d > 0
+    @assert n >= k
+
     result = KmedoidsResult(d, n, k)
     for i in 1:k
         result.centers[i] = initial_centers[i]
@@ -142,6 +135,13 @@ end
 
 function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
     n, d = size(data)
+
+    if n == 0
+        return KmedoidsResult(d, n, k)
+    end
+
+    @assert n >= k
+
     initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
     return fit(algorithm, data, initial_centers)
 end

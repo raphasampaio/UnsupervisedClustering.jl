@@ -32,7 +32,7 @@ export
 
 include("algorithm.jl")
 include("result.jl")
-include("seeding.jl")
+include("seed.jl")
 include("kmeans.jl")
 include("gmm.jl")
 include("kmedoids.jl")
@@ -41,5 +41,7 @@ include("randomswap.jl")
 include("generation.jl")
 include("geneticalgorithm.jl")
 include("print.jl")
+include("concatenate.jl")
+include("copy.jl")
 
 end
