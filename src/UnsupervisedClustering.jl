@@ -32,7 +32,7 @@ export
 
 include("algorithm.jl")
 include("result.jl")
-include("seeding.jl")
+include("seed.jl")
 include("kmeans.jl")
 include("gmm.jl")
 include("kmedoids.jl")
