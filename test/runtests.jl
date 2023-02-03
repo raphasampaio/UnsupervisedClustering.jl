@@ -40,25 +40,25 @@ function test_all()
         n, d, k = 0, 2, 3
         data = zeros(n, d)
 
-        kmeans = Kmeans(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(kmeans, data, k)
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
         @test length(result.assignments) == 0
 
-        result = UnsupervisedClustering.fit(kmeans, data, Vector{Int}())
+        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
     
-        kmedoids = Kmedoids(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(kmedoids, data, k)
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
         @test length(result.assignments) == 0
 
-        result = UnsupervisedClustering.fit(kmeans, data, Vector{Int}())
+        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
     
-        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        result = UnsupervisedClustering.fit(gmm, data, k)
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
         @test length(result.assignments) == 0
 
-        result = UnsupervisedClustering.fit(kmeans, data, Vector{Int}())
+        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
     end
 
@@ -66,44 +66,44 @@ function test_all()
         n, d, k = 3, 0, 3
         data = zeros(n, d)
 
-        kmeans = Kmeans(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(kmeans, data, k)
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     
-        kmedoids = Kmedoids(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(kmedoids, data, k)
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     
-        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(gmm, data, k)
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     end   
 
     @testset "k > n" begin
         n, d, k = 2, 2, 3
         data = zeros(n, d)
 
-        kmeans = Kmeans(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(kmeans, data, k)
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     
-        kmedoids = Kmedoids(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(kmedoids, data, k)
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     
-        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(gmm, data, k)
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     end  
 
     @testset "n = k" begin
         n, d, k = 3, 2, 3
         data = rand(MersenneTwister(1), n, d)
 
-        kmeans = Kmeans(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(kmeans, data, k)
+        algorithm = Kmeans(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     
-        kmedoids = Kmedoids(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(kmedoids, data, k)
+        algorithm = Kmedoids(rng = MersenneTwister(1))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     
-        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        result = UnsupervisedClustering.fit(gmm, data, k)
+        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        result = UnsupervisedClustering.fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end   
 
