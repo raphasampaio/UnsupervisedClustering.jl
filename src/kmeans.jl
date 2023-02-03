@@ -22,18 +22,6 @@ function reset_objective!(result::KmeansResult)
     return nothing
 end
 
-function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    n, d = size(data)
-    k = size(result.centers, 2)
-
-    to = rand(rng, 1:k)
-    from = rand(rng, 1:n)
-
-    result.centers[:, to] = copy(data[from, :])
-    reset_objective!(result)
-    return nothing
-end
-
 function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
 

@@ -22,20 +22,6 @@ function reset_objective!(result::KmedoidsResult)
     return nothing
 end
 
-function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    n, d = size(data)
-    k = length(result.centers)
-
-    to = rand(rng, 1:k)
-    from = rand(rng, 1:n)
-
-    result.centers[to] = from
-
-    reset_objective!(result)
-
-    return nothing
-end
-
 function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::KmedoidsResult)
     t = time()
 

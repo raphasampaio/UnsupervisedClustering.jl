@@ -28,24 +28,6 @@ function reset_objective!(result::GMMResult)
     return nothing
 end
 
-function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    k = result.k
-    n, d = size(data)
-
-    to = rand(rng, 1:k)
-    from = rand(rng, 1:n)
-
-    result.centers[to] = copy(data[from, :])
-
-    m = mean([det(result.covariances[j]) for j in 1:k])
-    value = (m > 0 ? m : 1.0)^(1 / d)
-    result.covariances[to] = Symmetric(value .* Matrix{Float64}(I, d, d))
-
-    reset_objective!(result)
-
-    return nothing
-end
-
 function estimate_gaussian_parameters(
     algorithm::GMM,
     data::AbstractMatrix{<:Real},

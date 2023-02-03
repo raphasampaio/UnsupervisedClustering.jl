@@ -1,3 +1,52 @@
+function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    n, d = size(data)
+    k = size(result.centers, 2)
+
+    if n > 0 && k > 0
+        to = rand(rng, 1:k)
+        from = rand(rng, 1:n)
+        result.centers[:, to] = copy(data[from, :])
+
+        reset_objective!(result)
+    end
+
+    return nothing
+end
+
+function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    n, d = size(data)
+    k = length(result.centers)
+
+    if n > 0 && k > 0
+        to = rand(rng, 1:k)
+        from = rand(rng, 1:n)
+        result.centers[to] = from
+
+        reset_objective!(result)
+    end
+
+    return nothing
+end
+
+function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    k = result.k
+    n, d = size(data)
+
+    if n > 0 && k > 0
+        to = rand(rng, 1:k)
+        from = rand(rng, 1:n)
+        result.centers[to] = copy(data[from, :])
+
+        m = mean([det(result.covariances[j]) for j in 1:k])
+        value = (m > 0 ? m : 1.0)^(1 / d)
+        result.covariances[to] = Symmetric(value .* Matrix{Float64}(I, d, d))
+
+        reset_objective!(result)
+    end
+
+    return nothing
+end
+
 function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     iterations_without_improvement = 0
 
