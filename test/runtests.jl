@@ -26,7 +26,7 @@ function get_data(filename::String)
     end
 end
 
-function test_all()
+function test_all()   
     println("BLAS: $(BLAS.get_config())")
 
     @testset "Aqua.jl" begin
@@ -258,5 +258,5 @@ function test_all()
 end
 
 reset_timer!()
-@testset "UnsupervisedClustering" test_all()
+test_all()
 print_timer(sortby = :firstexec)
