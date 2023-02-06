@@ -194,14 +194,14 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vect
     n, d = size(data)
     k = length(initial_centers)
 
+    result = GMMResult(d, n, k)
     if n == 0
-        return GMMResult(d, n, k)
+        return result
     end
 
     @assert d > 0
     @assert n >= k
 
-    result = GMMResult(d, n, k)
     for i in 1:k
         for j in 1:d
             result.centers[i][j] = data[initial_centers[i], j]

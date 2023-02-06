@@ -98,14 +98,14 @@ function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers:
     n, d = size(data)
     k = length(initial_centers)
 
+    result = KmedoidsResult(d, n, k)
     if n == 0
-        return KmedoidsResult(d, n, k)
+        return result
     end
 
     @assert d > 0
     @assert n >= k
 
-    result = KmedoidsResult(d, n, k)
     for i in 1:k
         result.centers[i] = initial_centers[i]
     end

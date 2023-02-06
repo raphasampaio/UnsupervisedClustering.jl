@@ -90,14 +90,14 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::V
     n, d = size(data)
     k = length(initial_centers)
 
+    result = KmeansResult(d, n, k)
     if n == 0
-        return KmeansResult(d, n, k)
+        return result
     end
 
     @assert d > 0
     @assert n >= k
 
-    result = KmeansResult(d, n, k)
     for i in 1:d
         for j in 1:k
             result.centers[i, j] = data[initial_centers[j], i]
