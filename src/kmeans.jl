@@ -34,13 +34,14 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     result.converged = false
 
     count = zeros(Int, k)
+    distances = zeros(k, n)
 
     for iteration in 1:algorithm.max_iterations
         previous_objective = result.objective
 
         # assignment step
         result.objective = 0
-        distances = pairwise(algorithm.metric, result.centers, data', dims = 2)
+        pairwise!(distances, algorithm.metric, result.centers, data', dims = 2)
         for i in 1:n
             assignment = argmin(distances[:, i])
 
@@ -72,7 +73,9 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
 
         for i in 1:n
             assignment = result.assignments[i]
-            result.centers[:, assignment] += data[i, :]
+            for j in 1:d
+                result.centers[j, assignment] += data[i, j]
+            end
             count[assignment] += 1
         end
 
