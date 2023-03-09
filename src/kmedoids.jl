@@ -28,7 +28,8 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
     n, d = size(data)
     k = length(result.centers)
 
-    distances = pairwise(algorithm.metric, data', dims = 2)
+    distances = pairwise(algorithm.metric, data, dims = 1)
+    min_distances = zeros(k)
 
     previous_objective = -Inf
     result.objective = Inf
@@ -71,7 +72,9 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
         end
 
         # update step
-        min_distance = Inf * ones(k)
+        for i in 1:k
+            min_distances[i] = Inf
+        end
         for i in 1:n
             distance = 0
             assignment = result.assignments[i]
@@ -82,8 +85,8 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
                 end
             end
 
-            if distance < min_distance[assignment]
-                min_distance[assignment] = distance
+            if distance < min_distances[assignment]
+                min_distances[assignment] = distance
                 result.centers[assignment] = i
             end
         end
