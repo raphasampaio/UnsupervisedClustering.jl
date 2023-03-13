@@ -60,7 +60,11 @@ function estimate_gaussian_parameters(
     return weights, centers, covariances
 end
 
-function compute_precision_cholesky!(algorithm::GMM, result::GMMResult, precisions_cholesky::Vector{Matrix{Float64}})
+function compute_precision_cholesky!(
+    algorithm::GMM, 
+    result::GMMResult, 
+    precisions_cholesky::Vector{Matrix{Float64}}
+)
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
 

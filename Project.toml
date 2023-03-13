@@ -16,20 +16,18 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 Aqua = "0.6"
-Distances = "0.10.7"
+Distances = "0.10"
 Hungarian = "0.6, 0.7"
-LogExpFunctions = "0.3.19"
-MKL = "0.5"
-RegularizedCovarianceMatrices = "0.1.1"
-StatsBase = "0.33.21"
+LogExpFunctions = "0.3"
+RegularizedCovarianceMatrices = "0.1"
+StatsBase = "0.33"
 julia = "1.7"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
-MKL = "33e6dc65-8f57-5167-99aa-e5a354878fb2"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 
 [targets]
-test = ["Aqua", "DelimitedFiles", "MKL", "Test", "TimerOutputs"]
+test = ["Aqua", "DelimitedFiles", "Test", "TimerOutputs"]
