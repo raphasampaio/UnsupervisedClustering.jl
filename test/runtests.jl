@@ -1,5 +1,3 @@
-using MKL
-
 using UnsupervisedClustering
 
 using Aqua
@@ -29,7 +27,7 @@ function get_data(filename::String)
 end
 
 function test_all()   
-    println("BLAS: $(BLAS.get_config())")
+    # println("BLAS: $(BLAS.get_config())")
 
     @testset "Aqua.jl" begin
         @testset "Ambiguities" begin
@@ -243,11 +241,7 @@ function test_all()
                 @test counts[j] == count(==(j), result.assignments)
             end
 
-            @static if v"1.8" <= VERSION && VERSION < v"1.9"
-                @test result.objective ≈ benchmark[i]
-            else
-                @test result.objective ≈ benchmark[i] skip = true
-            end
+            @test result.objective ≈ benchmark[i]
         end
         # @printf("],\n")
     end
