@@ -60,7 +60,7 @@ function estimate_gaussian_parameters(
     return weights, centers, covariances
 end
 
-function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vector{Matrix{Float64}})
+function compute_precision_cholesky!(algorithm::GMM, result::GMMResult, precisions_cholesky::Vector{Matrix{Float64}})
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
 
@@ -68,12 +68,15 @@ function compute_precision_cholesky!(result::GMMResult, precisions_cholesky::Vec
         try
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
-        catch
-            decomposition = eigen(result.covariances[i], sortby = nothing)
-            result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
-
-            covariances_cholesky = cholesky(result.covariances[i])
-            precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
+        catch e
+            if algorithm.decompose_if_fails
+                decomposition = eigen(result.covariances[i], sortby = nothing)
+                result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
+                covariances_cholesky = cholesky(result.covariances[i])
+                precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
+            else
+                error("GMM Failed: $e")
+            end
         end
     end
 
@@ -134,7 +137,7 @@ function maximization_step!(
     responsibilities = exp.(log_responsibilities)
 
     result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
-    compute_precision_cholesky!(result, precisions_cholesky)
+    compute_precision_cholesky!(algorithm, result, precisions_cholesky)
 
     return nothing
 end
@@ -154,7 +157,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     log_responsibilities = zeros(n, k)
 
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
-    compute_precision_cholesky!(result, precisions_cholesky)
+    compute_precision_cholesky!(algorithm, result, precisions_cholesky)
 
     for iteration in 1:algorithm.max_iterations
         previous_objective = result.objective

@@ -22,6 +22,7 @@ Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
     estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
     tolerance::Float64 = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    decompose_if_fails::Bool = true
 end
 
 Base.@kwdef mutable struct MultiStart <: ClusteringAlgorithm
