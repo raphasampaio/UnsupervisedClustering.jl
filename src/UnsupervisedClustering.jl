@@ -43,5 +43,6 @@ include("geneticalgorithm.jl")
 include("print.jl")
 include("concatenate.jl")
 include("copy.jl")
+include("convert.jl")
 
 end
