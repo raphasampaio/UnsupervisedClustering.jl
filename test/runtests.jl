@@ -27,7 +27,7 @@ function get_data(filename::String)
 end
 
 function test_all()   
-    println("BLAS: $(BLAS.get_config())")
+    # println("BLAS: $(BLAS.get_config())")
 
     @testset "Aqua.jl" begin
         @testset "Ambiguities" begin
