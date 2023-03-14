@@ -9,7 +9,7 @@ function concatenate_assignments(result::ClusteringResult, results::ClusteringRe
         if i == 1
             accumulated[i] = result.k
         else
-            accumulated[i] = accumulated[i - 1] + results[i - 1].k
+            accumulated[i] = accumulated[i-1] + results[i-1].k
         end
     end
     return vcat(result.assignments, [results[i].assignments .+ accumulated[i] for i in 1:size]...)
@@ -26,7 +26,7 @@ function concatenate_centers(result::KmedoidsResult, results::KmedoidsResult...)
         if i == 1
             accumulated[i] = length(result.assignments)
         else
-            accumulated[i] = accumulated[i - 1] + length(results[i - 1].assignments)
+            accumulated[i] = accumulated[i-1] + length(results[i-1].assignments)
         end
     end
     return vcat(result.centers, [results[i].centers .+ accumulated[i] for i in 1:size]...)
