@@ -14,8 +14,7 @@ const DEFAULT_VERBOSE = false
 const DEFAULT_TOLERANCE = 1e-3
 const DEFAULT_MAX_ITERATIONS = 1000
 
-export 
-    fit,
+export fit,
     fit!,
     counts,
     ClusteringResult,
@@ -43,5 +42,6 @@ include("geneticalgorithm.jl")
 include("print.jl")
 include("concatenate.jl")
 include("copy.jl")
+include("convert.jl")
 
 end

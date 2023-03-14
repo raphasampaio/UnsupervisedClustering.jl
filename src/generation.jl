@@ -145,15 +145,30 @@ function copy_clusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, s
     return nothing
 end
 
-function update_weights!(child::KmeansResult, parent1::KmeansResult, parent2::KmeansResult, assignment::AbstractVector{<:Integer})
+function update_weights!(
+    child::KmeansResult,
+    parent1::KmeansResult,
+    parent2::KmeansResult,
+    assignment::AbstractVector{<:Integer}
+)
     return nothing
 end
 
-function update_weights!(child::KmedoidsResult, parent1::KmedoidsResult, parent2::KmedoidsResult, assignment::AbstractVector{<:Integer})
+function update_weights!(
+    child::KmedoidsResult,
+    parent1::KmedoidsResult,
+    parent2::KmedoidsResult,
+    assignment::AbstractVector{<:Integer}
+)
     return nothing
 end
 
-function update_weights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
+function update_weights!(
+    child::GMMResult,
+    parent1::GMMResult,
+    parent2::GMMResult,
+    assignment::AbstractVector{<:Integer}
+)
     k = length(assignment)
     for i in 1:k
         child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2

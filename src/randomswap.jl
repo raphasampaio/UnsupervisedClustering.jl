@@ -18,8 +18,14 @@ function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng:
     k = length(result.centers)
 
     if n > 0 && k > 0
+        weights = ones(n)
+        for i in result.centers
+            weights[i] = 0.0
+        end
+
         to = rand(rng, 1:k)
-        from = rand(rng, 1:n)
+        weights[result.centers[to]] = 1.0
+        from = sample(rng, aweights(weights))
         result.centers[to] = from
 
         reset_objective!(result)
