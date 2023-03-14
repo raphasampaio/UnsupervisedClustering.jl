@@ -139,7 +139,7 @@ function test_all()
         @test result.converged == true
     end
 
-    verbose = false
+    verbose = true
     max_iterations = 30
     max_iterations_without_improvement = 15
 
