@@ -5,8 +5,9 @@ function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::A
     if n > 0 && k > 0
         to = rand(rng, 1:k)
         from = rand(rng, 1:n)
-        result.centers[:, to] = copy(data[from, :])
-
+        for i in 1:d
+            result.centers[i, to] = data[from, i]
+        end
         reset_objective!(result)
     end
 
