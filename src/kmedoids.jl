@@ -29,6 +29,8 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
     k = length(result.centers)
 
     distances = pairwise(algorithm.metric, data, dims = 1)
+    medoids = [Vector{Int}() for _ in 1:k]
+    count = zeros(Int, k)
 
     previous_objective = -Inf
     result.objective = Inf
@@ -40,18 +42,33 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
 
         # assignment step
         result.objective = 0
+        for i in 1:k
+            empty!(medoids[i])
+            count[i] = 0
+        end
+
         for i in 1:n
             min_distance = Inf
-            min_j = 0
+            min_center = 0
+
             for j in 1:k
-                distance = distances[i, result.centers[j]]
+                center = result.centers[j]
+                if i == center
+                    min_distance = 0
+                    min_center = j
+                    break
+                end
+
+                distance = distances[i, center]
                 if distance < min_distance
                     min_distance = distance
-                    min_j = j
+                    min_center = j
                 end
             end
-            result.assignments[i] = min_j
-            result.objective += distances[i, result.centers[min_j]]
+
+            count[min_center] += 1
+            push!(medoids[min_center], i)
+            result.objective += distances[i, result.centers[min_center]]
         end
 
         change = abs(result.objective - previous_objective)
@@ -71,14 +88,15 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
         end
 
         # update step
-        medoids = [Vector{Int}() for _ in 1:k]
-        for i in 1:n
-            assignment = result.assignments[i]
-            push!(medoids[assignment], i)
-        end
         for (i, medoid) in enumerate(medoids)
             j = argmin(sum(distances[medoid, medoid], dims = 2))[1]
             result.centers[i] = medoid[j]
+        end
+    end
+
+    for (i, medoid) in enumerate(medoids)
+        for j in medoid
+            result.assignments[j] = i
         end
     end
 
