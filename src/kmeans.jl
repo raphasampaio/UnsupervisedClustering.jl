@@ -43,10 +43,17 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         result.objective = 0
         pairwise!(distances, algorithm.metric, result.centers, data', dims = 2)
         for i in 1:n
-            assignment = argmin(distances[:, i])
-
-            result.assignments[i] = assignment
-            result.objective += distances[assignment, i]
+            min_distance = Inf
+            min_center = 0
+            for center in 1:k
+                distance = distances[center, i]
+                if distance < min_distance
+                    min_distance = distance
+                    min_center = center
+                end
+            end
+            result.assignments[i] = min_center
+            result.objective += distances[min_center, i]
         end
 
         change = abs(result.objective - previous_objective)
@@ -68,7 +75,9 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         # update step
         for i in 1:k
             count[i] = 0
-            result.centers[:, i] .= 0
+            for j in 1:d
+                result.centers[j, i] = 0
+            end
         end
 
         for i in 1:n
@@ -80,7 +89,10 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         end
 
         for i in 1:k
-            result.centers[:, i] ./= max(1, count[i])
+            cluster_size = max(1, count[i])
+            for j in 1:d
+                result.centers[j, i] = result.centers[j, i] / cluster_size
+            end
         end
     end
 
