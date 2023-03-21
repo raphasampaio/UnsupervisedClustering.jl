@@ -48,7 +48,8 @@ function test_all()
         @test length(result.assignments) == 0
 
         algorithm = Kmedoids(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(algorithm, data, k)
+        distances = pairwise(SqEuclidean(), data, dims = 1)
+        result = UnsupervisedClustering.fit(algorithm, distances, k)
         @test length(result.assignments) == 0
 
         result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
@@ -69,9 +70,6 @@ function test_all()
         algorithm = Kmeans(rng = MersenneTwister(1))
         @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
 
-        algorithm = Kmedoids(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
-
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
         @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
     end
@@ -84,7 +82,8 @@ function test_all()
         @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
 
         algorithm = Kmedoids(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+        distances = pairwise(SqEuclidean(), data, dims = 1)
+        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, distances, k)
 
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
         @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
@@ -99,7 +98,8 @@ function test_all()
         @test sort(result.assignments) == [i for i in 1:k]
 
         algorithm = Kmedoids(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(algorithm, data, k)
+        distances = pairwise(SqEuclidean(), data, dims = 1)
+        result = UnsupervisedClustering.fit(algorithm, distances, k)
         @test sort(result.assignments) == [i for i in 1:k]
 
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
@@ -314,7 +314,15 @@ function test_all()
         # @printf("\"%s\" => [", dataset)
         for (i, algorithm) in enumerate(algorithms)
             UnsupervisedClustering.seed!(algorithm, 1)
-            result = UnsupervisedClustering.fit(algorithm, data, k)
+
+            result =
+            if algorithm == kmedoids || (hasproperty(algorithm, :local_search) && algorithm.local_search == kmedoids)
+                distances = pairwise(SqEuclidean(), data, dims = 1)
+                UnsupervisedClustering.fit(algorithm, distances, k)
+            else
+                UnsupervisedClustering.fit(algorithm, data, k)
+            end
+            
             # @printf("%.16f,", result.objective)
 
             counts = UnsupervisedClustering.counts(result)

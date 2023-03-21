@@ -115,18 +115,38 @@ function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
     end
 end
 
-function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int, data::AbstractMatrix{<:Real})
+function distance(
+    a::KmeansResult,
+    i::Int,
+    b::KmeansResult,
+    j::Int, 
+    data::AbstractMatrix{<:Real}
+)
     return Distances.evaluate(Euclidean(), a.centers[:, i], b.centers[:, j])
 end
 
-function distance(a::KmedoidsResult, i::Int, b::KmedoidsResult, j::Int, data::AbstractMatrix{<:Real})
-    return Distances.evaluate(Euclidean(), data[a.centers[i], :], data[b.centers[j], :])
+function distance(
+    a::KmedoidsResult,
+    i::Int,
+    b::KmedoidsResult,
+    j::Int,
+    data::AbstractMatrix{<:Real}
+)
+    c1 = a.centers[i]
+    c2 = b.centers[j]
+    return (data[c1, c2] + data[c2, c1]) / 2
 end
 
-function distance(a::GMMResult, i::Int, b::GMMResult, j::Int, data::AbstractMatrix{<:Real})
-    distance1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.centers[i], b.centers[j])
-    distance2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.centers[i], b.centers[j])
-    return (distance1 + distance2) / 2
+function distance(
+    a::GMMResult,
+    i::Int,
+    b::GMMResult,
+    j::Int,
+    data::AbstractMatrix{<:Real}
+)
+    d1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.centers[i], b.centers[j])
+    d2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.centers[i], b.centers[j])
+    return (d1 + d2) / 2
 end
 
 function copy_clusters!(destiny::KmeansResult, destiny_i::Int, source::KmeansResult, source_i::Int)
