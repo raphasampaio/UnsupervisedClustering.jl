@@ -9,7 +9,7 @@ mutable struct KmedoidsResult <: ClusteringResult
     converged::Bool
 end
 
-function KmedoidsResult(d::Integer, n::Integer, k::Integer)
+function KmedoidsResult(n::Integer, k::Integer)
     return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, 0, 0, false)
 end
 
@@ -22,13 +22,12 @@ function reset_objective!(result::KmedoidsResult)
     return nothing
 end
 
-function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::KmedoidsResult)
+function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
     t = time()
 
-    n, d = size(data)
+    n = size(distances, 1)
     k = length(result.centers)
 
-    distances = pairwise(algorithm.metric, data, dims = 1)
     medoids = [Vector{Int}() for _ in 1:k]
     count = zeros(Int, k)
 
@@ -105,16 +104,15 @@ function fit!(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, result::Kmedoid
     return nothing
 end
 
-function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmedoidsResult
-    n, d = size(data)
+function fit(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmedoidsResult
+    n = size(distances, 1)
     k = length(initial_centers)
 
-    result = KmedoidsResult(d, n, k)
+    result = KmedoidsResult(n, k)
     if n == 0
         return result
     end
 
-    @assert d > 0
     @assert n >= k
 
     for i in 1:k
@@ -125,20 +123,20 @@ function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, initial_centers:
         print_initial_centers(initial_centers)
     end
 
-    fit!(algorithm, data, result)
+    fit!(algorithm, distances, result)
 
     return result
 end
 
-function fit(algorithm::Kmedoids, data::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
-    n, d = size(data)
+function fit(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
+    n = size(distances, 1)
 
     if n == 0
-        return KmedoidsResult(d, n, k)
+        return KmedoidsResult(n, k)
     end
 
     @assert n >= k
 
     initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
-    return fit(algorithm, data, initial_centers)
+    return fit(algorithm, distances, initial_centers)
 end
