@@ -11,7 +11,6 @@ end
 Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    metric::SemiMetric = SqEuclidean()
     tolerance::Float64 = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
