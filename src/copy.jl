@@ -4,6 +4,7 @@ function Base.copy(result::KmeansResult)
         copy(result.assignments),
         copy(result.centers),
         result.objective,
+        copy(result.objective_per_cluster),
         result.iterations,
         result.elapsed,
         result.converged
@@ -16,6 +17,7 @@ function Base.copy(result::KmedoidsResult)
         copy(result.assignments),
         copy(result.centers),
         result.objective,
+        copy(result.objective_per_cluster),
         result.iterations,
         result.elapsed,
         result.converged

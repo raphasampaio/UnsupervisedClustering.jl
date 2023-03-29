@@ -36,6 +36,10 @@ function concatenate_objective(result::ClusteringResult, results::ClusteringResu
     return result.objective + sum([i.objective for i in results])
 end
 
+function concatenate_objective_per_cluster(result::ClusteringResult, results::ClusteringResult...)
+    return vcat(result.objective_per_cluster, [i.objective_per_cluster for i in results]...)
+end
+
 function concatenate_iterations(result::ClusteringResult, results::ClusteringResult...)
     return result.iterations + sum([i.iterations for i in results])
 end
@@ -53,10 +57,11 @@ function concatenate(result::KmeansResult, results::KmeansResult...)::KmeansResu
     assignments = concatenate_assignments(result, results...)
     centers = concatenate_centers(result, results...)
     objective = concatenate_objective(result, results...)
+    objective_per_cluster = concatenate_objective_per_cluster(result, results...)
     iterations = concatenate_iterations(result, results...)
     elapsed = concatenate_elapsed(result, results...)
     converged = concatenate_converged(result, results...)
-    return KmeansResult(k, assignments, centers, objective, iterations, elapsed, converged)
+    return KmeansResult(k, assignments, centers, objective, objective_per_cluster, iterations, elapsed, converged)
 end
 
 function concatenate(result::KmedoidsResult, results::KmedoidsResult...)::KmedoidsResult
@@ -64,8 +69,13 @@ function concatenate(result::KmedoidsResult, results::KmedoidsResult...)::Kmedoi
     assignments = concatenate_assignments(result, results...)
     centers = concatenate_centers(result, results...)
     objective = concatenate_objective(result, results...)
+    objective_per_cluster = concatenate_objective_per_cluster(result, results...)
     iterations = concatenate_iterations(result, results...)
     elapsed = concatenate_elapsed(result, results...)
     converged = concatenate_converged(result, results...)
-    return KmedoidsResult(k, assignments, centers, objective, iterations, elapsed, converged)
+    return KmedoidsResult(k, assignments, centers, objective, objective_per_cluster, iterations, elapsed, converged)
+end
+
+function concatenate(result::GMMResult, results::GMMResult...)::GMMResult
+    error("function not implemented yet")
 end

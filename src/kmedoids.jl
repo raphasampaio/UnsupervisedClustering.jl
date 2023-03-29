@@ -4,13 +4,14 @@ mutable struct KmedoidsResult <: ClusteringResult
     centers::Vector{Int}
 
     objective::Float64
+    objective_per_cluster::Vector{Float64}
     iterations::Int
     elapsed::Float64
     converged::Bool
 end
 
 function KmedoidsResult(n::Integer, k::Integer)
-    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, 0, 0, false)
+    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, Inf * zeros(k), 0, 0, false)
 end
 
 function isbetter(a::KmedoidsResult, b::KmedoidsResult)
@@ -19,6 +20,9 @@ end
 
 function reset_objective!(result::KmedoidsResult)
     result.objective = Inf
+    for i in 1:result.k
+        result.objective_per_cluster[i] = Inf
+    end
     return nothing
 end
 
@@ -32,7 +36,8 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
     count = zeros(Int, k)
 
     previous_objective = -Inf
-    result.objective = Inf
+    reset_objective!(result)
+
     result.iterations = algorithm.max_iterations
     result.converged = false
 
@@ -67,7 +72,10 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
 
             count[min_center] += 1
             push!(medoids[min_center], i)
-            result.objective += distances[i, result.centers[min_center]]
+
+            distance = distances[i, result.centers[min_center]]
+            result.objective += distance
+            result.objective_per_cluster[min_center] += distance
         end
 
         change = abs(result.objective - previous_objective)
