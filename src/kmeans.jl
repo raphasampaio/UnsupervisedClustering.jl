@@ -4,13 +4,14 @@ mutable struct KmeansResult <: ClusteringResult
     centers::Matrix{Float64}
 
     objective::Float64
+    objective_per_cluster::Vector{Float64}
     iterations::Int
     elapsed::Float64
     converged::Bool
 end
 
 function KmeansResult(d::Integer, n::Integer, k::Integer)
-    return KmeansResult(k, zeros(Int, n), zeros(Float64, d, k), Inf, 0, 0, false)
+    return KmeansResult(k, zeros(Int, n), zeros(Float64, d, k), Inf, Inf * zeros(k), 0, 0, false)
 end
 
 function isbetter(a::KmeansResult, b::KmeansResult)
@@ -19,6 +20,10 @@ end
 
 function reset_objective!(result::KmeansResult)
     result.objective = Inf
+    for i in 1:result.k
+        result.objective_per_cluster[i] = Inf
+    end
+
     return nothing
 end
 
@@ -29,7 +34,8 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     k = size(result.centers, 2)
 
     previous_objective = -Inf
-    result.objective = Inf
+    reset_objective!(result)
+
     result.iterations = algorithm.max_iterations
     result.converged = false
 
@@ -40,7 +46,11 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         previous_objective = result.objective
 
         # assignment step
-        result.objective = 0
+        result.objective = 0.0
+        for i in 1:k
+            result.objective_per_cluster[i] = 0.0
+        end
+
         pairwise!(distances, algorithm.metric, result.centers, data', dims = 2)
         for i in 1:n
             min_distance = Inf
@@ -52,8 +62,12 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
                     min_center = center
                 end
             end
+
             result.assignments[i] = min_center
-            result.objective += distances[min_center, i]
+
+            distance = distances[min_center, i]
+            result.objective += distance
+            result.objective_per_cluster[min_center] += distance
         end
 
         change = abs(result.objective - previous_objective)
