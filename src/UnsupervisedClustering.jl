@@ -39,9 +39,11 @@ include("multistart.jl")
 include("randomswap.jl")
 include("generation.jl")
 include("geneticalgorithm.jl")
-include("print.jl")
+
 include("concatenate.jl")
-include("copy.jl")
 include("convert.jl")
+include("copy.jl")
+include("print.jl")
+include("sort.jl")
 
 end

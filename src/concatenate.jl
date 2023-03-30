@@ -76,6 +76,5 @@ function concatenate(result::KmedoidsResult, results::KmedoidsResult...)::Kmedoi
     return KmedoidsResult(k, assignments, centers, objective, objective_per_cluster, iterations, elapsed, converged)
 end
 
-function concatenate(result::GMMResult, results::GMMResult...)::GMMResult
-    error("function not implemented yet")
-end
+# function concatenate(result::GMMResult, results::GMMResult...)::GMMResult
+# end
