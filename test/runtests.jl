@@ -111,14 +111,14 @@ function test_all()
         @test_throws MethodError UnsupervisedClustering.concatenate()
 
         result = UnsupervisedClustering.concatenate(
-            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
-            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmeansResult(2, [1, 2, 2], [1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true)
+            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
+            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
+            KmeansResult(2, [1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true)
         )
 
         @test result.k == 6
         @test result.assignments == [1, 2, 3, 4, 5, 6, 6]
-        @test result.centers ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
+        @test result.centers ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
         @test result.objective ≈ 6.0
         @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
         @test result.iterations == 6
@@ -138,6 +138,32 @@ function test_all()
         @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
         @test result.iterations == 6
         @test result.elapsed ≈ 6.0
+        @test result.converged == true
+    end
+
+    @testset "sort" begin
+        result = KmeansResult(3, [1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+        UnsupervisedClustering.sort!(result)
+
+        @test result.k == 3
+        @test result.assignments == [3, 1, 2, 2, 1, 3]
+        @test result.centers ≈ [1.0 2.0 3.0; 1.0 2.0 3.0]
+        @test result.objective ≈ 6.0
+        @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
+        @test result.iterations == 1
+        @test result.elapsed ≈ 1.0
+        @test result.converged == true
+
+        result = KmedoidsResult(3, [1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+        UnsupervisedClustering.sort!(result)
+
+        @test result.k == 3
+        @test result.assignments == [3, 1, 2, 2, 1, 3]
+        @test result.centers ≈ [1, 2, 3]
+        @test result.objective ≈ 6.0
+        @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
+        @test result.iterations == 1
+        @test result.elapsed ≈ 1.0
         @test result.converged == true
     end
 
