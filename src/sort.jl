@@ -5,7 +5,7 @@ function Base.sort!(result::KmeansResult)
     n = length(result.assignments)
 
     permutation = sortperm(result.objective_per_cluster)
-    
+
     map = zeros(Int, k)
     for i in 1:k
         map[permutation[i]] = i
@@ -27,7 +27,7 @@ function Base.sort!(result::KmedoidsResult)
     n = length(result.assignments)
 
     permutation = sortperm(result.objective_per_cluster)
-    
+
     map = zeros(Int, k)
     for i in 1:k
         map[permutation[i]] = i
@@ -36,7 +36,7 @@ function Base.sort!(result::KmedoidsResult)
     for i in 1:n
         result.assignments[i] = map[result.assignments[i]]
     end
-    
+
     permute!(result.clusters, permutation)
 
     permute!(result.objective_per_cluster, permutation)
