@@ -44,10 +44,10 @@ function print_string(str::String)
     return nothing
 end
 
-function print_initial_centers(centers::Vector{<:Integer})
-    print_string("Initial centers = [")
-    for center in centers
-        print_string("$center,")
+function print_initial_clusters(clusters::Vector{<:Integer})
+    print_string("Initial clusters = [")
+    for cluster in clusters
+        print_string("$cluster,")
     end
     print_string("]")
     print_newline()

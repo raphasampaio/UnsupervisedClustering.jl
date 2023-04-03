@@ -2,7 +2,7 @@ function Base.copy(result::KmeansResult)
     return KmeansResult(
         result.k,
         copy(result.assignments),
-        copy(result.centers),
+        copy(result.clusters),
         result.objective,
         copy(result.objective_per_cluster),
         result.iterations,
@@ -15,7 +15,7 @@ function Base.copy(result::KmedoidsResult)
     return KmedoidsResult(
         result.k,
         copy(result.assignments),
-        copy(result.centers),
+        copy(result.clusters),
         result.objective,
         copy(result.objective_per_cluster),
         result.iterations,
@@ -29,7 +29,7 @@ function Base.copy(result::GMMResult)
         result.k,
         copy(result.assignments),
         copy(result.weights),
-        deepcopy(result.centers),
+        deepcopy(result.clusters),
         deepcopy(result.covariances),
         result.objective,
         result.iterations,

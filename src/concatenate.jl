@@ -15,11 +15,11 @@ function concatenate_assignments(result::ClusteringResult, results::ClusteringRe
     return vcat(result.assignments, [results[i].assignments .+ accumulated[i] for i in 1:size]...)
 end
 
-function concatenate_centers(result::KmeansResult, results::KmeansResult...)
-    return hcat(result.centers, [i.centers for i in results]...)
+function concatenate_clusters(result::KmeansResult, results::KmeansResult...)
+    return hcat(result.clusters, [i.clusters for i in results]...)
 end
 
-function concatenate_centers(result::KmedoidsResult, results::KmedoidsResult...)
+function concatenate_clusters(result::KmedoidsResult, results::KmedoidsResult...)
     size = length(results)
     accumulated = zeros(size)
     for i in 1:size
@@ -29,7 +29,7 @@ function concatenate_centers(result::KmedoidsResult, results::KmedoidsResult...)
             accumulated[i] = accumulated[i-1] + length(results[i-1].assignments)
         end
     end
-    return vcat(result.centers, [results[i].centers .+ accumulated[i] for i in 1:size]...)
+    return vcat(result.clusters, [results[i].clusters .+ accumulated[i] for i in 1:size]...)
 end
 
 function concatenate_objective(result::ClusteringResult, results::ClusteringResult...)
@@ -55,25 +55,25 @@ end
 function concatenate(result::KmeansResult, results::KmeansResult...)::KmeansResult
     k = concatenate_k(result, results...)
     assignments = concatenate_assignments(result, results...)
-    centers = concatenate_centers(result, results...)
+    clusters = concatenate_clusters(result, results...)
     objective = concatenate_objective(result, results...)
     objective_per_cluster = concatenate_objective_per_cluster(result, results...)
     iterations = concatenate_iterations(result, results...)
     elapsed = concatenate_elapsed(result, results...)
     converged = concatenate_converged(result, results...)
-    return KmeansResult(k, assignments, centers, objective, objective_per_cluster, iterations, elapsed, converged)
+    return KmeansResult(k, assignments, clusters, objective, objective_per_cluster, iterations, elapsed, converged)
 end
 
 function concatenate(result::KmedoidsResult, results::KmedoidsResult...)::KmedoidsResult
     k = concatenate_k(result, results...)
     assignments = concatenate_assignments(result, results...)
-    centers = concatenate_centers(result, results...)
+    clusters = concatenate_clusters(result, results...)
     objective = concatenate_objective(result, results...)
     objective_per_cluster = concatenate_objective_per_cluster(result, results...)
     iterations = concatenate_iterations(result, results...)
     elapsed = concatenate_elapsed(result, results...)
     converged = concatenate_converged(result, results...)
-    return KmedoidsResult(k, assignments, centers, objective, objective_per_cluster, iterations, elapsed, converged)
+    return KmedoidsResult(k, assignments, clusters, objective, objective_per_cluster, iterations, elapsed, converged)
 end
 
 # function concatenate(result::GMMResult, results::GMMResult...)::GMMResult
