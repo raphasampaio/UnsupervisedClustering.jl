@@ -118,7 +118,7 @@ function test_all()
 
         @test result.k == 6
         @test result.assignments == [1, 2, 3, 4, 5, 6, 6]
-        @test result.centers ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
+        @test result.clusters ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
         @test result.objective ≈ 6.0
         @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
         @test result.iterations == 6
@@ -133,7 +133,7 @@ function test_all()
 
         @test result.k == 6
         @test result.assignments ≈ [1, 2, 3, 4, 5, 6, 6]
-        @test result.centers == [1, 2, 3, 4, 5, 6]
+        @test result.clusters == [1, 2, 3, 4, 5, 6]
         @test result.objective ≈ 6.0
         @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
         @test result.iterations == 6
@@ -147,7 +147,7 @@ function test_all()
 
         @test result.k == 3
         @test result.assignments == [3, 1, 2, 2, 1, 3]
-        @test result.centers ≈ [1.0 2.0 3.0; 1.0 2.0 3.0]
+        @test result.clusters ≈ [1.0 2.0 3.0; 1.0 2.0 3.0]
         @test result.objective ≈ 6.0
         @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
         @test result.iterations == 1
@@ -159,7 +159,7 @@ function test_all()
 
         @test result.k == 3
         @test result.assignments == [3, 1, 2, 2, 1, 3]
-        @test result.centers ≈ [1, 2, 3]
+        @test result.clusters ≈ [1, 2, 3]
         @test result.objective ≈ 6.0
         @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
         @test result.iterations == 1

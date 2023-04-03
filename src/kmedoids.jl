@@ -1,7 +1,7 @@
 mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
-    centers::Vector{Int}
+    clusters::Vector{Int}
 
     objective::Float64
     objective_per_cluster::Vector{Float64}
@@ -30,7 +30,7 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
     t = time()
 
     n = size(distances, 1)
-    k = length(result.centers)
+    k = length(result.clusters)
 
     medoids = [Vector{Int}() for _ in 1:k]
     count = zeros(Int, k)
@@ -53,7 +53,7 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
         end
 
         for i in 1:n
-            cluster, distance = assign(i, result.centers, distances)
+            cluster, distance = assign(i, result.clusters, distances)
 
             count[cluster] += 1
             push!(medoids[cluster], i)
@@ -81,7 +81,7 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
         # update step
         for (i, medoid) in enumerate(medoids)
             j = argmin(sum(distances[medoid, medoid], dims = 2))[1]
-            result.centers[i] = medoid[j]
+            result.clusters[i] = medoid[j]
         end
     end
 
@@ -96,9 +96,9 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
     return nothing
 end
 
-function fit(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmedoidsResult
+function fit(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmedoidsResult
     n = size(distances, 1)
-    k = length(initial_centers)
+    k = length(initial_clusters)
 
     result = KmedoidsResult(n, k)
     if n == 0
@@ -108,11 +108,11 @@ function fit(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, initial_cen
     @assert n >= k
 
     for i in 1:k
-        result.centers[i] = initial_centers[i]
+        result.clusters[i] = initial_clusters[i]
     end
 
     if algorithm.verbose
-        print_initial_centers(initial_centers)
+        print_initial_clusters(initial_clusters)
     end
 
     fit!(algorithm, distances, result)
@@ -129,6 +129,6 @@ function fit(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)
 
     @assert n >= k
 
-    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
-    return fit(algorithm, distances, initial_centers)
+    initial_clusters = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, distances, initial_clusters)
 end

@@ -15,7 +15,7 @@ function Base.sort!(result::KmeansResult)
         result.assignments[i] = map[result.assignments[i]]
     end
 
-    permutecols!(result.centers, copy(permutation))
+    permutecols!(result.clusters, copy(permutation))
 
     permute!(result.objective_per_cluster, permutation)
 
@@ -37,7 +37,7 @@ function Base.sort!(result::KmedoidsResult)
         result.assignments[i] = map[result.assignments[i]]
     end
     
-    permute!(result.centers, permutation)
+    permute!(result.clusters, permutation)
 
     permute!(result.objective_per_cluster, permutation)
 

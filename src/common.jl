@@ -23,12 +23,12 @@ function assign(point::Int, clusters::Vector{Int}, distances::Matrix{Float64})::
     min_distance = Inf
 
     for j in 1:k
-        center = clusters[j]
-        if point == center
+        cluster = clusters[j]
+        if point == cluster
             return j, 0.0
         end
 
-        distance = distances[point, center]
+        distance = distances[point, cluster]
         if distance < min_distance
             min_cluster = j
             min_distance = distance

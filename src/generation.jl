@@ -122,7 +122,7 @@ function distance(
     j::Int, 
     data::AbstractMatrix{<:Real}
 )
-    return Distances.evaluate(Euclidean(), a.centers[:, i], b.centers[:, j])
+    return Distances.evaluate(Euclidean(), a.clusters[:, i], b.clusters[:, j])
 end
 
 function distance(
@@ -132,8 +132,8 @@ function distance(
     j::Int,
     data::AbstractMatrix{<:Real}
 )
-    c1 = a.centers[i]
-    c2 = b.centers[j]
+    c1 = a.clusters[i]
+    c2 = b.clusters[j]
     return (data[c1, c2] + data[c2, c1]) / 2
 end
 
@@ -144,23 +144,23 @@ function distance(
     j::Int,
     data::AbstractMatrix{<:Real}
 )
-    d1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.centers[i], b.centers[j])
-    d2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.centers[i], b.centers[j])
+    d1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.clusters[i], b.clusters[j])
+    d2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.clusters[i], b.clusters[j])
     return (d1 + d2) / 2
 end
 
 function copy_clusters!(destiny::KmeansResult, destiny_i::Int, source::KmeansResult, source_i::Int)
-    destiny.centers[:, destiny_i] = copy(source.centers[:, source_i])
+    destiny.clusters[:, destiny_i] = copy(source.clusters[:, source_i])
     return nothing
 end
 
 function copy_clusters!(destiny::KmedoidsResult, destiny_i::Int, source::KmedoidsResult, source_i::Int)
-    destiny.centers[destiny_i] = source.centers[source_i]
+    destiny.clusters[destiny_i] = source.clusters[source_i]
     return nothing
 end
 
 function copy_clusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, source_i::Int)
-    destiny.centers[destiny_i] = copy(source.centers[source_i])
+    destiny.clusters[destiny_i] = copy(source.clusters[source_i])
     destiny.covariances[destiny_i] = copy(source.covariances[source_i])
     return nothing
 end

@@ -1,7 +1,7 @@
 mutable struct KmeansResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
-    centers::Matrix{Float64}
+    clusters::Matrix{Float64}
 
     objective::Float64
     objective_per_cluster::Vector{Float64}
@@ -31,7 +31,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     t = time()
 
     n, d = size(data)
-    k = size(result.centers, 2)
+    k = size(result.clusters, 2)
 
     previous_objective = -Inf
     reset_objective!(result)
@@ -51,7 +51,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
             result.objective_per_cluster[i] = 0.0
         end
 
-        pairwise!(distances, algorithm.metric, result.centers, data', dims = 2)
+        pairwise!(distances, algorithm.metric, result.clusters, data', dims = 2)
         for i in 1:n
             cluster, distance = assign(i, distances)
 
@@ -80,14 +80,14 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         for i in 1:k
             count[i] = 0
             for j in 1:d
-                result.centers[j, i] = 0
+                result.clusters[j, i] = 0
             end
         end
 
         for i in 1:n
             assignment = result.assignments[i]
             for j in 1:d
-                result.centers[j, assignment] += data[i, j]
+                result.clusters[j, assignment] += data[i, j]
             end
             count[assignment] += 1
         end
@@ -95,7 +95,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         for i in 1:k
             cluster_size = max(1, count[i])
             for j in 1:d
-                result.centers[j, i] = result.centers[j, i] / cluster_size
+                result.clusters[j, i] = result.clusters[j, i] / cluster_size
             end
         end
     end
@@ -105,9 +105,9 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     return nothing
 end
 
-function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::KmeansResult
+function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmeansResult
     n, d = size(data)
-    k = length(initial_centers)
+    k = length(initial_clusters)
 
     result = KmeansResult(d, n, k)
     if n == 0
@@ -119,12 +119,12 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_centers::V
 
     for i in 1:d
         for j in 1:k
-            result.centers[i, j] = data[initial_centers[j], i]
+            result.clusters[i, j] = data[initial_clusters[j], i]
         end
     end
 
     if algorithm.verbose
-        print_initial_centers(initial_centers)
+        print_initial_clusters(initial_clusters)
     end
 
     fit!(algorithm, data, result)
@@ -141,6 +141,6 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::Kmean
 
     @assert n >= k
 
-    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
-    return fit(algorithm, data, initial_centers)
+    initial_clusters = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_clusters)
 end

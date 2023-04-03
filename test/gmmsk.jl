@@ -14,12 +14,12 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
     t = time()
 
     n, d = size(data)
-    k = length(result.centers)
+    k = length(result.clusters)
 
     μ = zeros(k, d)
     for i in 1:k
         for j in 1:d
-            μ[i, j] = result.centers[i][j]
+            μ[i, j] = result.clusters[i][j]
         end
     end
 
@@ -52,7 +52,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
 
     for i in 1:k
         for j in 1:d
-            result.centers[i][j] = gmm.means_[i, j]
+            result.clusters[i][j] = gmm.means_[i, j]
         end
     end
 
@@ -84,7 +84,7 @@ function UnsupervisedClustering.fit(parameters::GMMSK, data::AbstractMatrix{<:Re
     permutation = randperm(parameters.rng, n)
     for i in 1:k
         for j in 1:d
-            result.centers[i][j] = data[permutation[i], j]
+            result.clusters[i][j] = data[permutation[i], j]
         end
     end
 

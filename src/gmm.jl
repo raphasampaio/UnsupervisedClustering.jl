@@ -2,7 +2,7 @@ mutable struct GMMResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
     weights::Vector{Float64}
-    centers::Vector{Vector{Float64}}
+    clusters::Vector{Vector{Float64}}
     covariances::Vector{Symmetric{Float64}}
 
     objective::Float64
@@ -14,9 +14,9 @@ end
 function GMMResult(d::Integer, n::Integer, k::Integer)
     assignments = zeros(Int, n)
     weights = ones(k) ./ k
-    centers = [zeros(d) for _ in 1:k]
+    clusters = [zeros(d) for _ in 1:k]
     covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
-    return GMMResult(k, assignments, weights, centers, covariances, -Inf, 0, 0, false)
+    return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
 end
 
 function isbetter(a::GMMResult, b::GMMResult)
@@ -50,14 +50,14 @@ function estimate_gaussian_parameters(
     end
     weights = weights / sum(weights)
 
-    centers = [zeros(d) for _ in 1:k]
+    clusters = [zeros(d) for _ in 1:k]
     covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
 
     for i in 1:k
-        covariances_i, centers[i] = RegularizedCovarianceMatrices.fit(algorithm.estimator, data, responsibilities[:, i])
+        covariances_i, clusters[i] = RegularizedCovarianceMatrices.fit(algorithm.estimator, data, responsibilities[:, i])
         covariances[i] = Symmetric(covariances_i)
     end
-    return weights, centers, covariances
+    return weights, clusters, covariances
 end
 
 function compute_precision_cholesky!(
@@ -104,7 +104,7 @@ function estimate_weighted_log_probabilities(
 
     log_probabilities = zeros(n, k)
     for i in 1:k
-        y = data * precisions_cholesky[i] .- (result.centers[i]' * precisions_cholesky[i])
+        y = data * precisions_cholesky[i] .- (result.clusters[i]' * precisions_cholesky[i])
         log_probabilities[:, i] = sum(y .^ 2, dims = 2)
     end
 
@@ -140,7 +140,7 @@ function maximization_step!(
 )
     responsibilities = exp.(log_responsibilities)
 
-    result.weights, result.centers, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
+    result.weights, result.clusters, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
     compute_precision_cholesky!(algorithm, result, precisions_cholesky)
 
     return nothing
@@ -150,7 +150,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     t = time()
 
     n, d = size(data)
-    k = length(result.centers)
+    k = length(result.clusters)
 
     previous_objective = Inf
     result.objective = -Inf
@@ -197,9 +197,9 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return nothing
 end
 
-function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vector{<:Integer})::GMMResult
+function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::GMMResult
     n, d = size(data)
-    k = length(initial_centers)
+    k = length(initial_clusters)
 
     result = GMMResult(d, n, k)
     if n == 0
@@ -211,12 +211,12 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_centers::Vect
 
     for i in 1:k
         for j in 1:d
-            result.centers[i][j] = data[initial_centers[i], j]
+            result.clusters[i][j] = data[initial_clusters[i], j]
         end
     end
 
     if algorithm.verbose
-        print_initial_centers(initial_centers)
+        print_initial_clusters(initial_clusters)
     end
 
     fit!(algorithm, data, result)
@@ -233,6 +233,6 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResul
 
     @assert n >= k
 
-    initial_centers = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
-    return fit(algorithm, data, initial_centers)
+    initial_clusters = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
+    return fit(algorithm, data, initial_clusters)
 end

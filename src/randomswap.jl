@@ -1,12 +1,12 @@
 function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     n, d = size(data)
-    k = size(result.centers, 2)
+    k = size(result.clusters, 2)
 
     if n > 0 && k > 0
         to = rand(rng, 1:k)
         from = rand(rng, 1:n)
         for i in 1:d
-            result.centers[i, to] = data[from, i]
+            result.clusters[i, to] = data[from, i]
         end
         reset_objective!(result)
     end
@@ -16,18 +16,18 @@ end
 
 function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     n, d = size(data)
-    k = length(result.centers)
+    k = length(result.clusters)
 
     if n > 0 && k > 0
         weights = ones(n)
-        for i in result.centers
+        for i in result.clusters
             weights[i] = 0.0
         end
 
         to = rand(rng, 1:k)
-        weights[result.centers[to]] = 1.0
+        weights[result.clusters[to]] = 1.0
         from = sample(rng, aweights(weights))
-        result.centers[to] = from
+        result.clusters[to] = from
 
         reset_objective!(result)
     end
@@ -42,7 +42,7 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
     if n > 0 && k > 0
         to = rand(rng, 1:k)
         from = rand(rng, 1:n)
-        result.centers[to] = copy(data[from, :])
+        result.clusters[to] = copy(data[from, :])
 
         m = mean([det(result.covariances[j]) for j in 1:k])
         value = (m > 0 ? m : 1.0)^(1 / d)
