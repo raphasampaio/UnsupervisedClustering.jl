@@ -359,6 +359,8 @@ function test_all()
             end
 
             @test result.objective ≈ benchmark[i]
+
+            # @test result.objective ≈ sum(result.objective_per_cluster)
         end
         # @printf("],\n")
     end

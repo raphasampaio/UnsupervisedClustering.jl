@@ -49,33 +49,17 @@ function fit!(algorithm::Kmedoids, distances::AbstractMatrix{<:Real}, result::Km
         for i in 1:k
             empty!(medoids[i])
             count[i] = 0
+            result.objective_per_cluster[i] = 0
         end
 
         for i in 1:n
-            min_distance = Inf
-            min_center = 0
+            cluster, distance = assign(i, result.centers, distances)
 
-            for j in 1:k
-                center = result.centers[j]
-                if i == center
-                    min_distance = 0
-                    min_center = j
-                    break
-                end
+            count[cluster] += 1
+            push!(medoids[cluster], i)
 
-                distance = distances[i, center]
-                if distance < min_distance
-                    min_distance = distance
-                    min_center = j
-                end
-            end
-
-            count[min_center] += 1
-            push!(medoids[min_center], i)
-
-            distance = distances[i, result.centers[min_center]]
             result.objective += distance
-            result.objective_per_cluster[min_center] += distance
+            result.objective_per_cluster[cluster] += distance
         end
 
         change = abs(result.objective - previous_objective)

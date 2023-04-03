@@ -40,6 +40,7 @@ include("randomswap.jl")
 include("generation.jl")
 include("geneticalgorithm.jl")
 
+include("common.jl")
 include("concatenate.jl")
 include("convert.jl")
 include("copy.jl")
