@@ -1,10 +1,10 @@
 permutecols!(a::AbstractMatrix, p::AbstractVector{<:Integer}) = Base.permutecols!!(a, copy(p))
 
-function Base.sort!(result::KmeansResult)
+function Base.sort!(result::KmeansResult; lt = Base.isless)
     k = result.k
     n = length(result.assignments)
 
-    permutation = sortperm(result.objective_per_cluster)
+    permutation = sortperm(result.objective_per_cluster, lt = lt)
 
     map = zeros(Int, k)
     for i in 1:k
@@ -22,11 +22,11 @@ function Base.sort!(result::KmeansResult)
     return nothing
 end
 
-function Base.sort!(result::KmedoidsResult)
+function Base.sort!(result::KmedoidsResult; lt = Base.isless)
     k = result.k
     n = length(result.assignments)
 
-    permutation = sortperm(result.objective_per_cluster)
+    permutation = sortperm(result.objective_per_cluster, lt = lt)
 
     map = zeros(Int, k)
     for i in 1:k
