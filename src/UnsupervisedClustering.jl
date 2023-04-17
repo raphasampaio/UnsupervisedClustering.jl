@@ -31,7 +31,6 @@ export fit,
 
 include("algorithm.jl")
 include("result.jl")
-include("seed.jl")
 include("kmeans.jl")
 include("gmm.jl")
 include("kmedoids.jl")
@@ -44,7 +43,9 @@ include("common.jl")
 include("concatenate.jl")
 include("convert.jl")
 include("copy.jl")
+include("distances.jl")
 include("print.jl")
+include("seed.jl")
 include("sort.jl")
 
 end
