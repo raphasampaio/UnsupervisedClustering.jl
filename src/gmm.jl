@@ -11,12 +11,17 @@ mutable struct GMMResult <: ClusteringResult
     converged::Bool
 end
 
+function GMMResult(assignments::Vector{Int}, weights::Vector{Float64}, clusters::Vector{Vector{Float64}}, covariances::Vector{Symmetric{Float64, Matrix{Float64}}})
+    k = length(weights)
+    return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
+end
+
 function GMMResult(d::Integer, n::Integer, k::Integer)
     assignments = zeros(Int, n)
     weights = ones(k) ./ k
     clusters = [zeros(d) for _ in 1:k]
     covariances = [identity_matrix(d) for _ in 1:k]
-    return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
+    return GMMResult(assignments, weights, clusters, covariances)
 end
 
 function isbetter(a::GMMResult, b::GMMResult)

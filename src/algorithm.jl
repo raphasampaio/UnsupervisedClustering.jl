@@ -24,24 +24,28 @@ Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
     decompose_if_fails::Bool = true
 end
 
-Base.@kwdef mutable struct MultiStart <: ClusteringAlgorithm
+Base.@kwdef struct MultiStart <: ClusteringAlgorithm
     local_search::ClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     max_iterations::Integer = 200
 end
 
-Base.@kwdef mutable struct RandomSwap <: ClusteringAlgorithm
+Base.@kwdef struct RandomSwap <: ClusteringAlgorithm
     local_search::ClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     max_iterations::Integer = 200
     max_iterations_without_improvement::Integer = 150
 end
 
-Base.@kwdef mutable struct GeneticAlgorithm <: ClusteringAlgorithm
+Base.@kwdef struct GeneticAlgorithm <: ClusteringAlgorithm
     local_search::ClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     max_iterations::Integer = 200
     max_iterations_without_improvement::Integer = 150
     π_max::Integer = 50
     π_min::Integer = 40
+end
+
+Base.@kwdef struct EnsembleClustering <: ClusteringAlgorithm
+    algorithms::Vector{ClusteringAlgorithm}
 end
