@@ -37,3 +37,7 @@ function assign(point::Int, clusters::Vector{Int}, distances::Matrix{Float64})::
 
     return min_cluster, min_distance
 end
+
+function identity_matrix(d::Int)
+    return Symmetric(Matrix{Float64}(I, d, d))
+end

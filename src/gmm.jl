@@ -15,7 +15,7 @@ function GMMResult(d::Integer, n::Integer, k::Integer)
     assignments = zeros(Int, n)
     weights = ones(k) ./ k
     clusters = [zeros(d) for _ in 1:k]
-    covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
+    covariances = [identity_matrix(d) for _ in 1:k]
     return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
 end
 
@@ -51,7 +51,7 @@ function estimate_gaussian_parameters(
     weights = weights / sum(weights)
 
     clusters = [zeros(d) for _ in 1:k]
-    covariances = [Symmetric(Matrix{Float64}(I, d, d)) for _ in 1:k]
+    covariances = [identity_matrix(d) for _ in 1:k]
 
     for i in 1:k
         covariances_i, clusters[i] = RegularizedCovarianceMatrices.fit(algorithm.estimator, data, responsibilities[:, i])
