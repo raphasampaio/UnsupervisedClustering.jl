@@ -10,8 +10,13 @@ mutable struct KmeansResult <: ClusteringResult
     converged::Bool
 end
 
+function KmeansResult(assignments::Vector{Int}, clusters::Matrix{Float64})
+    d, k = size(clusters)
+    return KmeansResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
+end
+
 function KmeansResult(d::Integer, n::Integer, k::Integer)
-    return KmeansResult(k, zeros(Int, n), zeros(Float64, d, k), Inf, Inf * zeros(k), 0, 0, false)
+    return KmeansResult(zeros(Int, n), zeros(Float64, d, k))
 end
 
 function isbetter(a::KmeansResult, b::KmeansResult)

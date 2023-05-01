@@ -27,9 +27,11 @@ export fit,
     GMM,
     RandomSwap,
     MultiStart,
-    GeneticAlgorithm
+    GeneticAlgorithm,
+    EnsembleClustering
 
 include("algorithm.jl")
+include("ensemble.jl")
 include("result.jl")
 include("kmeans.jl")
 include("gmm.jl")
