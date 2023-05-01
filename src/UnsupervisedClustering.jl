@@ -14,7 +14,8 @@ const DEFAULT_VERBOSE = false
 const DEFAULT_TOLERANCE = 1e-3
 const DEFAULT_MAX_ITERATIONS = 1000
 
-export fit,
+export 
+    fit,
     fit!,
     counts,
     ClusteringResult,
@@ -30,9 +31,10 @@ export fit,
     GeneticAlgorithm,
     EnsembleClustering
 
+include("result.jl")
+
 include("algorithm.jl")
 include("ensemble.jl")
-include("result.jl")
 include("kmeans.jl")
 include("gmm.jl")
 include("kmedoids.jl")

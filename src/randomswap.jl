@@ -54,12 +54,12 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
     return nothing
 end
 
-function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
+function fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     iterations_without_improvement = 0
 
-    best_result = fit(parameters.local_search, data, k)
+    best_result = fit(meta.local_search, data, k)
 
-    if parameters.verbose
+    if meta.verbose
         print_iteration(0)
         print_iteration(iterations_without_improvement)
         print_result(best_result)
@@ -67,14 +67,14 @@ function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::
         print_newline()
     end
 
-    for iteration in 1:parameters.max_iterations
+    for iteration in 1:meta.max_iterations
         result = copy(best_result)
 
-        random_swap!(result, data, parameters.local_search.rng)
+        random_swap!(result, data, meta.local_search.rng)
 
-        fit!(parameters.local_search, data, result)
+        fit!(meta.local_search, data, result)
 
-        if parameters.verbose
+        if meta.verbose
             print_iteration(iteration)
             print_iteration(iterations_without_improvement)
             print_result(result)
@@ -84,17 +84,17 @@ function fit(parameters::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::
             best_result = result
             iterations_without_improvement = 0
 
-            if parameters.verbose
+            if meta.verbose
                 print_string("(new best)")
             end
         else
             iterations_without_improvement += 1
-            if iterations_without_improvement > parameters.max_iterations_without_improvement
+            if iterations_without_improvement > meta.max_iterations_without_improvement
                 break
             end
         end
 
-        if parameters.verbose
+        if meta.verbose
             print_newline()
         end
     end

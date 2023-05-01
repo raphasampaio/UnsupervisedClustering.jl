@@ -10,6 +10,5 @@ function fit(ensemble::EnsembleClustering, data::AbstractMatrix{<:Real}, k::Inte
     for i in 2:size
         result = fit(ensemble.algorithms[i], data, result)
     end
-
     return result
 end

@@ -34,7 +34,7 @@ function reset_objective!(result::GMMResult)
 end
 
 function estimate_gaussian_parameters(
-    algorithm::GMM,
+    gmm::GMM,
     data::AbstractMatrix{<:Real},
     k::Int,
     responsibilities::Matrix{Float64},
@@ -59,14 +59,14 @@ function estimate_gaussian_parameters(
     covariances = [identity_matrix(d) for _ in 1:k]
 
     for i in 1:k
-        covariances_i, clusters[i] = RegularizedCovarianceMatrices.fit(algorithm.estimator, data, responsibilities[:, i])
+        covariances_i, clusters[i] = RegularizedCovarianceMatrices.fit(gmm.estimator, data, responsibilities[:, i])
         covariances[i] = Symmetric(covariances_i)
     end
     return weights, clusters, covariances
 end
 
 function compute_precision_cholesky!(
-    algorithm::GMM, 
+    gmm::GMM, 
     result::GMMResult, 
     precisions_cholesky::Vector{Matrix{Float64}}
 )
@@ -78,7 +78,7 @@ function compute_precision_cholesky!(
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
         catch e
-            if algorithm.decompose_if_fails
+            if gmm.decompose_if_fails
                 decomposition = eigen(result.covariances[i], sortby = nothing)
                 result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
                 covariances_cholesky = cholesky(result.covariances[i])
@@ -136,7 +136,7 @@ function expectation_step(
 end
 
 function maximization_step!(
-    algorithm::GMM,
+    gmm::GMM,
     data::AbstractMatrix{<:Real},
     k::Int,
     result::GMMResult,
@@ -145,13 +145,13 @@ function maximization_step!(
 )
     responsibilities = exp.(log_responsibilities)
 
-    result.weights, result.clusters, result.covariances = estimate_gaussian_parameters(algorithm, data, k, responsibilities)
-    compute_precision_cholesky!(algorithm, result, precisions_cholesky)
+    result.weights, result.clusters, result.covariances = estimate_gaussian_parameters(gmm, data, k, responsibilities)
+    compute_precision_cholesky!(gmm, result, precisions_cholesky)
 
     return nothing
 end
 
-function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     t = time()
 
     n, d = size(data)
@@ -160,24 +160,24 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     previous_objective = Inf
     result.objective = -Inf
 
-    result.iterations = algorithm.max_iterations
+    result.iterations = gmm.max_iterations
     result.converged = false
 
     log_responsibilities = zeros(n, k)
 
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
-    compute_precision_cholesky!(algorithm, result, precisions_cholesky)
+    compute_precision_cholesky!(gmm, result, precisions_cholesky)
 
-    for iteration in 1:algorithm.max_iterations
+    for iteration in 1:gmm.max_iterations
         previous_objective = result.objective
 
         t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
 
-        t2 = @elapsed maximization_step!(algorithm, data, k, result, log_responsibilities, precisions_cholesky)
+        t2 = @elapsed maximization_step!(gmm, data, k, result, log_responsibilities, precisions_cholesky)
 
         change = abs(result.objective - previous_objective)
 
-        if algorithm.verbose
+        if gmm.verbose
             print_iteration(iteration)
             print_objective(result)
             print_change(change)
@@ -185,7 +185,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
             print_newline()
         end
 
-        if change < algorithm.tolerance || n == k
+        if change < gmm.tolerance || n == k
             result.converged = true
             result.iterations = iteration
             break
@@ -202,7 +202,7 @@ function fit!(algorithm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return nothing
 end
 
-function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::GMMResult
+function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::GMMResult
     n, d = size(data)
     k = length(initial_clusters)
 
@@ -220,16 +220,16 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::Vec
         end
     end
 
-    if algorithm.verbose
+    if gmm.verbose
         print_initial_clusters(initial_clusters)
     end
 
-    fit!(algorithm, data, result)
+    fit!(gmm, data, result)
 
     return result
 end
 
-function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)
 
     if n == 0
@@ -238,6 +238,6 @@ function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResul
 
     @assert n >= k
 
-    initial_clusters = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
-    return fit(algorithm, data, initial_clusters)
+    initial_clusters = StatsBase.sample(gmm.rng, 1:n, k, replace = false)
+    return fit(gmm, data, initial_clusters)
 end

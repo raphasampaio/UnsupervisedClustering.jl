@@ -1,17 +1,17 @@
-function fit(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
-    best_result = fit(parameters.local_search, data, k)
+function fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
+    best_result = fit(meta.local_search, data, k)
 
-    if parameters.verbose
+    if meta.verbose
         print_iteration(0)
         print_result(best_result)
         print_string("(initial solution)")
         print_newline()
     end
 
-    for iteration in 1:parameters.max_iterations
-        result = fit(parameters.local_search, data, k)
+    for iteration in 1:meta.max_iterations
+        result = fit(meta.local_search, data, k)
 
-        if parameters.verbose
+        if meta.verbose
             print_iteration(iteration)
             print_result(result)
         end
@@ -19,12 +19,12 @@ function fit(parameters::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::
         if isbetter(result, best_result)
             best_result = result
 
-            if parameters.verbose
+            if meta.verbose
                 print_string("(new best)")
             end
         end
 
-        if parameters.verbose
+        if meta.verbose
             print_newline()
         end
     end

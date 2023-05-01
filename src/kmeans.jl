@@ -32,7 +32,7 @@ function reset_objective!(result::KmeansResult)
     return nothing
 end
 
-function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
 
     n, d = size(data)
@@ -41,13 +41,13 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     previous_objective = -Inf
     reset_objective!(result)
 
-    result.iterations = algorithm.max_iterations
+    result.iterations = kmeans.max_iterations
     result.converged = false
 
     count = zeros(Int, k)
     distances = zeros(k, n)
 
-    for iteration in 1:algorithm.max_iterations
+    for iteration in 1:kmeans.max_iterations
         previous_objective = result.objective
 
         # assignment step
@@ -56,7 +56,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
             result.objective_per_cluster[i] = 0.0
         end
 
-        pairwise!(distances, algorithm.metric, result.clusters, data', dims = 2)
+        pairwise!(distances, kmeans.metric, result.clusters, data', dims = 2)
         for i in 1:n
             cluster, distance = assign(i, distances)
 
@@ -67,7 +67,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
 
         change = abs(result.objective - previous_objective)
 
-        if algorithm.verbose
+        if kmeans.verbose
             print_iteration(iteration)
             print_objective(result)
             print_change(change)
@@ -75,7 +75,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
         end
 
         # stopping condition
-        if change < algorithm.tolerance || n == k
+        if change < kmeans.tolerance || n == k
             result.converged = true
             result.iterations = iteration
             break
@@ -110,7 +110,7 @@ function fit!(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansRes
     return nothing
 end
 
-function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmeansResult
+function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmeansResult
     n, d = size(data)
     k = length(initial_clusters)
 
@@ -128,16 +128,16 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::
         end
     end
 
-    if algorithm.verbose
+    if kmeans.verbose
         print_initial_clusters(initial_clusters)
     end
 
-    fit!(algorithm, data, result)
+    fit!(kmeans, data, result)
 
     return result
 end
 
-function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 
     if n == 0
@@ -146,6 +146,6 @@ function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::Kmean
 
     @assert n >= k
 
-    initial_clusters = StatsBase.sample(algorithm.rng, 1:n, k, replace = false)
-    return fit(algorithm, data, initial_clusters)
+    initial_clusters = StatsBase.sample(kmeans.rng, 1:n, k, replace = false)
+    return fit(kmeans, data, initial_clusters)
 end
