@@ -115,35 +115,17 @@ function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
     end
 end
 
-function distance(
-    a::KmeansResult,
-    i::Int,
-    b::KmeansResult,
-    j::Int, 
-    data::AbstractMatrix{<:Real}
-)
+function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int, data::AbstractMatrix{<:Real})
     return Distances.evaluate(Euclidean(), a.clusters[:, i], b.clusters[:, j])
 end
 
-function distance(
-    a::KmedoidsResult,
-    i::Int,
-    b::KmedoidsResult,
-    j::Int,
-    data::AbstractMatrix{<:Real}
-)
+function distance(a::KmedoidsResult, i::Int, b::KmedoidsResult, j::Int, data::AbstractMatrix{<:Real})
     c1 = a.clusters[i]
     c2 = b.clusters[j]
     return (data[c1, c2] + data[c2, c1]) / 2
 end
 
-function distance(
-    a::GMMResult,
-    i::Int,
-    b::GMMResult,
-    j::Int,
-    data::AbstractMatrix{<:Real}
-)
+function distance(a::GMMResult, i::Int, b::GMMResult, j::Int, data::AbstractMatrix{<:Real})
     d1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.clusters[i], b.clusters[j])
     d2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.clusters[i], b.clusters[j])
     return (d1 + d2) / 2
@@ -165,30 +147,15 @@ function copy_clusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, s
     return nothing
 end
 
-function update_weights!(
-    child::KmeansResult,
-    parent1::KmeansResult,
-    parent2::KmeansResult,
-    assignment::AbstractVector{<:Integer}
-)
+function update_weights!(child::KmeansResult, parent1::KmeansResult, parent2::KmeansResult, assignment::AbstractVector{<:Integer})
     return nothing
 end
 
-function update_weights!(
-    child::KmedoidsResult,
-    parent1::KmedoidsResult,
-    parent2::KmedoidsResult,
-    assignment::AbstractVector{<:Integer}
-)
+function update_weights!(child::KmedoidsResult, parent1::KmedoidsResult, parent2::KmedoidsResult, assignment::AbstractVector{<:Integer})
     return nothing
 end
 
-function update_weights!(
-    child::GMMResult,
-    parent1::GMMResult,
-    parent2::GMMResult,
-    assignment::AbstractVector{<:Integer}
-)
+function update_weights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
     k = length(assignment)
     for i in 1:k
         child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2

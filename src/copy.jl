@@ -7,7 +7,7 @@ function Base.copy(result::KmeansResult)
         copy(result.objective_per_cluster),
         result.iterations,
         result.elapsed,
-        result.converged
+        result.converged,
     )
 end
 
@@ -20,7 +20,7 @@ function Base.copy(result::KmedoidsResult)
         copy(result.objective_per_cluster),
         result.iterations,
         result.elapsed,
-        result.converged
+        result.converged,
     )
 end
 
@@ -34,6 +34,6 @@ function Base.copy(result::GMMResult)
         result.objective,
         result.iterations,
         result.elapsed,
-        result.converged
+        result.converged,
     )
 end

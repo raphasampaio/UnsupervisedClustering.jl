@@ -113,7 +113,7 @@ function test_all()
         result = UnsupervisedClustering.concatenate(
             KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
             KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmeansResult(2, [1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true)
+            KmeansResult(2, [1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
         )
 
         @test result.k == 6
@@ -128,7 +128,7 @@ function test_all()
         result = UnsupervisedClustering.concatenate(
             KmedoidsResult(2, [1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
             KmedoidsResult(2, [1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmedoidsResult(2, [1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true)
+            KmedoidsResult(2, [1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
         )
 
         @test result.k == 6
@@ -187,12 +187,12 @@ function test_all()
         n, d = size(data)
 
         kmeans = Kmeans(
-            verbose = verbose, 
+            verbose = verbose,
             rng = MersenneTwister(1),
         )
 
         kmedoids = Kmedoids(
-            verbose = verbose, 
+            verbose = verbose,
             rng = MersenneTwister(1),
         )
 
@@ -200,28 +200,28 @@ function test_all()
             verbose = verbose,
             rng = MersenneTwister(1),
             estimator = EmpiricalCovarianceMatrix(n, d),
-            decompose_if_fails = false
+            decompose_if_fails = false,
         )
 
         gmm_shrunk = GMM(
             verbose = verbose,
             rng = MersenneTwister(1),
             estimator = ShrunkCovarianceMatrix(n, d),
-            decompose_if_fails = false
+            decompose_if_fails = false,
         )
 
         gmm_oas = GMM(
             verbose = verbose,
             rng = MersenneTwister(1),
             estimator = LedoitWolfCovarianceMatrix(n, d),
-            decompose_if_fails = false
+            decompose_if_fails = false,
         )
 
         gmm_lw = GMM(
             verbose = verbose,
             rng = MersenneTwister(1),
             estimator = LedoitWolfCovarianceMatrix(n, d),
-            decompose_if_fails = false
+            decompose_if_fails = false,
         )
 
         algorithms = [
@@ -230,115 +230,115 @@ function test_all()
             MultiStart(
                 local_search = kmeans,
                 verbose = verbose,
-                max_iterations = max_iterations
+                max_iterations = max_iterations,
             ),
             RandomSwap(
                 local_search = kmeans,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             GeneticAlgorithm(
                 local_search = kmeans,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             # KMEDOIDS
             kmedoids,
             MultiStart(
                 local_search = kmedoids,
                 verbose = verbose,
-                max_iterations = max_iterations
+                max_iterations = max_iterations,
             ),
             RandomSwap(
                 local_search = kmedoids,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             GeneticAlgorithm(
                 local_search = kmedoids,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             # GMM EMPIRICAL
             gmm,
             MultiStart(
-                local_search = gmm, 
-                max_iterations = max_iterations
+                local_search = gmm,
+                max_iterations = max_iterations,
             ),
             RandomSwap(
                 local_search = gmm,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             GeneticAlgorithm(
                 local_search = gmm,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             # GMM SHRUNK
             gmm_shrunk,
             MultiStart(
                 local_search = gmm_shrunk,
-                max_iterations = max_iterations
+                max_iterations = max_iterations,
             ),
             RandomSwap(
                 local_search = gmm_shrunk,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             GeneticAlgorithm(
                 local_search = gmm_shrunk,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             # GMM OAS
             gmm_oas,
             MultiStart(
-                local_search = gmm_oas, 
-                verbose = verbose, 
-                max_iterations = max_iterations
+                local_search = gmm_oas,
+                verbose = verbose,
+                max_iterations = max_iterations,
             ),
             RandomSwap(
                 local_search = gmm_oas,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             GeneticAlgorithm(
                 local_search = gmm_oas,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             # GMM LW
             gmm_lw,
             MultiStart(
-                local_search = gmm_lw, 
-                verbose = verbose, 
-                max_iterations = max_iterations
+                local_search = gmm_lw,
+                verbose = verbose,
+                max_iterations = max_iterations,
             ),
             RandomSwap(
                 local_search = gmm_lw,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             GeneticAlgorithm(
                 local_search = gmm_lw,
                 verbose = verbose,
                 max_iterations = max_iterations,
-                max_iterations_without_improvement = max_iterations_without_improvement
+                max_iterations_without_improvement = max_iterations_without_improvement,
             ),
             # ENSAMBLE
-            EnsembleClustering(kmeans, gmm)
+            EnsembleClustering(kmeans, gmm),
         ]
 
         # @printf("\"%s\" => [", dataset)
@@ -346,13 +346,13 @@ function test_all()
             UnsupervisedClustering.seed!(algorithm, 1)
 
             result =
-            if algorithm == kmedoids || (hasproperty(algorithm, :local_search) && algorithm.local_search == kmedoids)
-                distances = pairwise(SqEuclidean(), data, dims = 1)
-                UnsupervisedClustering.fit(algorithm, distances, k)
-            else
-                UnsupervisedClustering.fit(algorithm, data, k)
-            end
-            
+                if algorithm == kmedoids || (hasproperty(algorithm, :local_search) && algorithm.local_search == kmedoids)
+                    distances = pairwise(SqEuclidean(), data, dims = 1)
+                    UnsupervisedClustering.fit(algorithm, distances, k)
+                else
+                    UnsupervisedClustering.fit(algorithm, data, k)
+                end
+
             # @printf("%.16f,", result.objective)
 
             counts = UnsupervisedClustering.counts(result)

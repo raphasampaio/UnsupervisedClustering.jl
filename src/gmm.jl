@@ -11,7 +11,12 @@ mutable struct GMMResult <: ClusteringResult
     converged::Bool
 end
 
-function GMMResult(assignments::Vector{Int}, weights::Vector{Float64}, clusters::Vector{Vector{Float64}}, covariances::Vector{Symmetric{Float64, Matrix{Float64}}})
+function GMMResult(
+    assignments::Vector{Int},
+    weights::Vector{Float64},
+    clusters::Vector{Vector{Float64}},
+    covariances::Vector{Symmetric{Float64, Matrix{Float64}}},
+)
     k = length(weights)
     return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
 end
@@ -66,9 +71,9 @@ function estimate_gaussian_parameters(
 end
 
 function compute_precision_cholesky!(
-    gmm::GMM, 
-    result::GMMResult, 
-    precisions_cholesky::Vector{Matrix{Float64}}
+    gmm::GMM,
+    result::GMMResult,
+    precisions_cholesky::Vector{Matrix{Float64}},
 )
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
@@ -96,7 +101,7 @@ function estimate_weighted_log_probabilities(
     data::AbstractMatrix{<:Real},
     k::Int,
     result::GMMResult,
-    precisions_cholesky::Vector{Matrix{Float64}}
+    precisions_cholesky::Vector{Matrix{Float64}},
 )
     n, d = size(data)
 
@@ -141,7 +146,7 @@ function maximization_step!(
     k::Int,
     result::GMMResult,
     log_responsibilities::Matrix{Float64},
-    precisions_cholesky::Vector{Matrix{Float64}}
+    precisions_cholesky::Vector{Matrix{Float64}},
 )
     responsibilities = exp.(log_responsibilities)
 

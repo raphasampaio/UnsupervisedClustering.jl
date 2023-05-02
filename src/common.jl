@@ -1,4 +1,4 @@
-function assign(point::Int, distances::Matrix{Float64})::Tuple{Int,Float64}
+function assign(point::Int, distances::Matrix{Float64})::Tuple{Int, Float64}
     k, n = size(distances)
 
     min_cluster = 0
@@ -15,7 +15,7 @@ function assign(point::Int, distances::Matrix{Float64})::Tuple{Int,Float64}
     return min_cluster, min_distance
 end
 
-function assign(point::Int, clusters::Vector{Int}, distances::Matrix{Float64})::Tuple{Int,Float64}
+function assign(point::Int, clusters::Vector{Int}, distances::Matrix{Float64})::Tuple{Int, Float64}
     n = size(distances, 1)
     k = length(clusters)
 
