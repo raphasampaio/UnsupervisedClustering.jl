@@ -1,5 +1,3 @@
-permutecols!(a::AbstractMatrix, p::AbstractVector{<:Integer}) = Base.permutecols!!(a, copy(p))
-
 function Base.sort!(result::KmeansResult; lt = Base.isless)
     k = result.k
     n = length(result.assignments)

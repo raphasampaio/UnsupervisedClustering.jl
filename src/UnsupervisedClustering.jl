@@ -30,6 +30,9 @@ export fit,
     GeneticAlgorithm,
     ClusteringChain
 
+abstract type ClusteringAlgorithm end
+abstract type ClusteringResult end
+
 include("result.jl")
 include("algorithm.jl")
 
@@ -44,13 +47,19 @@ include("metaheuristics/geneticalgorithm.jl")
 
 include("chain.jl")
 
+include("results/convert.jl")
+include("results/copy.jl")
+include("results/counts.jl")
+include("results/isbetter.jl")
+include("results/randomswap.jl")
+include("results/resetobjective.jl")
+include("results/sort.jl")
+
 include("common.jl")
 include("concatenate.jl")
-include("convert.jl")
-include("copy.jl")
+
 include("distances.jl")
 include("print.jl")
 include("seed.jl")
-include("sort.jl")
 
 end

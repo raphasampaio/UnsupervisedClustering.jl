@@ -60,39 +60,11 @@ function KmedoidsResult(n::Integer, k::Integer)
     return KmedoidsResult(zeros(Int, n), zeros(Int, k))
 end
 
-function isbetter(a::KmedoidsResult, b::KmedoidsResult)
-    return isless(a.objective, b.objective)
-end
+@doc raw"""
+    fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
 
-function reset_objective!(result::KmedoidsResult)
-    result.objective = Inf
-    for i in 1:result.k
-        result.objective_per_cluster[i] = Inf
-    end
-    return nothing
-end
-
-function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    n, d = size(data)
-    k = length(result.clusters)
-
-    if n > 0 && k > 0
-        weights = ones(n)
-        for i in result.clusters
-            weights[i] = 0.0
-        end
-
-        to = rand(rng, 1:k)
-        weights[result.clusters[to]] = 1.0
-        from = sample(rng, aweights(weights))
-        result.clusters[to] = from
-
-        reset_objective!(result)
-    end
-
-    return nothing
-end
-
+TODO: Documentation
+"""
 function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
     t = time()
 
@@ -175,6 +147,11 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     return nothing
 end
 
+@doc raw"""
+    fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+
+TODO: Documentation
+"""
 function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
     n = size(distances, 1)
     k = length(initial_clusters)
@@ -199,6 +176,11 @@ function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clus
     return result
 end
 
+@doc raw"""
+    fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
     n = size(distances, 1)
 
