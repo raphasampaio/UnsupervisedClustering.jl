@@ -73,7 +73,7 @@ end
 function compute_precision_cholesky!(
     gmm::GMM,
     result::GMMResult,
-    precisions_cholesky::AbstractVector{Matrix{<:Real}},
+    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
 )
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
@@ -101,7 +101,7 @@ function estimate_weighted_log_probabilities(
     data::AbstractMatrix{<:Real},
     k::Integer,
     result::GMMResult,
-    precisions_cholesky::AbstractVector{Matrix{<:Real}},
+    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
 )
     n, d = size(data)
 
