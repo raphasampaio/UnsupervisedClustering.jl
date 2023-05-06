@@ -31,12 +31,13 @@ export fit,
     EnsembleClustering
 
 include("result.jl")
-
 include("algorithm.jl")
+
+include("localsearch/kmeans.jl")
+include("localsearch/gmm.jl")
+include("localsearch/kmedoids.jl")
+
 include("ensemble.jl")
-include("kmeans.jl")
-include("gmm.jl")
-include("kmedoids.jl")
 include("multistart.jl")
 include("randomswap.jl")
 include("generation.jl")
