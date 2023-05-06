@@ -1,4 +1,4 @@
-function assign(point::Integer, distances::AbstractMatrix{<:Real})::Tuple{Integer, <:Real}
+function assign(point::Integer, distances::AbstractMatrix{<:Real})::Tuple{<:Integer, <:Real}
     k, n = size(distances)
 
     min_cluster = 0
