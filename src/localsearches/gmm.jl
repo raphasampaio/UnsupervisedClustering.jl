@@ -100,7 +100,7 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
 
         m = mean([det(result.covariances[j]) for j in 1:k])
         value = (m > 0 ? m : 1.0)^(1 / d)
-        result.covariances[to] = Symmetric(value .* Matrix{Float64}(I, d, d))
+        result.covariances[to] = Symmetric(value .* identity_matrix(d))
 
         reset_objective!(result)
     end
@@ -151,13 +151,13 @@ function compute_precision_cholesky!(
     for i in 1:k
         try
             covariances_cholesky = cholesky(result.covariances[i])
-            precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
+            precisions_cholesky[i] = covariances_cholesky.U \ identity_matrix(d)
         catch e
             if gmm.decompose_if_fails
                 decomposition = eigen(result.covariances[i], sortby = nothing)
                 result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
                 covariances_cholesky = cholesky(result.covariances[i])
-                precisions_cholesky[i] = covariances_cholesky.U \ Matrix{Float64}(I, d, d)
+                precisions_cholesky[i] = covariances_cholesky.U \ identity_matrix(d)
             else
                 error("GMM Failed: $e")
             end
@@ -226,6 +226,11 @@ function maximization_step!(
     return nothing
 end
 
+@doc raw"""
+    fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+
+TODO: Documentation
+"""
 function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     t = time()
 
@@ -277,6 +282,11 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return nothing
 end
 
+@doc raw"""
+    fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+
+TODO: Documentation
+"""
 function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::GMMResult
     n, d = size(data)
     k = length(initial_clusters)
@@ -304,6 +314,11 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractV
     return result
 end
 
+@doc raw"""
+    fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)
 
