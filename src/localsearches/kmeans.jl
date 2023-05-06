@@ -1,3 +1,17 @@
+@doc raw"""
+    KmeansResult(
+        k::Int
+        assignments::Vector{Int}
+        clusters::Matrix{Float64}
+        objective::Float64
+        objective_per_cluster::Vector{Float64}
+        iterations::Int
+        elapsed::Float64
+        converged::Bool
+    )
+
+TODO: Documentation
+"""
 mutable struct KmeansResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -10,11 +24,21 @@ mutable struct KmeansResult <: ClusteringResult
     converged::Bool
 end
 
+@doc raw"""
+    KmeansResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Real})
+
+TODO: Documentation
+"""
 function KmeansResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Real})
     d, k = size(clusters)
     return KmeansResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
 end
 
+@doc raw"""
+    KmeansResult(d::Integer, n::Integer, k::Integer)
+
+TODO: Documentation
+"""
 function KmeansResult(d::Integer, n::Integer, k::Integer)
     return KmeansResult(zeros(Int, n), zeros(Float64, d, k))
 end

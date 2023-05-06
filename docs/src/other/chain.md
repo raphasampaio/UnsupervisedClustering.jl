@@ -1,6 +1,6 @@
-# k-medoids
+# Clustering Chain
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["localsearches/kmedoids.jl"]
+Pages   = ["chain.jl"]
 ```

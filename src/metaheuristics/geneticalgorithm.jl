@@ -1,3 +1,8 @@
+@doc raw"""
+    fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     generation = Generation()
 

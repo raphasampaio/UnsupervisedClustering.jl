@@ -1,3 +1,8 @@
+@doc raw"""
+    fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     best_result = fit(meta.local_search, data, k)
 

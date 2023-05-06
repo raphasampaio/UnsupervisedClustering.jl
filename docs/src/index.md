@@ -1,6 +1,9 @@
-# UnsupervisedClustering
+# UnsupervisedClustering.jl
 
-```@docs
-UnsupervisedClustering.fit
-UnsupervisedClustering.fit!
+## Installation
+
+At the Julia REPL:
+
+```julia
+pkg> add UnsupervisedClustering
 ```

@@ -1,3 +1,18 @@
+@doc raw"""
+    GMMResult(
+        k::Int
+        assignments::Vector{Int}
+        weights::Vector{Float64}
+        clusters::Vector{Vector{Float64}}
+        covariances::Vector{Symmetric{Float64}}
+        objective::Float64
+        iterations::Int
+        elapsed::Float64
+        converged::Bool
+    )
+
+TODO: Documentation
+"""
 mutable struct GMMResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -11,6 +26,16 @@ mutable struct GMMResult <: ClusteringResult
     converged::Bool
 end
 
+@doc raw"""
+    GMMResult(
+        assignments::AbstractVector{<:Integer},
+        weights::AbstractVector{<:Real},
+        clusters::AbstractVector{<:AbstractVector{<:Real}},
+        covariances::AbstractVector{<:Symmetric{<:Real}},
+    )
+
+TODO: Documentation
+"""
 function GMMResult(
     assignments::AbstractVector{<:Integer},
     weights::AbstractVector{<:Real},
@@ -21,6 +46,11 @@ function GMMResult(
     return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
 end
 
+@doc raw"""
+    GMMResult(d::Integer, n::Integer, k::Integer)
+
+TODO: Documentation
+"""
 function GMMResult(d::Integer, n::Integer, k::Integer)
     assignments = zeros(Int, n)
     weights = ones(k) ./ k

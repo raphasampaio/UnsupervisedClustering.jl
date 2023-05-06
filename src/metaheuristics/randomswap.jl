@@ -54,6 +54,11 @@ function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::Abst
     return nothing
 end
 
+@doc raw"""
+    fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     iterations_without_improvement = 0
 

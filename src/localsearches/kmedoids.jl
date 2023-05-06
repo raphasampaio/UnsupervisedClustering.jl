@@ -1,3 +1,17 @@
+@doc raw"""
+    KmedoidsResult(
+        k::Int
+        assignments::Vector{Int}
+        clusters::Vector{Int}
+        objective::Float64
+        objective_per_cluster::Vector{Float64}
+        iterations::Int
+        elapsed::Float64
+        converged::Bool
+    )
+
+TODO: Documentation
+"""
 mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -10,8 +24,23 @@ mutable struct KmedoidsResult <: ClusteringResult
     converged::Bool
 end
 
+@doc raw"""
+    KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Integer})
+
+TODO: Documentation
+"""
+function KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Integer})
+    d, k = size(clusters)
+    return KmedoidsResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
+end
+
+@doc raw"""
+    KmedoidsResult(n::Integer, k::Integer)
+
+TODO: Documentation
+"""
 function KmedoidsResult(n::Integer, k::Integer)
-    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, Inf * zeros(k), 0, 0, false)
+    return KmedoidsResult(zeros(Int, n), zeros(Int, k))
 end
 
 function isbetter(a::KmedoidsResult, b::KmedoidsResult)
