@@ -303,9 +303,3 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     initial_clusters = StatsBase.sample(gmm.rng, 1:n, k, replace = false)
     return fit(gmm, data, initial_clusters)
 end
-
-function fit(algorithm::GMM, data::AbstractMatrix{<:Real}, result_kmeans::KmeansResult)
-    result_gmm = convert(GMMResult, result_kmeans)
-    fit!(algorithm, data, result_gmm)
-    return result_gmm
-end

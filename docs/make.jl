@@ -30,8 +30,8 @@ makedocs(
             "Random Swap"=>"metaheuristics/randomswap.md",
             "Genetic Algorithm"=>"metaheuristics/geneticalgorithm.md",
         ]
-        "Other" => Any[
-            "Clustering Chain"=>"other/chain.md"
+        "Ensemble" => Any[
+            "Clustering Chain"=>"ensemble/chain.md"
         ]
     ],
 )

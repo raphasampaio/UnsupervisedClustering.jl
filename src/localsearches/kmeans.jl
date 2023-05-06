@@ -194,9 +194,3 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansRe
     initial_clusters = StatsBase.sample(kmeans.rng, 1:n, k, replace = false)
     return fit(kmeans, data, initial_clusters)
 end
-
-function fit(algorithm::Kmeans, data::AbstractMatrix{<:Real}, result_gmm::GMMResult)
-    result_kmeans = convert(Kmeans, result_gmm)
-    fit!(algorithm, data, result_kmeans)
-    return result_kmeans
-end
