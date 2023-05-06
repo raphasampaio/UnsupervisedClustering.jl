@@ -12,10 +12,10 @@ mutable struct GMMResult <: ClusteringResult
 end
 
 function GMMResult(
-    assignments::Vector{Int},
-    weights::Vector{Float64},
-    clusters::Vector{Vector{Float64}},
-    covariances::Vector{Symmetric{Float64, Matrix{Float64}}},
+    assignments::AbstractVector{<:Integer},
+    weights::AbstractVector{<:Real},
+    clusters::AbstractVector{AbstractVector{<:Real}},
+    covariances::AbstractVector{Symmetric{<:Real, Matrix{<:Real}}},
 )
     k = length(weights)
     return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
@@ -41,8 +41,8 @@ end
 function estimate_gaussian_parameters(
     gmm::GMM,
     data::AbstractMatrix{<:Real},
-    k::Int,
-    responsibilities::Matrix{Float64},
+    k::Integer,
+    responsibilities::AbstractMatrix{<:Real},
 )
     n, d = size(data)
 
@@ -73,7 +73,7 @@ end
 function compute_precision_cholesky!(
     gmm::GMM,
     result::GMMResult,
-    precisions_cholesky::Vector{Matrix{Float64}},
+    precisions_cholesky::AbstractVector{Matrix{<:Real}},
 )
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
@@ -99,9 +99,9 @@ end
 
 function estimate_weighted_log_probabilities(
     data::AbstractMatrix{<:Real},
-    k::Int,
+    k::Integer,
     result::GMMResult,
-    precisions_cholesky::Vector{Matrix{Float64}},
+    precisions_cholesky::AbstractVector{Matrix{<:Real}},
 )
     n, d = size(data)
 
@@ -123,9 +123,9 @@ end
 
 function expectation_step(
     data::AbstractMatrix{<:Real},
-    k::Int,
+    k::Integer,
     result::GMMResult,
-    precisions_cholesky::Vector{Matrix{Float64}},
+    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
 )
     n, d = size(data)
 
@@ -143,10 +143,10 @@ end
 function maximization_step!(
     gmm::GMM,
     data::AbstractMatrix{<:Real},
-    k::Int,
+    k::Integer,
     result::GMMResult,
-    log_responsibilities::Matrix{Float64},
-    precisions_cholesky::Vector{Matrix{Float64}},
+    log_responsibilities::AbstractMatrix{<:Real},
+    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
 )
     responsibilities = exp.(log_responsibilities)
 
@@ -207,7 +207,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return nothing
 end
 
-function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::GMMResult
+function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::GMMResult
     n, d = size(data)
     k = length(initial_clusters)
 

@@ -3,7 +3,7 @@
 # end
 
 print_objective(result::ClusteringResult) = print_objective(result.objective)
-function print_objective(objective::Float64)
+function print_objective(objective::Real)
     @printf("%12.4f ", objective)
 end
 
@@ -17,12 +17,12 @@ function print_iterations(iterations::Integer)
 end
 
 print_elapsed(result::ClusteringResult) = print_elapsed(result.elapsed)
-function print_elapsed(elapsed::Float64)
+function print_elapsed(elapsed::Real)
     @printf("%10.2fs ", elapsed)
     return nothing
 end
 
-function print_change(change::Float64)
+function print_change(change::Real)
     @printf("%12.4f ", change)
     return nothing
 end
@@ -44,7 +44,7 @@ function print_string(str::String)
     return nothing
 end
 
-function print_initial_clusters(clusters::Vector{<:Integer})
+function print_initial_clusters(clusters::AbstractVector{<:Integer})
     print_string("Initial clusters = [")
     for cluster in clusters
         print_string("$cluster,")

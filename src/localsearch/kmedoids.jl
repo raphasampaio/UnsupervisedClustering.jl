@@ -96,7 +96,7 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     return nothing
 end
 
-function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmedoidsResult
+function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
     n = size(distances, 1)
     k = length(initial_clusters)
 

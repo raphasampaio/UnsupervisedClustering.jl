@@ -15,7 +15,7 @@ function active_population_size(generation::Generation)
     return population_size(generation) - length(generation.empty)
 end
 
-function remove(generation::Generation, i::Int)
+function remove(generation::Generation, i::Integer)
     reset_objective!(generation.population[i])
     push!(generation.empty, i)
     return nothing
@@ -77,7 +77,7 @@ function crossover(parent1::ClusteringResult, parent2::ClusteringResult, data::A
     return offspring
 end
 
-function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
+function eliminate(generation::Generation, to_remove::Integer, rng::AbstractRNG)
     removed = 0
     size = population_size(generation)
     for i in 1:size
@@ -115,33 +115,33 @@ function eliminate(generation::Generation, to_remove::Int, rng::AbstractRNG)
     end
 end
 
-function distance(a::KmeansResult, i::Int, b::KmeansResult, j::Int, data::AbstractMatrix{<:Real})
+function distance(a::KmeansResult, i::Integer, b::KmeansResult, j::Integer, data::AbstractMatrix{<:Real})
     return Distances.evaluate(Euclidean(), a.clusters[:, i], b.clusters[:, j])
 end
 
-function distance(a::KmedoidsResult, i::Int, b::KmedoidsResult, j::Int, data::AbstractMatrix{<:Real})
+function distance(a::KmedoidsResult, i::Integer, b::KmedoidsResult, j::Integer, data::AbstractMatrix{<:Real})
     c1 = a.clusters[i]
     c2 = b.clusters[j]
     return (data[c1, c2] + data[c2, c1]) / 2
 end
 
-function distance(a::GMMResult, i::Int, b::GMMResult, j::Int, data::AbstractMatrix{<:Real})
+function distance(a::GMMResult, i::Integer, b::GMMResult, j::Integer, data::AbstractMatrix{<:Real})
     d1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.clusters[i], b.clusters[j])
     d2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.clusters[i], b.clusters[j])
     return (d1 + d2) / 2
 end
 
-function copy_clusters!(destiny::KmeansResult, destiny_i::Int, source::KmeansResult, source_i::Int)
+function copy_clusters!(destiny::KmeansResult, destiny_i::Integer, source::KmeansResult, source_i::Integer)
     destiny.clusters[:, destiny_i] = copy(source.clusters[:, source_i])
     return nothing
 end
 
-function copy_clusters!(destiny::KmedoidsResult, destiny_i::Int, source::KmedoidsResult, source_i::Int)
+function copy_clusters!(destiny::KmedoidsResult, destiny_i::Integer, source::KmedoidsResult, source_i::Integer)
     destiny.clusters[destiny_i] = source.clusters[source_i]
     return nothing
 end
 
-function copy_clusters!(destiny::GMMResult, destiny_i::Int, source::GMMResult, source_i::Int)
+function copy_clusters!(destiny::GMMResult, destiny_i::Integer, source::GMMResult, source_i::Integer)
     destiny.clusters[destiny_i] = copy(source.clusters[source_i])
     destiny.covariances[destiny_i] = copy(source.covariances[source_i])
     return nothing
