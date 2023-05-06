@@ -2,5 +2,5 @@
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["metaheuristics/geneticalgorithm.jl"]
+Pages   = ["metaheuristic/geneticalgorithm.jl"]
 ```

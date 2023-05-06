@@ -33,14 +33,14 @@ export fit,
 abstract type ClusteringAlgorithm end
 abstract type ClusteringResult end
 
-include("localsearches/kmeans.jl")
-include("localsearches/kmedoids.jl")
-include("localsearches/gmm.jl")
+include("localsearch/kmeans.jl")
+include("localsearch/kmedoids.jl")
+include("localsearch/gmm.jl")
 
-include("metaheuristics/multistart.jl")
-include("metaheuristics/randomswap.jl")
-include("metaheuristics/generation.jl")
-include("metaheuristics/geneticalgorithm.jl")
+include("metaheuristic/multistart.jl")
+include("metaheuristic/randomswap.jl")
+include("metaheuristic/generation.jl")
+include("metaheuristic/geneticalgorithm.jl")
 
 include("ensemble/chain.jl")
 include("ensemble/kmeans.jl")
