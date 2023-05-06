@@ -14,7 +14,9 @@ makedocs(
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://raphasampaio.github.io/UnsupervisedClustering.jl",
         edit_link = "main",
-        assets = String[],
+        assets = [
+            "assets/favicon.ico",
+        ],
     ),
     pages = [
         "Home" => "index.md"

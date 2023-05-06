@@ -1,1 +1,47 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 282.043 261.085"><defs><style>.cls-1,.cls-2,.cls-3{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:4px;stroke-dasharray:11.818 11.818;}.cls-1{stroke:#389746;}.cls-2{stroke:#cb3b32;}.cls-3{stroke:#915aa0;}.cls-4{fill:#389746;}.cls-4,.cls-5,.cls-6{stroke:#1d1d1b;stroke-miterlimit:10;}.cls-5{fill:#cb3b32;}.cls-6{fill:#915aa0;}</style></defs><circle class="cls-1" cx="141.447" cy="65.957" r="63.957"/><circle class="cls-2" cx="65.957" cy="195.128" r="63.957"/><circle class="cls-3" cx="216.085" cy="195.128" r="63.957"/><circle class="cls-4" cx="127.085" cy="24.213" r="8.213"/><circle class="cls-4" cx="100.872" cy="62" r="8.213"/><circle class="cls-4" cx="112.106" cy="68.128" r="8.213"/><circle class="cls-4" cx="99.511" cy="83.447" r="8.213"/><circle class="cls-4" cx="147.851" cy="56.553" r="8.213"/><circle class="cls-4" cx="143.085" cy="85.149" r="8.213"/><circle class="cls-4" cx="159.426" cy="78" r="8.213"/><circle class="cls-4" cx="170.319" cy="33.404" r="8.213"/><circle class="cls-4" cx="153.979" cy="89.574" r="8.213"/><circle class="cls-4" cx="127.809" cy="109.362" r="8.213"/><circle class="cls-4" cx="186.319" cy="58.936" r="8.213"/><circle class="cls-5" cx="52.404" cy="153.191" r="8.213"/><circle class="cls-5" cx="26.191" cy="190.979" r="8.213"/><circle class="cls-5" cx="49.17" cy="177.702" r="8.213"/><circle class="cls-5" cx="24.83" cy="212.426" r="8.213"/><circle class="cls-5" cx="73.17" cy="185.532" r="8.213"/><circle class="cls-5" cx="68.404" cy="214.128" r="8.213"/><circle class="cls-5" cx="84.745" cy="206.979" r="8.213"/><circle class="cls-5" cx="61.766" cy="192.681" r="8.213"/><circle class="cls-5" cx="49.681" cy="202.213" r="8.213"/><circle class="cls-5" cx="83.894" cy="234.894" r="8.213"/><circle class="cls-5" cx="53.128" cy="238.34" r="8.213"/><circle class="cls-5" cx="102.957" cy="223.66" r="8.213"/><circle class="cls-5" cx="101.936" cy="169.532" r="8.213"/><circle class="cls-6" cx="201.34" cy="172.34" r="8.213"/><circle class="cls-6" cx="177.851" cy="190.979" r="8.213"/><circle class="cls-6" cx="218.702" cy="229.787" r="8.213"/><circle class="cls-6" cx="176.489" cy="212.426" r="8.213"/><circle class="cls-6" cx="224.83" cy="185.532" r="8.213"/><circle class="cls-6" cx="220.064" cy="214.128" r="8.213"/><circle class="cls-6" cx="201.17" cy="197.277" r="8.213"/><circle class="cls-6" cx="236.404" cy="206.979" r="8.213"/><circle class="cls-6" cx="247.298" cy="162.383" r="8.213"/><circle class="cls-6" cx="252.915" cy="176.17" r="8.213"/><circle class="cls-6" cx="204.787" cy="238.34" r="8.213"/><circle class="cls-6" cx="263.809" cy="205.787" r="8.213"/></svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 282 282">
+    <defs>
+        <style>
+            .cluster-green,
+            .cluster-red,
+            .cluster-purple {
+                fill: none;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-width: 5px;
+                stroke-dasharray: 11.818 11.818;
+            }
+            .cluster-green { stroke: #389826; }
+            .cluster-red { stroke: #cb3c33; }
+            .cluster-purple { stroke: #9558b2; }
+            .data-green,
+            .data-red,
+            .data-purple {
+                stroke: #1d1d1b;
+                stroke-miterlimit: 10;
+            }
+            .data-green { fill: #389826; }
+            .data-red { fill: #cb3c33; }
+            .data-purple { fill: #9558b2; }
+        </style>
+    </defs>
+    <circle class="cluster-green" cx="141.5" cy="66" r="64" />
+    <circle class="cluster-red" cx="66" cy="195" r="64" />
+    <circle class="cluster-purple" cx="216" cy="195" r="64" />
+    <circle class="data-green" cx="127" cy="25" r="15" />
+    <circle class="data-green" cx="100" cy="62" r="15" />
+    <circle class="data-green" cx="147" cy="56" r="15" />
+    <circle class="data-green" cx="153" cy="89" r="15" />
+    <circle class="data-green" cx="127" cy="108" r="15" />
+    <circle class="data-green" cx="184" cy="58" r="15" />
+    <circle class="data-red" cx="52" cy="153" r="15" />
+    <circle class="data-red" cx="26" cy="190" r="15" />
+    <circle class="data-red" cx="73" cy="185" r="15" />
+    <circle class="data-red" cx="53" cy="238" r="15" />
+    <circle class="data-red" cx="102" cy="221" r="15" />
+    <circle class="data-red" cx="101" cy="169" r="15" />
+    <circle class="data-purple" cx="201" cy="172" r="15" />
+    <circle class="data-purple" cx="177" cy="212" r="15" />
+    <circle class="data-purple" cx="236" cy="206" r="15" />
+    <circle class="data-purple" cx="252" cy="176" r="15" />
+    <circle class="data-purple" cx="204" cy="238" r="15" />
+</svg>

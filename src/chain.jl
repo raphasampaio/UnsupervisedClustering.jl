@@ -1,7 +1,23 @@
+@doc raw"""
+    ClusteringChain(
+        algorithms::Vector{ClusteringAlgorithm}
+    )
+
+TODO: Documentation
+"""
+Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
+    algorithms::Vector{ClusteringAlgorithm}
+end
+
 function ClusteringChain(algorithms::ClusteringAlgorithm...)
     return ClusteringChain(collect(algorithms))
 end
 
+@doc raw"""
+    fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
     size = length(chain.algorithms)
     @assert size > 0

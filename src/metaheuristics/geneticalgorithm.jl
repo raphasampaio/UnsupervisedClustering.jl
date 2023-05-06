@@ -1,4 +1,25 @@
 @doc raw"""
+    GeneticAlgorithm(
+        local_search::ClusteringAlgorithm
+        verbose::Bool = DEFAULT_VERBOSE
+        max_iterations::Integer = 200
+        max_iterations_without_improvement::Integer = 150
+        π_max::Integer = 50
+        π_min::Integer = 40
+    )
+
+TODO: Documentation
+"""
+Base.@kwdef struct GeneticAlgorithm <: ClusteringAlgorithm
+    local_search::ClusteringAlgorithm
+    verbose::Bool = DEFAULT_VERBOSE
+    max_iterations::Integer = 200
+    max_iterations_without_improvement::Integer = 150
+    π_max::Integer = 50
+    π_min::Integer = 40
+end
+
+@doc raw"""
     fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)
 
 TODO: Documentation

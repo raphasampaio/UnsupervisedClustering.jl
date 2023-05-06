@@ -1,4 +1,23 @@
 @doc raw"""
+    Kmeans(
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        metric::SemiMetric = SqEuclidean()
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    )
+
+TODO: Documentation
+"""
+Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    metric::SemiMetric = SqEuclidean()
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+end
+
+@doc raw"""
     KmeansResult(
         k::Int
         assignments::Vector{Int}
@@ -51,6 +70,22 @@ function reset_objective!(result::KmeansResult)
     result.objective = Inf
     for i in 1:result.k
         result.objective_per_cluster[i] = Inf
+    end
+
+    return nothing
+end
+
+function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    n, d = size(data)
+    k = size(result.clusters, 2)
+
+    if n > 0 && k > 0
+        to = rand(rng, 1:k)
+        from = rand(rng, 1:n)
+        for i in 1:d
+            result.clusters[i, to] = data[from, i]
+        end
+        reset_objective!(result)
     end
 
     return nothing
