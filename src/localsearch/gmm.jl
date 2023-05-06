@@ -14,8 +14,8 @@ end
 function GMMResult(
     assignments::AbstractVector{<:Integer},
     weights::AbstractVector{<:Real},
-    clusters::AbstractVector{AbstractVector{<:Real}},
-    covariances::AbstractVector{Symmetric{<:Real, Matrix{<:Real}}},
+    clusters::AbstractVector{<:AbstractVector{<:Real}},
+    covariances::AbstractVector{<:Symmetric{<:Real}},
 )
     k = length(weights)
     return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
@@ -73,7 +73,7 @@ end
 function compute_precision_cholesky!(
     gmm::GMM,
     result::GMMResult,
-    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
+    precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
 )
     k = length(result.covariances)
     d = size(result.covariances[1], 1)
@@ -101,7 +101,7 @@ function estimate_weighted_log_probabilities(
     data::AbstractMatrix{<:Real},
     k::Integer,
     result::GMMResult,
-    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
+    precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
 )
     n, d = size(data)
 
@@ -125,7 +125,7 @@ function expectation_step(
     data::AbstractMatrix{<:Real},
     k::Integer,
     result::GMMResult,
-    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
+    precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
 )
     n, d = size(data)
 
@@ -146,7 +146,7 @@ function maximization_step!(
     k::Integer,
     result::GMMResult,
     log_responsibilities::AbstractMatrix{<:Real},
-    precisions_cholesky::AbstractVector{AbstractMatrix{<:Real}},
+    precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
 )
     responsibilities = exp.(log_responsibilities)
 
