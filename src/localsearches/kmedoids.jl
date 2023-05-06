@@ -42,12 +42,12 @@ mutable struct KmedoidsResult <: ClusteringResult
 end
 
 @doc raw"""
-    KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Integer})
+    KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractVector{<:Integer})
 
 TODO: Documentation
 """
-function KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Integer})
-    d, k = size(clusters)
+function KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractVector{<:Integer})
+    k = length(clusters)
     return KmedoidsResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
 end
 
