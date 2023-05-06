@@ -10,7 +10,7 @@ mutable struct KmeansResult <: ClusteringResult
     converged::Bool
 end
 
-function KmeansResult(assignments::Vector{Int}, clusters::Matrix{Float64})
+function KmeansResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Real})
     d, k = size(clusters)
     return KmeansResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
 end
@@ -110,7 +110,7 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     return nothing
 end
 
-function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmeansResult
+function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
     n, d = size(data)
     k = length(initial_clusters)
 

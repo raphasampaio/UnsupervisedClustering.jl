@@ -80,8 +80,20 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
 
         # update step
         for (i, medoid) in enumerate(medoids)
-            j = argmin(sum(distances[medoid, medoid], dims = 2))[1]
-            result.clusters[i] = medoid[j]
+            min_j = 0
+            min_distance = Inf
+            for j in eachindex(medoid)
+                distances_sum = 0
+                for l in eachindex(medoid)
+                    distances_sum += distances[medoid[j], medoid[l]]
+                end
+
+                if distances_sum < min_distance
+                    min_j = j
+                    min_distance = distances_sum
+                end
+            end
+            result.clusters[i] = medoid[min_j]
         end
     end
 
@@ -96,7 +108,7 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     return nothing
 end
 
-function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::Vector{<:Integer})::KmedoidsResult
+function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
     n = size(distances, 1)
     k = length(initial_clusters)
 
