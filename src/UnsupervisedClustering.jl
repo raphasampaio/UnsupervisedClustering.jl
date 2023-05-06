@@ -28,20 +28,21 @@ export fit,
     RandomSwap,
     MultiStart,
     GeneticAlgorithm,
-    EnsembleClustering
+    ClusteringChain
 
 include("result.jl")
 include("algorithm.jl")
 
-include("localsearch/kmeans.jl")
-include("localsearch/gmm.jl")
-include("localsearch/kmedoids.jl")
+include("localsearches/kmeans.jl")
+include("localsearches/gmm.jl")
+include("localsearches/kmedoids.jl")
 
-include("ensemble.jl")
-include("multistart.jl")
-include("randomswap.jl")
-include("generation.jl")
-include("geneticalgorithm.jl")
+include("metaheuristics/multistart.jl")
+include("metaheuristics/randomswap.jl")
+include("metaheuristics/generation.jl")
+include("metaheuristics/geneticalgorithm.jl")
+
+include("chain.jl")
 
 include("common.jl")
 include("concatenate.jl")

@@ -46,6 +46,6 @@ Base.@kwdef struct GeneticAlgorithm <: ClusteringAlgorithm
     π_min::Integer = 40
 end
 
-Base.@kwdef struct EnsembleClustering <: ClusteringAlgorithm
+Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
     algorithms::Vector{ClusteringAlgorithm}
 end

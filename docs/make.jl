@@ -19,7 +19,20 @@ makedocs(;
         edit_link = "main",
         assets = String[],
     ),
-    pages = ["Home" => "index.md"],
+    pages = [
+        "Home" => "index.md"
+        "Local Searches" => Any[
+            "k-means" => "localsearches/kmeans.md",
+            "k-medoids" => "localsearch/kmedoids.md",
+            "GMM" => "localsearch/gmm.md",
+        ]
+        "Metaheuristics" => Any[
+            "Random Swap" => "randomswap.md",
+            "Multi-Start" => "multistart.md",
+            "Genetic Algorithm" => "geneticalgorithm.md",
+        ]
+        "Clustering Chain" => "chain.md"
+    ]
 )
 
 deploydocs(; repo = "github.com/raphasampaio/UnsupervisedClustering.jl.git", devbranch = "main", push_preview = true)

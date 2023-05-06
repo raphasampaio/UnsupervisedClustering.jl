@@ -337,8 +337,8 @@ function test_all()
                 max_iterations = max_iterations,
                 max_iterations_without_improvement = max_iterations_without_improvement,
             ),
-            # ENSAMBLE
-            EnsembleClustering(kmeans, gmm),
+            # CHAIN
+            ClusteringChain(kmeans, gmm),
         ]
 
         # @printf("\"%s\" => [", dataset)
