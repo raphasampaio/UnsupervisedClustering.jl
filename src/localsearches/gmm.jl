@@ -1,3 +1,39 @@
+@doc raw"""
+    GMM(
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+        decompose_if_fails::Bool = true
+    )
+
+TODO: Documentation
+"""
+Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    decompose_if_fails::Bool = true
+end
+
+@doc raw"""
+    GMMResult(
+        k::Int
+        assignments::Vector{Int}
+        weights::Vector{Float64}
+        clusters::Vector{Vector{Float64}}
+        covariances::Vector{Symmetric{Float64}}
+        objective::Float64
+        iterations::Int
+        elapsed::Float64
+        converged::Bool
+    )
+
+TODO: Documentation
+"""
 mutable struct GMMResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -11,6 +47,16 @@ mutable struct GMMResult <: ClusteringResult
     converged::Bool
 end
 
+@doc raw"""
+    GMMResult(
+        assignments::AbstractVector{<:Integer},
+        weights::AbstractVector{<:Real},
+        clusters::AbstractVector{<:AbstractVector{<:Real}},
+        covariances::AbstractVector{<:Symmetric{<:Real}},
+    )
+
+TODO: Documentation
+"""
 function GMMResult(
     assignments::AbstractVector{<:Integer},
     weights::AbstractVector{<:Real},
@@ -21,6 +67,11 @@ function GMMResult(
     return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
 end
 
+@doc raw"""
+    GMMResult(d::Integer, n::Integer, k::Integer)
+
+TODO: Documentation
+"""
 function GMMResult(d::Integer, n::Integer, k::Integer)
     assignments = zeros(Int, n)
     weights = ones(k) ./ k
@@ -35,6 +86,25 @@ end
 
 function reset_objective!(result::GMMResult)
     result.objective = -Inf
+    return nothing
+end
+
+function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    k = result.k
+    n, d = size(data)
+
+    if n > 0 && k > 0
+        to = rand(rng, 1:k)
+        from = rand(rng, 1:n)
+        result.clusters[to] = copy(data[from, :])
+
+        m = mean([det(result.covariances[j]) for j in 1:k])
+        value = (m > 0 ? m : 1.0)^(1 / d)
+        result.covariances[to] = Symmetric(value .* Matrix{Float64}(I, d, d))
+
+        reset_objective!(result)
+    end
+
     return nothing
 end
 

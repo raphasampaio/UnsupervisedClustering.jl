@@ -1,3 +1,34 @@
+@doc raw"""
+    Kmedoids(
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    )
+
+TODO: Documentation
+"""
+Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+end
+
+@doc raw"""
+    KmedoidsResult(
+        k::Int
+        assignments::Vector{Int}
+        clusters::Vector{Int}
+        objective::Float64
+        objective_per_cluster::Vector{Float64}
+        iterations::Int
+        elapsed::Float64
+        converged::Bool
+    )
+
+TODO: Documentation
+"""
 mutable struct KmedoidsResult <: ClusteringResult
     k::Int
     assignments::Vector{Int}
@@ -10,8 +41,23 @@ mutable struct KmedoidsResult <: ClusteringResult
     converged::Bool
 end
 
+@doc raw"""
+    KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractVector{<:Integer})
+
+TODO: Documentation
+"""
+function KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractVector{<:Integer})
+    k = length(clusters)
+    return KmedoidsResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
+end
+
+@doc raw"""
+    KmedoidsResult(n::Integer, k::Integer)
+
+TODO: Documentation
+"""
 function KmedoidsResult(n::Integer, k::Integer)
-    return KmedoidsResult(k, zeros(Int, n), zeros(Int, k), Inf, Inf * zeros(k), 0, 0, false)
+    return KmedoidsResult(zeros(Int, n), zeros(Int, k))
 end
 
 function isbetter(a::KmedoidsResult, b::KmedoidsResult)
@@ -23,6 +69,27 @@ function reset_objective!(result::KmedoidsResult)
     for i in 1:result.k
         result.objective_per_cluster[i] = Inf
     end
+    return nothing
+end
+
+function random_swap!(result::KmedoidsResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+    n, d = size(data)
+    k = length(result.clusters)
+
+    if n > 0 && k > 0
+        weights = ones(n)
+        for i in result.clusters
+            weights[i] = 0.0
+        end
+
+        to = rand(rng, 1:k)
+        weights[result.clusters[to]] = 1.0
+        from = sample(rng, aweights(weights))
+        result.clusters[to] = from
+
+        reset_objective!(result)
+    end
+
     return nothing
 end
 

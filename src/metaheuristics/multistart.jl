@@ -1,3 +1,23 @@
+@doc raw"""
+    MultiStart(
+        local_search::ClusteringAlgorithm
+        verbose::Bool = DEFAULT_VERBOSE
+        max_iterations::Integer = 200
+    )
+
+TODO: Documentation
+"""
+Base.@kwdef struct MultiStart <: ClusteringAlgorithm
+    local_search::ClusteringAlgorithm
+    verbose::Bool = DEFAULT_VERBOSE
+    max_iterations::Integer = 200
+end
+
+@doc raw"""
+    fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     best_result = fit(meta.local_search, data, k)
 

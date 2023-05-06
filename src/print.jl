@@ -5,15 +5,18 @@
 print_objective(result::ClusteringResult) = print_objective(result.objective)
 function print_objective(objective::Real)
     @printf("%12.4f ", objective)
+    return nothing
 end
 
 function print_iteration(iteration::Integer)
     @printf("%8d ", iteration)
+    return nothing
 end
 
 print_iterations(result::ClusteringResult) = print_iterations(result.iterations)
 function print_iterations(iterations::Integer)
     @printf("%8dit ", iterations)
+    return nothing
 end
 
 print_elapsed(result::ClusteringResult) = print_elapsed(result.elapsed)
