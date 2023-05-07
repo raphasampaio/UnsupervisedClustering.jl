@@ -8,14 +8,14 @@
         decompose_if_fails::Bool = true
     )
 
-GMM is a probabilistic model used for clustering and density estimation. 
+The GMM is a clustering algorithm that models the underlying data distribution as a mixture of Gaussian distributions.
 
 # Fields
 - `estimator`: represents the method or algorithm used to estimate the covariance matrices in the GMM. 
 - `verbose`: controls whether the algorithm should display additional information during execution.
 - `rng`: represents the random number generator to be used by the algorithm.
-- `tolerance`: represents the convergence criterion for the GMM algorithm. It determines the maximum change allowed in the model's log-likelihood between consecutive iterations before considering convergence.
-- `max_iterations`: represents the maximum number of iterations the GMM algorithm will perform before stopping, even if convergence has not been reached.
+- `tolerance`: represents the convergence criterion for the algorithm. It determines the maximum change allowed in the model's log-likelihood between consecutive iterations before considering convergence.
+- `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping, even if convergence has not been reached.
 - `decompose_if_fails`: determines whether the algorithm should attempt to decompose the covariance matrix of a component and fix its eigenvalues if the decomposition fails due to numerical issues.       
 
 # References
