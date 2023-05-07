@@ -3,7 +3,7 @@
         metric::SemiMetric = SqEuclidean()
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Float64 = DEFAULT_TOLERANCE
+        tolerance::Real = DEFAULT_TOLERANCE
         max_iterations::Integer = DEFAULT_MAX_ITERATIONS
     )
 
@@ -22,20 +22,20 @@ Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
     metric::SemiMetric = SqEuclidean()
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Float64 = DEFAULT_TOLERANCE
+    tolerance::Real = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
 
 @doc raw"""
     KmeansResult(
-        assignments::Vector{Int}
-        clusters::Matrix{Float64}
-        objective::Float64
-        objective_per_cluster::Vector{Float64}
-        iterations::Int
-        elapsed::Float64
+        assignments::AbstractVector{<:Integer}
+        clusters::AbstractMatrix{<:Real}
+        objective::Real
+        objective_per_cluster::AbstractVector{<:Real}
+        iterations::Integer
+        elapsed::Real
         converged::Bool
-        k::Int
+        k::Integer
     )
 
 KmeansResult struct represents the result of the k-means clustering algorithm.
@@ -51,24 +51,22 @@ KmeansResult struct represents the result of the k-means clustering algorithm.
 - `k`: the number of clusters.
 """
 mutable struct KmeansResult <: ClusteringResult
-    assignments::Vector{Int}
-    clusters::Matrix{Float64}
-
-    objective::Float64
-    objective_per_cluster::Vector{Float64}
-    iterations::Int
-    elapsed::Float64
+    assignments::AbstractVector{<:Integer}
+    clusters::AbstractMatrix{<:Real}
+    objective::Real
+    objective_per_cluster::AbstractVector{<:Real}
+    iterations::Integer
+    elapsed::Real
     converged::Bool
-
-    k::Int
+    k::Integer
 
     function KmeansResult(
         assignments::AbstractVector{<:Integer},
         clusters::AbstractMatrix{<:Real},
         objective::Real = Inf,
         objective_per_cluster::AbstractVector{<:Real} = Inf * ones(size(clusters, 2)),
-        iterations::Int = 0,
-        elapsed::Float64 = 0.0,
+        iterations::Integer = 0,
+        elapsed::Real = 0.0,
         converged::Bool = false,
     )
         return new(

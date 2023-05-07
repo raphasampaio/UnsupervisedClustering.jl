@@ -1,7 +1,7 @@
 Base.@kwdef mutable struct GMMSK <: UnsupervisedClustering.ClusteringAlgorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Float64 = 1e-3
+    tolerance::Real = 1e-3
     max_iterations::Integer = 1000
 end
 

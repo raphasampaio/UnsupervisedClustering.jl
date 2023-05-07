@@ -2,7 +2,7 @@
     Kmedoids(
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Float64 = DEFAULT_TOLERANCE
+        tolerance::Real = DEFAULT_TOLERANCE
         max_iterations::Integer = DEFAULT_MAX_ITERATIONS
     )
 
@@ -19,20 +19,20 @@ The k-medoids is a variation of k-means clustering algorithm that uses actual da
 Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Float64 = DEFAULT_TOLERANCE
+    tolerance::Real = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
 
 @doc raw"""
     KmedoidsResult(
-        assignments::Vector{Int}
-        clusters::Vector{Int}
-        objective::Float64
-        objective_per_cluster::Vector{Float64}
-        iterations::Int
-        elapsed::Float64
+        assignments::AbstractVector{<:Integer}
+        clusters::AbstractVector{<:Integer}
+        objective::Real
+        objective_per_cluster::AbstractVector{<:Real}
+        iterations::Integer
+        elapsed::Real
         converged::Bool
-        k::Int
+        k::Integer
     )
 
 KmedoidsResult struct represents the result of the k-medoids clustering algorithm.
@@ -48,16 +48,14 @@ KmedoidsResult struct represents the result of the k-medoids clustering algorith
 - `k`: the number of clusters.
 """
 mutable struct KmedoidsResult <: ClusteringResult
-    assignments::Vector{Int}
-    clusters::Vector{Int}
-
-    objective::Float64
-    objective_per_cluster::Vector{Float64}
-    iterations::Int
-    elapsed::Float64
+    assignments::AbstractVector{<:Integer}
+    clusters::AbstractVector{<:Integer}
+    objective::Real
+    objective_per_cluster::AbstractVector{<:Real}
+    iterations::Integer
+    elapsed::Real
     converged::Bool
-
-    k::Int
+    k::Integer
 
     function KmedoidsResult(
         assignments::AbstractVector{<:Integer},

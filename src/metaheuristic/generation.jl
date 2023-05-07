@@ -1,6 +1,6 @@
 mutable struct Generation
-    population::Vector{ClusteringResult}
-    empty::Set{Int}
+    population::AbstractVector{<:ClusteringResult}
+    empty::Set{Integer}
 
     function Generation()
         return new(Vector{ClusteringResult}(), Set{Int}())

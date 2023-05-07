@@ -3,7 +3,7 @@
         estimator::CovarianceMatrixEstimator
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Float64 = DEFAULT_TOLERANCE
+        tolerance::Real = DEFAULT_TOLERANCE
         max_iterations::Integer = DEFAULT_MAX_ITERATIONS
         decompose_if_fails::Bool = true
     )
@@ -27,22 +27,22 @@ Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
     estimator::CovarianceMatrixEstimator
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Float64 = DEFAULT_TOLERANCE
+    tolerance::Real = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
     decompose_if_fails::Bool = true
 end
 
 @doc raw"""
     GMMResult(
-        assignments::Vector{Int}
-        weights::Vector{Float64}
-        clusters::Vector{Vector{Float64}}
-        covariances::Vector{Symmetric{Float64}}
-        objective::Float64
-        iterations::Int
-        elapsed::Float64
+        assignments::AbstractVector{<:Integer}
+        weights::AbstractVector{<:Real}
+        clusters::AbstractVector{<:AbstractVector{<:Real}}
+        covariances::AbstractVector{<:Symmetric{<:Real}}
+        objective::Real
+        iterations::Integer
+        elapsed::Real
         converged::Bool
-        k::Int
+        k::Integer
     )
 
 GMMResult struct represents the result of the GMM clustering algorithm.
@@ -59,17 +59,15 @@ GMMResult struct represents the result of the GMM clustering algorithm.
 - `k`: the number of clusters.
 """
 mutable struct GMMResult <: ClusteringResult
-    assignments::Vector{Int}
-    weights::Vector{Float64}
-    clusters::Vector{Vector{Float64}}
-    covariances::Vector{Symmetric{Float64}}
-
-    objective::Float64
-    iterations::Int
-    elapsed::Float64
+    assignments::AbstractVector{<:Integer}
+    weights::AbstractVector{<:Real}
+    clusters::AbstractVector{<:AbstractVector{<:Real}}
+    covariances::AbstractVector{<:Symmetric{<:Real}}
+    objective::Real
+    iterations::Integer
+    elapsed::Real
     converged::Bool
-
-    k::Int
+    k::Integer
 
     function GMMResult(
         assignments::AbstractVector{<:Integer},

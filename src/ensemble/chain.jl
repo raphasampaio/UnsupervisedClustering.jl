@@ -1,10 +1,10 @@
 @doc raw"""
-    ClusteringChain(algorithms::Vector{ClusteringAlgorithm})
+    ClusteringChain(algorithms::AbstractVector{ClusteringAlgorithm})
 
 TODO: Documentation
 """
 Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
-    algorithms::Vector{ClusteringAlgorithm}
+    algorithms::AbstractVector{<:ClusteringAlgorithm}
 end
 
 @doc raw"""
