@@ -1,19 +1,32 @@
 @doc raw"""
     GMM(
+        estimator::CovarianceMatrixEstimator
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
         tolerance::Float64 = DEFAULT_TOLERANCE
         max_iterations::Integer = DEFAULT_MAX_ITERATIONS
         decompose_if_fails::Bool = true
     )
 
-TODO: Documentation
+GMM is a probabilistic model used for clustering and density estimation. 
+
+# Fields
+- `estimator`: represents the method or algorithm used to estimate the covariance matrices in the GMM. 
+- `verbose`: controls whether the algorithm should display additional information during execution.
+- `rng`: represents the random number generator to be used by the algorithm.
+- `tolerance`: represents the convergence criterion for the GMM algorithm. It determines the maximum change allowed in the model's log-likelihood between consecutive iterations before considering convergence.
+- `max_iterations`: represents the maximum number of iterations the GMM algorithm will perform before stopping, even if convergence has not been reached.
+- `decompose_if_fails`: determines whether the algorithm should attempt to decompose the covariance matrix of a component and fix its eigenvalues if the decomposition fails due to numerical issues.       
+
+# References
+* Dempster, Arthur P., Nan M. Laird, and Donald B. Rubin.
+  Maximum likelihood from incomplete data via the EM algorithm.
+  Journal of the royal statistical society, 1977
 """
 Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
+    estimator::CovarianceMatrixEstimator
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    estimator::RegularizedCovarianceMatrices.CovarianceMatrixEstimator
     tolerance::Float64 = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
     decompose_if_fails::Bool = true
@@ -21,7 +34,6 @@ end
 
 @doc raw"""
     GMMResult(
-        k::Int
         assignments::Vector{Int}
         weights::Vector{Float64}
         clusters::Vector{Vector{Float64}}
@@ -30,12 +42,24 @@ end
         iterations::Int
         elapsed::Float64
         converged::Bool
+        k::Int
     )
 
-TODO: Documentation
+GMMResult is the struct that represents the result from a GMM clustering algorithm. 
+
+# Fields
+- `assignments`: represents the vector of integers that stores the cluster assignments for each data point. Each vector element corresponds to the cluster assignment for a specific data point.
+- `weights`: a vector of floating-point numbers representing the weights associated with each cluster. The weight indicates the probability of a data point belonging to its respective cluster.
+- `clusters`: a vector of floating-point numbers vectors representing cluster's centroid.
+- `covariances`: a vector of symmetric matrices, where each matrix represents the covariance matrix of a cluster in the GMM model. The covariance matrix describes the shape and orientation of the data distribution within each cluster.
+- `objective`: stores a floating-point number representing the value of the objective function after running the GMM algorithm. The objective function measures the quality of the clustering solution.
+- `iterations`: stores an integer value indicating the number of iterations the GMM algorithm performs to converge to a solution.
+- `elapsed`: stores a floating-point number representing the elapsed time in seconds for the GMM algorithm to complete.
+- `converged`: indicates whether the GMM algorithm has converged to a solution.
+- `k`: represents the number of clusters in the GMM model.
 """
+
 mutable struct GMMResult <: ClusteringResult
-    k::Int
     assignments::Vector{Int}
     weights::Vector{Float64}
     clusters::Vector{Vector{Float64}}
@@ -45,30 +69,40 @@ mutable struct GMMResult <: ClusteringResult
     iterations::Int
     elapsed::Float64
     converged::Bool
-end
 
-@doc raw"""
-    GMMResult(
+    k::Int
+
+    function GMMResult(
         assignments::AbstractVector{<:Integer},
         weights::AbstractVector{<:Real},
         clusters::AbstractVector{<:AbstractVector{<:Real}},
         covariances::AbstractVector{<:Symmetric{<:Real}},
+        objective::Real = -Inf,
+        iterations::Integer = 0,
+        elapsed::Real = 0.0,
+        converged::Bool = false,
     )
-
-TODO: Documentation
-"""
-function GMMResult(
-    assignments::AbstractVector{<:Integer},
-    weights::AbstractVector{<:Real},
-    clusters::AbstractVector{<:AbstractVector{<:Real}},
-    covariances::AbstractVector{<:Symmetric{<:Real}},
-)
-    k = length(weights)
-    return GMMResult(k, assignments, weights, clusters, covariances, -Inf, 0, 0, false)
+        new(
+            assignments,
+            weights,
+            clusters,
+            covariances,
+            -Inf,
+            0,
+            0.0,
+            false,
+            length(clusters),
+        )
+        
+    end
 end
 
 @doc raw"""
-    GMMResult(d::Integer, n::Integer, k::Integer)
+    GMMResult(
+        d::Integer,
+        n::Integer,
+        k::Integer
+    )
 
 TODO: Documentation
 """

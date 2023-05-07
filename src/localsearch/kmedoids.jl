@@ -17,7 +17,6 @@ end
 
 @doc raw"""
     KmedoidsResult(
-        k::Int
         assignments::Vector{Int}
         clusters::Vector{Int}
         objective::Float64
@@ -25,12 +24,12 @@ end
         iterations::Int
         elapsed::Float64
         converged::Bool
+        k::Int
     )
 
 TODO: Documentation
 """
 mutable struct KmedoidsResult <: ClusteringResult
-    k::Int
     assignments::Vector{Int}
     clusters::Vector{Int}
 
@@ -39,16 +38,29 @@ mutable struct KmedoidsResult <: ClusteringResult
     iterations::Int
     elapsed::Float64
     converged::Bool
-end
 
-@doc raw"""
-    KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractVector{<:Integer})
+    k::Int
 
-TODO: Documentation
-"""
-function KmedoidsResult(assignments::AbstractVector{<:Integer}, clusters::AbstractVector{<:Integer})
-    k = length(clusters)
-    return KmedoidsResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
+    function KmedoidsResult(
+        assignments::AbstractVector{<:Integer},
+        clusters::AbstractVector{<:Integer},
+        objective::Real = Inf,
+        objective_per_cluster::AbstractVector{<:Real} = Inf * ones(length(clusters)),
+        iterations::Integer = 0,
+        elapsed::Real = 0.0,
+        converged::Bool = false
+    )
+        new(
+            assignments,
+            clusters,
+            objective,
+            objective_per_cluster,
+            iterations,
+            elapsed,
+            converged,
+            length(clusters),
+        )
+    end
 end
 
 @doc raw"""

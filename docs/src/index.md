@@ -1,4 +1,4 @@
-# UnsupervisedClustering.jl
+# UnsupervisedClustering
 
 ## Installation
 

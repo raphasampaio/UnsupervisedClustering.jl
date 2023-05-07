@@ -119,9 +119,9 @@ function test_all()
         @test_throws MethodError UnsupervisedClustering.concatenate()
 
         result = UnsupervisedClustering.concatenate(
-            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
-            KmeansResult(2, [1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmeansResult(2, [1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
+            KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
+            KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
+            KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
         )
 
         @test result.k == 6
@@ -134,9 +134,9 @@ function test_all()
         @test result.converged == true
 
         result = UnsupervisedClustering.concatenate(
-            KmedoidsResult(2, [1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
-            KmedoidsResult(2, [1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmedoidsResult(2, [1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
+            KmedoidsResult([1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
+            KmedoidsResult([1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
+            KmedoidsResult([1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
         )
 
         @test result.k == 6
@@ -150,7 +150,7 @@ function test_all()
     end
 
     @testset "sort" begin
-        result = KmeansResult(3, [1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+        result = KmeansResult([1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
         UnsupervisedClustering.sort!(result)
 
         @test result.k == 3
@@ -162,7 +162,7 @@ function test_all()
         @test result.elapsed ≈ 1.0
         @test result.converged == true
 
-        result = KmedoidsResult(3, [1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+        result = KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
         UnsupervisedClustering.sort!(result)
 
         @test result.k == 3

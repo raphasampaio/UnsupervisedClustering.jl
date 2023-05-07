@@ -19,7 +19,6 @@ end
 
 @doc raw"""
     KmeansResult(
-        k::Int
         assignments::Vector{Int}
         clusters::Matrix{Float64}
         objective::Float64
@@ -27,12 +26,12 @@ end
         iterations::Int
         elapsed::Float64
         converged::Bool
+        k::Int
     )
 
 TODO: Documentation
 """
 mutable struct KmeansResult <: ClusteringResult
-    k::Int
     assignments::Vector{Int}
     clusters::Matrix{Float64}
 
@@ -41,16 +40,29 @@ mutable struct KmeansResult <: ClusteringResult
     iterations::Int
     elapsed::Float64
     converged::Bool
-end
 
-@doc raw"""
-    KmeansResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Real})
+    k::Int
 
-TODO: Documentation
-"""
-function KmeansResult(assignments::AbstractVector{<:Integer}, clusters::AbstractMatrix{<:Real})
-    d, k = size(clusters)
-    return KmeansResult(k, assignments, clusters, Inf, Inf * zeros(k), 0, 0, false)
+    function KmeansResult(
+        assignments::AbstractVector{<:Integer},
+        clusters::AbstractMatrix{<:Real},
+        objective::Real = Inf,
+        objective_per_cluster::AbstractVector{<:Real} = Inf * ones(size(clusters, 2)),
+        iterations::Int = 0,
+        elapsed::Float64 = 0.0,
+        converged::Bool = false
+    )
+        new(
+            assignments,
+            clusters,
+            objective,
+            objective_per_cluster,
+            iterations,
+            elapsed,
+            converged,
+            size(clusters, 2),
+        )
+    end
 end
 
 @doc raw"""
