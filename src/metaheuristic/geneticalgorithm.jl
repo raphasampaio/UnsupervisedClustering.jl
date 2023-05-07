@@ -17,6 +17,8 @@ GeneticAlgorithm represents a clustering algorithm that utilizes a genetic algor
 - `max_iterations_without_improvement`: represents the maximum number of iterations allowed without improving the best solution.
 - `π_max`: the maximum population size used in the genetic algorithm.
 - `π_min`: the minimum population size used in the genetic algorithm.
+
+# References
 """
 Base.@kwdef struct GeneticAlgorithm <: ClusteringAlgorithm
     local_search::ClusteringAlgorithm

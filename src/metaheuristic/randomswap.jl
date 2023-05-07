@@ -17,7 +17,7 @@ RandomSwap is a meta-heuristic approach used for clustering problems. It follows
 # References
 * Fränti, Pasi.
   Efficiency of random swap clustering.
-  Journal of big data 5.1, 2018
+  Journal of big data 5.1 (2018): 1-29.
 """
 Base.@kwdef struct RandomSwap <: ClusteringAlgorithm
     local_search::ClusteringAlgorithm

@@ -17,6 +17,12 @@ The k-means is a clustering algorithm that aims to partition data into clusters 
 - `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping, even if convergence has not been reached.
 
 # References
+* Hartigan, John A., and Manchek A. Wong.
+  Algorithm AS 136: A k-means clustering algorithm.
+  Journal of the royal statistical society. series c (applied statistics) 28.1 (1979): 100-108.
+* Lloyd, Stuart.
+  Least squares quantization in PCM.
+  IEEE transactions on information theory 28.2 (1982): 129-137.
 """
 Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
     metric::SemiMetric = SqEuclidean()

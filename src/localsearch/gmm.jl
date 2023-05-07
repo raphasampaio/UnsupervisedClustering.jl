@@ -21,7 +21,7 @@ The GMM is a clustering algorithm that models the underlying data distribution a
 # References
 * Dempster, Arthur P., Nan M. Laird, and Donald B. Rubin.
   Maximum likelihood from incomplete data via the EM algorithm.
-  Journal of the royal statistical society, 1977
+  Journal of the royal statistical society: series B (methodological) 39.1 (1977): 1-22.
 """
 Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
     estimator::CovarianceMatrixEstimator
