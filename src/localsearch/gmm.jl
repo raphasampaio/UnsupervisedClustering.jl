@@ -84,10 +84,10 @@ mutable struct GMMResult <: ClusteringResult
             weights,
             clusters,
             covariances,
-            -Inf,
-            0,
-            0.0,
-            false,
+            objective,
+            iterations,
+            elapsed,
+            converged,
             length(clusters),
         )
     end
@@ -99,6 +99,16 @@ function GMMResult(d::Integer, n::Integer, k::Integer)
     clusters = [zeros(d) for _ in 1:k]
     covariances = [identity_matrix(d) for _ in 1:k]
     return GMMResult(assignments, weights, clusters, covariances)
+end
+
+function GMMResult(n::Integer, clusters::AbstractVector{<:AbstractVector{<:Real}})
+    k = length(clusters)
+    @assert k > 0
+    d = length(clusters[1])
+
+    result = GMMResult(d, n, k)
+    result.clusters = deepcopy(result.clusters)
+    return result
 end
 
 function estimate_gaussian_parameters(
@@ -226,7 +236,26 @@ end
         result::GMMResult
     )
 
-TODO: Documentation
+The `fit!` function performs the GMM clustering algorithm on the given result as the initial point and updates the provided object with the clustering result.
+
+# Parameters:
+- `gmm`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `result`: a result object that will be updated with the clustering result.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+gmm = GMM(estimator = EmpiricalCovarianceMatrix(n, d))
+result = GMMResult(n, [[1.0, 1.0], [2.0, 2.0]])
+fit!(gmm, data, result)
+```
 """
 function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     t = time()
@@ -286,7 +315,25 @@ end
         initial_clusters::AbstractVector{<:Integer}
     )
 
-TODO: Documentation
+The `fit` function performs the GMM clustering algorithm on the given data points as the initial point and returns a result object representing the clustering result.
+
+# Parameters:
+- `kmeans`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `initial_clusters`: an integer vector where each element is the initial data point for each cluster.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+gmm = GMM(estimator = EmpiricalCovarianceMatrix(n, d))
+result = fit(gmm, data, [4, 12])
+```
 """
 function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::GMMResult
     n, d = size(data)
@@ -322,7 +369,12 @@ end
         k::Integer
     ) 
 
-TODO: Documentation
+The `fit` function performs the GMM clustering algorithm and returns a result object representing the clustering result.
+
+# Parameters:
+- `gmm`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `k`: an integer representing the number of clusters.
 
 # Example
 

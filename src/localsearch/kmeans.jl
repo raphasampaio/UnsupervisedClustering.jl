@@ -87,7 +87,10 @@ function KmeansResult(d::Integer, n::Integer, k::Integer)
 end
 
 function KmeansResult(n::Integer, clusters::AbstractMatrix{<:Real})
-    return KmeansResult(zeros(Int, n), clusters)
+    d, k = size(clusters)
+    result = KmeansResult(d, n, k)
+    result.clusters = copy(clusters)
+    return result
 end
 
 @doc """
