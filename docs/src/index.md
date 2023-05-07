@@ -1,8 +1,5 @@
 # UnsupervisedClustering
 
-```@contents
-```
-
 ## Installation
 
 ```julia
@@ -21,9 +18,4 @@ If you find UnsupervisedClustering useful in your work, we kindly request that y
   journal={arXiv preprint arXiv:2302.02450},
   year={2023}
 }
-```
-
-## Index
-
-```@index
 ```
