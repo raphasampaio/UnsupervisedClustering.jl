@@ -27,7 +27,17 @@ end
         k::Int
     )
 
-TODO: Documentation
+KmedoidsResult struct represents the result of the k-medoids clustering algorithm.
+
+# Fields
+- `assignments`: an integer vector that stores the cluster assignment for each data point.
+- `clusters`: an integer vector representing each cluster's centroid.
+- `objective`: a floating-point number representing the objective function after running the algorithm. The objective function measures the quality of the clustering solution.
+- `objective_per_cluster`: a floating-point vector that stores the objective function of each cluster
+- `iterations`: an integer value indicating the number of iterations performed until the algorithm has converged or reached the maximum number of iterations
+- `elapsed`: a floating-point number representing the time in seconds for the algorithm to complete.
+- `converged`: indicates whether the algorithm has converged to a solution.
+- `k`: the number of clusters.
 """
 mutable struct KmedoidsResult <: ClusteringResult
     assignments::Vector{Int}

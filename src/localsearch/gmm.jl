@@ -45,20 +45,19 @@ end
         k::Int
     )
 
-GMMResult is the struct that represents the result from a GMM clustering algorithm. 
+GMMResult struct represents the result of the GMM clustering algorithm.
 
 # Fields
-- `assignments`: represents the vector of integers that stores the cluster assignments for each data point. Each vector element corresponds to the cluster assignment for a specific data point.
+- `assignments`: an integer vector that stores the cluster assignment for each data point.
 - `weights`: a vector of floating-point numbers representing the weights associated with each cluster. The weight indicates the probability of a data point belonging to its respective cluster.
-- `clusters`: a vector of floating-point numbers vectors representing cluster's centroid.
+- `clusters`: a vector of floating-point vectors representing the cluster's centroid.
 - `covariances`: a vector of symmetric matrices, where each matrix represents the covariance matrix of a cluster in the GMM model. The covariance matrix describes the shape and orientation of the data distribution within each cluster.
-- `objective`: stores a floating-point number representing the value of the objective function after running the GMM algorithm. The objective function measures the quality of the clustering solution.
-- `iterations`: stores an integer value indicating the number of iterations the GMM algorithm performs to converge to a solution.
-- `elapsed`: stores a floating-point number representing the elapsed time in seconds for the GMM algorithm to complete.
-- `converged`: indicates whether the GMM algorithm has converged to a solution.
-- `k`: represents the number of clusters in the GMM model.
+- `objective`: a floating-point number representing the objective function after running the algorithm. The objective function measures the quality of the clustering solution.
+- `iterations`: an integer value indicating the number of iterations performed until the algorithm has converged or reached the maximum number of iterations
+- `elapsed`: a floating-point number representing the time in seconds for the algorithm to complete.
+- `converged`: indicates whether the algorithm has converged to a solution.
+- `k`: the number of clusters.
 """
-
 mutable struct GMMResult <: ClusteringResult
     assignments::Vector{Int}
     weights::Vector{Float64}
