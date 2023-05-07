@@ -65,11 +65,6 @@ mutable struct KmeansResult <: ClusteringResult
     end
 end
 
-@doc raw"""
-    KmeansResult(d::Integer, n::Integer, k::Integer)
-
-TODO: Documentation
-"""
 function KmeansResult(d::Integer, n::Integer, k::Integer)
     return KmeansResult(zeros(Int, n), zeros(Float64, d, k))
 end

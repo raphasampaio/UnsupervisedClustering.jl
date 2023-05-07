@@ -63,11 +63,6 @@ mutable struct KmedoidsResult <: ClusteringResult
     end
 end
 
-@doc raw"""
-    KmedoidsResult(n::Integer, k::Integer)
-
-TODO: Documentation
-"""
 function KmedoidsResult(n::Integer, k::Integer)
     return KmedoidsResult(zeros(Int, n), zeros(Int, k))
 end

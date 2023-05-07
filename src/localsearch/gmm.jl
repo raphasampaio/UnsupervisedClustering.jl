@@ -97,15 +97,6 @@ mutable struct GMMResult <: ClusteringResult
     end
 end
 
-@doc raw"""
-    GMMResult(
-        d::Integer,
-        n::Integer,
-        k::Integer
-    )
-
-TODO: Documentation
-"""
 function GMMResult(d::Integer, n::Integer, k::Integer)
     assignments = zeros(Int, n)
     weights = ones(k) ./ k
