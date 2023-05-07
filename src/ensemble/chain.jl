@@ -1,25 +1,44 @@
-@doc raw"""
-    ClusteringChain(algorithms::AbstractVector{ClusteringAlgorithm})
+@doc """
+    ClusteringChain(algorithms::ClusteringAlgorithm...)
+    
+ClusteringChain represents a chain of clustering algorithms that are executed sequentially. It allows for applying multiple clustering algorithms in a specific order to refine and improve the clustering results.
 
-TODO: Documentation
+# Fields
+- `algorithms`: the vector of clustering algorithms that will be executed in sequence.
 """
 Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
     algorithms::AbstractVector{<:ClusteringAlgorithm}
+
+    function ClusteringChain(algorithms::ClusteringAlgorithm...)
+        return new(collect(algorithms))
+    end
 end
 
-@doc raw"""
-    ClusteringChain(algorithms::ClusteringAlgorithm...)
-
-TODO: Documentation
-"""
-function ClusteringChain(algorithms::ClusteringAlgorithm...)
-    return ClusteringChain(collect(algorithms))
-end
-
-@doc raw"""
+@doc """
     fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
 
-TODO: Documentation
+The `fit` function applies a sequence of clustering algorithms and returns a result object representing the clustering outcome.
+
+# Parameters:
+- `meta`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `k`: an integer representing the number of clusters.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+gmm = GMM(estimator = EmpiricalCovarianceMatrix(n, d))
+
+chain = ClusteringChain(kmeans, gmm)
+result = fit(chain, data, k)
+```
 """
 function fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
     size = length(chain.algorithms)

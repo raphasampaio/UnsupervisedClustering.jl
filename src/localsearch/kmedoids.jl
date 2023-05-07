@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     Kmedoids(
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
@@ -23,7 +23,7 @@ Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
 
-@doc raw"""
+@doc """
     KmedoidsResult(
         assignments::AbstractVector{<:Integer}
         clusters::AbstractVector{<:Integer}
@@ -83,10 +83,41 @@ function KmedoidsResult(n::Integer, k::Integer)
     return KmedoidsResult(zeros(Int, n), zeros(Int, k))
 end
 
-@doc raw"""
-    fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
+function KmedoidsResult(n::Integer, clusters::AbstractVector{<:Integer})
+    k = length(clusters)
+    result = KmedoidsResult(n, k)
+    result.clusters = copy(clusters)
+    return result
+end
 
-TODO: Documentation
+@doc """
+    fit!(
+        kmedoids::Kmedoids,
+        distances::AbstractMatrix{<:Real},
+        result::KmedoidsResult
+    )
+
+The `fit!` function performs the k-medoids clustering algorithm on the given result as the initial point and updates the provided object with the clustering result.
+
+# Parameters:
+- `kmedoids`: an instance representing the clustering settings and parameters.
+- `distances`: a floating-point matrix representing the pairwise distances between the data points.
+- `result`: a result object that will be updated with the clustering result.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+distances = pairwise(SqEuclidean(), data, dims = 1)
+
+kmedoids = Kmedoids()
+result = KmedoidsResult(n, [1.0 2.0; 1.0 2.0])
+fit!(kmedoids, distances, result)
+```
 """
 function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
     t = time()
@@ -170,10 +201,33 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     return nothing
 end
 
-@doc raw"""
-    fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+@doc """
+    fit(
+        kmedoids::Kmedoids,
+        distances::AbstractMatrix{<:Real},
+        initial_clusters::AbstractVector{<:Integer}
+    )
 
-TODO: Documentation
+The `fit` function performs the k-medoids clustering algorithm on the given data points as the initial point and returns a result object representing the clustering result.
+
+# Parameters:
+- `kmedoids`: an instance representing the clustering settings and parameters.
+- `distances`: a floating-point matrix representing the pairwise distances between the data points.
+- `initial_clusters`: an integer vector where each element is the initial data point for each cluster.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+distances = pairwise(SqEuclidean(), data, dims = 1)
+
+kmedoids = Kmedoids()
+result = fit(kmedoids, distances, [4, 12])
+```
 """
 function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
     n = size(distances, 1)
@@ -199,10 +253,33 @@ function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clus
     return result
 end
 
-@doc raw"""
-    fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)
+@doc """
+    fit(
+        kmedoids::Kmedoids,
+        distances::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
-TODO: Documentation
+The `fit` function performs the k-medoids clustering algorithm and returns a result object representing the clustering result.
+
+# Parameters:
+- `kmedoids`: an instance representing the clustering settings and parameters.
+- `distances`: a floating-point matrix representing the pairwise distances between the data points.
+- `k`: an integer representing the number of clusters.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+distances = pairwise(SqEuclidean(), data, dims = 1)
+
+kmedoids = Kmedoids()
+result = fit(kmedoids, distances, k)
+```
 """
 function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
     n = size(distances, 1)

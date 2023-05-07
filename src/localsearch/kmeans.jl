@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     Kmeans(
         metric::SemiMetric = SqEuclidean()
         verbose::Bool = DEFAULT_VERBOSE
@@ -26,7 +26,7 @@ Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
 
-@doc raw"""
+@doc """
     KmeansResult(
         assignments::AbstractVector{<:Integer}
         clusters::AbstractMatrix{<:Real}
@@ -86,10 +86,40 @@ function KmeansResult(d::Integer, n::Integer, k::Integer)
     return KmeansResult(zeros(Int, n), zeros(d, k))
 end
 
-@doc raw"""
-    fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+function KmeansResult(n::Integer, clusters::AbstractMatrix{<:Real})
+    d, k = size(clusters)
+    result = KmeansResult(d, n, k)
+    result.clusters = copy(clusters)
+    return result
+end
 
-TODO: Documentation
+@doc """
+    fit!(
+        kmeans::Kmeans,
+        data::AbstractMatrix{<:Real},
+        result::KmeansResult
+    )
+
+The `fit!` function performs the k-means clustering algorithm on the given result as the initial point and updates the provided object with the clustering result.
+
+# Parameters:
+- `kmeans`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `result`: a result object that will be updated with the clustering result.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+result = KmeansResult(n, [1.0 2.0; 1.0 2.0])
+fit!(kmeans, data, result)
+```
 """
 function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
@@ -169,10 +199,32 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     return nothing
 end
 
-@doc raw"""
-    fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+@doc """
+    fit(
+        kmeans::Kmeans,
+        data::AbstractMatrix{<:Real},
+        initial_clusters::AbstractVector{<:Integer}
+    )
 
-TODO: Documentation
+The `fit` function performs the k-means clustering algorithm on the given data points as the initial point and returns a result object representing the clustering result.
+
+# Parameters:
+- `kmeans`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `initial_clusters`: an integer vector where each element is the initial data point for each cluster.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+result = fit(kmeans, data, [4, 12])
+```
 """
 function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
     n, d = size(data)
@@ -201,10 +253,32 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Abs
     return result
 end
 
-@doc raw"""
-    fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)
+@doc """
+    fit(
+        kmeans::Kmeans,
+        data::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
-TODO: Documentation
+The `fit` function performs the k-means clustering algorithm and returns a result object representing the clustering result.
+
+# Parameters:
+- `kmeans`: an instance representing the clustering settings and parameters.
+- `data`: a floating-point matrix, where each row represents a data point, and each column represents a feature.
+- `k`: an integer representing the number of clusters.
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+result = fit(kmeans, data, k)
+```
 """
 function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
