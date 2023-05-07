@@ -107,6 +107,14 @@ function test_all()
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
+    @testset "convert" begin
+        kmeans_result = KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0])
+        gmm_result = GMMResult([1, 2, 2], [0.5, 0.5], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], [Symmetric(Matrix{Float64}(I, 3, 3)) for _ in 1:2])
+
+        @test kmeans_result == convert(KmeansResult, gmm_result)
+        @test gmm_result == convert(GMMResult, kmeans_result)
+    end
+
     @testset "concatenate" begin
         @test_throws MethodError UnsupervisedClustering.concatenate()
 
