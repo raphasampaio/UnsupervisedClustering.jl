@@ -1,7 +1,5 @@
 @doc raw"""
-    ClusteringChain(
-        algorithms::Vector{ClusteringAlgorithm}
-    )
+    ClusteringChain(algorithms::Vector{ClusteringAlgorithm})
 
 TODO: Documentation
 """
@@ -9,6 +7,11 @@ Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
     algorithms::Vector{ClusteringAlgorithm}
 end
 
+@doc raw"""
+    ClusteringChain(algorithms::ClusteringAlgorithm...)
+
+TODO: Documentation
+"""
 function ClusteringChain(algorithms::ClusteringAlgorithm...)
     return ClusteringChain(collect(algorithms))
 end

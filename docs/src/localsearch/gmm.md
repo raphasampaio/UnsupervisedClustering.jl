@@ -1,6 +1,6 @@
-# k-medoids
+# GMM
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["localsearches/kmedoids.jl"]
+Pages   = ["localsearch/gmm.jl"]
 ```

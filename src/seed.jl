@@ -18,11 +18,6 @@ function seed!(algorithm::GeneticAlgorithm, seed::Integer)
     return nothing
 end
 
-function seed!(algorithm::GeneticAlgorithm, seed::Integer)
-    Random.seed!(algorithm.local_search.rng, seed)
-    return nothing
-end
-
 function seed!(algorithm::ClusteringChain, seed::Integer)
     for algorithm in algorithm.algorithms
         seed!(algorithm, seed)

@@ -62,35 +62,11 @@ function KmeansResult(d::Integer, n::Integer, k::Integer)
     return KmeansResult(zeros(Int, n), zeros(Float64, d, k))
 end
 
-function isbetter(a::KmeansResult, b::KmeansResult)
-    return isless(a.objective, b.objective)
-end
+@doc raw"""
+    fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
 
-function reset_objective!(result::KmeansResult)
-    result.objective = Inf
-    for i in 1:result.k
-        result.objective_per_cluster[i] = Inf
-    end
-
-    return nothing
-end
-
-function random_swap!(result::KmeansResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    n, d = size(data)
-    k = size(result.clusters, 2)
-
-    if n > 0 && k > 0
-        to = rand(rng, 1:k)
-        from = rand(rng, 1:n)
-        for i in 1:d
-            result.clusters[i, to] = data[from, i]
-        end
-        reset_objective!(result)
-    end
-
-    return nothing
-end
-
+TODO: Documentation
+"""
 function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
 
@@ -169,6 +145,11 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     return nothing
 end
 
+@doc raw"""
+    fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+
+TODO: Documentation
+"""
 function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
     n, d = size(data)
     k = length(initial_clusters)
@@ -196,6 +177,11 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Abs
     return result
 end
 
+@doc raw"""
+    fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)
+
+TODO: Documentation
+"""
 function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 

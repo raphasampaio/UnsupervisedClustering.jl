@@ -2,5 +2,5 @@
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["chain.jl"]
+Pages   = ["ensemble/chain.jl"]
 ```

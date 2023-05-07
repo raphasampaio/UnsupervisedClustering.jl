@@ -2,5 +2,5 @@
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["metaheuristics/randomswap.jl"]
+Pages   = ["metaheuristic/randomswap.jl"]
 ```

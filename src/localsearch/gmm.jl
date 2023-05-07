@@ -80,34 +80,6 @@ function GMMResult(d::Integer, n::Integer, k::Integer)
     return GMMResult(assignments, weights, clusters, covariances)
 end
 
-function isbetter(a::GMMResult, b::GMMResult)
-    return isless(b.objective, a.objective)
-end
-
-function reset_objective!(result::GMMResult)
-    result.objective = -Inf
-    return nothing
-end
-
-function random_swap!(result::GMMResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
-    k = result.k
-    n, d = size(data)
-
-    if n > 0 && k > 0
-        to = rand(rng, 1:k)
-        from = rand(rng, 1:n)
-        result.clusters[to] = copy(data[from, :])
-
-        m = mean([det(result.covariances[j]) for j in 1:k])
-        value = (m > 0 ? m : 1.0)^(1 / d)
-        result.covariances[to] = Symmetric(value .* identity_matrix(d))
-
-        reset_objective!(result)
-    end
-
-    return nothing
-end
-
 function estimate_gaussian_parameters(
     gmm::GMM,
     data::AbstractMatrix{<:Real},

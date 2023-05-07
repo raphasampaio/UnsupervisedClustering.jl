@@ -20,18 +20,18 @@ makedocs(
     ),
     pages = [
         "Home" => "index.md"
-        "Local Searches" => Any[
-            "k-means"=>"localsearches/kmeans.md",
-            "k-medoids"=>"localsearches/kmedoids.md",
-            "GMM"=>"localsearches/gmm.md",
+        "Local Search" => Any[
+            "k-means"=>"localsearch/kmeans.md",
+            "k-medoids"=>"localsearch/kmedoids.md",
+            "GMM"=>"localsearch/gmm.md",
         ]
-        "Metaheuristics" => Any[
-            "Multi-Start"=>"metaheuristics/multistart.md",
-            "Random Swap"=>"metaheuristics/randomswap.md",
-            "Genetic Algorithm"=>"metaheuristics/geneticalgorithm.md",
+        "Metaheuristic" => Any[
+            "Multi-Start"=>"metaheuristic/multistart.md",
+            "Random Swap"=>"metaheuristic/randomswap.md",
+            "Genetic Algorithm"=>"metaheuristic/geneticalgorithm.md",
         ]
-        "Other" => Any[
-            "Clustering Chain"=>"other/chain.md"
+        "Ensemble" => Any[
+            "Clustering Chain"=>"ensemble/chain.md"
         ]
     ],
 )
