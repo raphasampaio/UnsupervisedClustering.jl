@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     GeneticAlgorithm(
         local_search::ClusteringAlgorithm
         verbose::Bool = DEFAULT_VERBOSE
@@ -19,7 +19,7 @@ Base.@kwdef struct GeneticAlgorithm <: ClusteringAlgorithm
     π_min::Integer = 40
 end
 
-@doc raw"""
+@doc """
     fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)
 
 TODO: Documentation

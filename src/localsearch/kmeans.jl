@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     Kmeans(
         metric::SemiMetric = SqEuclidean()
         verbose::Bool = DEFAULT_VERBOSE
@@ -26,7 +26,7 @@ Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
 
-@doc raw"""
+@doc """
     KmeansResult(
         assignments::AbstractVector{<:Integer}
         clusters::AbstractMatrix{<:Real}
@@ -86,8 +86,12 @@ function KmeansResult(d::Integer, n::Integer, k::Integer)
     return KmeansResult(zeros(Int, n), zeros(d, k))
 end
 
-@doc raw"""
-    fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+@doc """
+    fit!(
+        kmeans::Kmeans,
+        data::AbstractMatrix{<:Real},
+        result::KmeansResult
+    )
 
 TODO: Documentation
 """
@@ -169,8 +173,12 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     return nothing
 end
 
-@doc raw"""
-    fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+@doc """
+    fit(
+        kmeans::Kmeans,
+        data::AbstractMatrix{<:Real},
+        initial_clusters::AbstractVector{<:Integer}
+    )
 
 TODO: Documentation
 """
@@ -201,10 +209,27 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Abs
     return result
 end
 
-@doc raw"""
-    fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)
+@doc """
+    fit(
+        kmeans::Kmeans,
+        data::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
 TODO: Documentation
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+result = fit(kmeans, data, k)
+```
 """
 function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)

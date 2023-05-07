@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     ClusteringChain(algorithms::AbstractVector{ClusteringAlgorithm})
 
 TODO: Documentation
@@ -7,7 +7,7 @@ Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
     algorithms::AbstractVector{<:ClusteringAlgorithm}
 end
 
-@doc raw"""
+@doc """
     ClusteringChain(algorithms::ClusteringAlgorithm...)
 
 TODO: Documentation
@@ -16,7 +16,7 @@ function ClusteringChain(algorithms::ClusteringAlgorithm...)
     return ClusteringChain(collect(algorithms))
 end
 
-@doc raw"""
+@doc """
     fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
 
 TODO: Documentation

@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     RandomSwap(
         local_search::ClusteringAlgorithm
         verbose::Bool = DEFAULT_VERBOSE
@@ -26,7 +26,7 @@ Base.@kwdef struct RandomSwap <: ClusteringAlgorithm
     max_iterations_without_improvement::Integer = 150
 end
 
-@doc raw"""
+@doc """
     fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)
 
 TODO: Documentation

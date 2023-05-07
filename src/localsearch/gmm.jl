@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     GMM(
         estimator::CovarianceMatrixEstimator
         verbose::Bool = DEFAULT_VERBOSE
@@ -32,7 +32,7 @@ Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
     decompose_if_fails::Bool = true
 end
 
-@doc raw"""
+@doc """
     GMMResult(
         assignments::AbstractVector{<:Integer}
         weights::AbstractVector{<:Real}
@@ -219,8 +219,12 @@ function maximization_step!(
     return nothing
 end
 
-@doc raw"""
-    fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
+@doc """
+    fit!(
+        gmm::GMM,
+        data::AbstractMatrix{<:Real},
+        result::GMMResult
+    )
 
 TODO: Documentation
 """
@@ -275,8 +279,12 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     return nothing
 end
 
-@doc raw"""
-    fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+@doc """
+    fit(
+        gmm::GMM,
+        data::AbstractMatrix{<:Real},
+        initial_clusters::AbstractVector{<:Integer}
+    )
 
 TODO: Documentation
 """
@@ -307,10 +315,27 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractV
     return result
 end
 
-@doc raw"""
-    fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)
+@doc """
+    fit(
+        gmm::GMM,
+        data::AbstractMatrix{<:Real},
+        k::Integer
+    ) 
 
 TODO: Documentation
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+gmm = GMM(estimator = EmpiricalCovarianceMatrix(n, d))
+result = fit(gmm, data, k)
+```
 """
 function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)

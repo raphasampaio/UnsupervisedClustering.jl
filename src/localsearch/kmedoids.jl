@@ -1,4 +1,4 @@
-@doc raw"""
+@doc """
     Kmedoids(
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
@@ -23,7 +23,7 @@ Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
 end
 
-@doc raw"""
+@doc """
     KmedoidsResult(
         assignments::AbstractVector{<:Integer}
         clusters::AbstractVector{<:Integer}
@@ -83,8 +83,12 @@ function KmedoidsResult(n::Integer, k::Integer)
     return KmedoidsResult(zeros(Int, n), zeros(Int, k))
 end
 
-@doc raw"""
-    fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
+@doc """
+    fit!(
+        kmedoids::Kmedoids,
+        distances::AbstractMatrix{<:Real},
+        result::KmedoidsResult
+    )
 
 TODO: Documentation
 """
@@ -170,8 +174,12 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     return nothing
 end
 
-@doc raw"""
-    fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})
+@doc """
+    fit(
+        kmedoids::Kmedoids,
+        distances::AbstractMatrix{<:Real},
+        initial_clusters::AbstractVector{<:Integer}
+    )
 
 TODO: Documentation
 """
@@ -199,10 +207,27 @@ function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clus
     return result
 end
 
-@doc raw"""
-    fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)
+@doc """
+    fit(
+        kmedoids::Kmedoids,
+        distances::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
 TODO: Documentation
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmedoids = Kmedoids()
+result = fit(kmedoids, data, k)
+```
 """
 function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
     n = size(distances, 1)
