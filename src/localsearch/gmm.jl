@@ -81,7 +81,7 @@ mutable struct GMMResult <: ClusteringResult
         elapsed::Real = 0.0,
         converged::Bool = false,
     )
-        new(
+        return new(
             assignments,
             weights,
             clusters,
@@ -92,7 +92,6 @@ mutable struct GMMResult <: ClusteringResult
             false,
             length(clusters),
         )
-        
     end
 end
 
@@ -150,8 +149,8 @@ function compute_precision_cholesky!(
             precisions_cholesky[i] = covariances_cholesky.U \ identity_matrix(d)
         catch e
             if gmm.decompose_if_fails
-                decomposition = eigen(result.covariances[i], sortby = nothing)
-                result.covariances[i] = Symmetric(decomposition.vectors * Matrix(Diagonal(max.(decomposition.values, 1e-6))) * decomposition.vectors')
+                eig = eigen(result.covariances[i], sortby = nothing)
+                result.covariances[i] = Symmetric(eig.vectors * Matrix(Diagonal(max.(eig.values, 1e-6))) * eig.vectors')
                 covariances_cholesky = cholesky(result.covariances[i])
                 precisions_cholesky[i] = covariances_cholesky.U \ identity_matrix(d)
             else

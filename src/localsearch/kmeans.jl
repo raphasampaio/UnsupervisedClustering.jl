@@ -69,9 +69,9 @@ mutable struct KmeansResult <: ClusteringResult
         objective_per_cluster::AbstractVector{<:Real} = Inf * ones(size(clusters, 2)),
         iterations::Int = 0,
         elapsed::Float64 = 0.0,
-        converged::Bool = false
+        converged::Bool = false,
     )
-        new(
+        return new(
             assignments,
             clusters,
             objective,

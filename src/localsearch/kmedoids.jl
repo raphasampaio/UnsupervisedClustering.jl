@@ -66,9 +66,9 @@ mutable struct KmedoidsResult <: ClusteringResult
         objective_per_cluster::AbstractVector{<:Real} = Inf * ones(length(clusters)),
         iterations::Integer = 0,
         elapsed::Real = 0.0,
-        converged::Bool = false
+        converged::Bool = false,
     )
-        new(
+        return new(
             assignments,
             clusters,
             objective,
