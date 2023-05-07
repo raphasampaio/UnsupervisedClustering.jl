@@ -27,9 +27,27 @@ Base.@kwdef struct RandomSwap <: ClusteringAlgorithm
 end
 
 @doc """
-    fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)
+    fit(
+        meta::RandomSwap,
+        data::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
 TODO: Documentation
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+random_swap = RandomSwap(local_search = kmeans)
+result = fit(random_swap, data, k)
+```
 """
 function fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     iterations_without_improvement = 0

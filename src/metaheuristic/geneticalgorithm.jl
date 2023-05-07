@@ -20,9 +20,27 @@ Base.@kwdef struct GeneticAlgorithm <: ClusteringAlgorithm
 end
 
 @doc """
-    fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)
+    fit(
+        meta::GeneticAlgorithm,
+        data::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
 TODO: Documentation
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+genetic_algorithm = GeneticAlgorithm(local_search = kmeans)
+result = fit(genetic_algorithm, data, k)
+```
 """
 function fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     generation = Generation()

@@ -19,9 +19,27 @@ Base.@kwdef struct MultiStart <: ClusteringAlgorithm
 end
 
 @doc """
-    fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)
+    fit(
+        meta::MultiStart,
+        data::AbstractMatrix{<:Real},
+        k::Integer
+    )
 
 TODO: Documentation
+
+# Example
+
+```julia
+n = 100
+d = 2
+k = 2
+
+data = rand(n, d)
+
+kmeans = Kmeans()
+multi_start = MultiStart(local_search = kmeans)
+result = fit(multi_start, data, k)
+```
 """
 function fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::ClusteringResult
     best_result = fit(meta.local_search, data, k)
