@@ -1,4 +1,4 @@
-function assign(point::Integer, distances::AbstractMatrix{<:Real})::Tuple{<:Integer, <:Real}
+function assign(point::Integer, distances::AbstractMatrix{<:Real})
     k, n = size(distances)
 
     min_cluster = 0
@@ -15,7 +15,7 @@ function assign(point::Integer, distances::AbstractMatrix{<:Real})::Tuple{<:Inte
     return min_cluster, min_distance
 end
 
-function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})::Tuple{<:Integer, <:Real}
+function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
     n = size(distances, 1)
     k = length(clusters)
 
