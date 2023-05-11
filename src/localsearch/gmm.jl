@@ -58,28 +58,28 @@ GMMResult struct represents the result of the GMM clustering algorithm.
 - `converged`: indicates whether the algorithm has converged to a solution.
 - `k`: the number of clusters.
 """
-mutable struct GMMResult <: ClusteringResult
-    assignments::AbstractVector{<:Integer}
-    weights::AbstractVector{<:Real}
-    clusters::AbstractVector{<:AbstractVector{<:Real}}
-    covariances::AbstractVector{<:Symmetric{<:Real}}
-    objective::Real
-    iterations::Integer
-    elapsed::Real
+mutable struct GMMResult{I <: Integer, R <: Real} <: ClusteringResult
+    assignments::Vector{I}
+    weights::Vector{R}
+    clusters::Vector{Vector{R}}
+    covariances::Vector{<:Symmetric{R}}
+    objective::R
+    iterations::I
+    elapsed::R
     converged::Bool
-    k::Integer
+    k::I
 
     function GMMResult(
-        assignments::AbstractVector{<:Integer},
-        weights::AbstractVector{<:Real},
-        clusters::AbstractVector{<:AbstractVector{<:Real}},
-        covariances::AbstractVector{<:Symmetric{<:Real}},
-        objective::Real = -Inf,
-        iterations::Integer = 0,
-        elapsed::Real = 0.0,
+        assignments::AbstractVector{I},
+        weights::AbstractVector{R},
+        clusters::AbstractVector{<:AbstractVector{R}},
+        covariances::AbstractVector{<:Symmetric{R}},
+        objective::R = -Inf,
+        iterations::I = 0,
+        elapsed::R = 0.0,
         converged::Bool = false,
-    )
-        return new(
+    ) where {I <: Integer, R <: Real}
+        return new{I, R}(
             assignments,
             weights,
             clusters,

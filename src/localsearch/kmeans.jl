@@ -56,26 +56,26 @@ KmeansResult struct represents the result of the k-means clustering algorithm.
 - `converged`: indicates whether the algorithm has converged to a solution.
 - `k`: the number of clusters.
 """
-mutable struct KmeansResult <: ClusteringResult
-    assignments::AbstractVector{<:Integer}
-    clusters::AbstractMatrix{<:Real}
-    objective::Real
-    objective_per_cluster::AbstractVector{<:Real}
-    iterations::Integer
-    elapsed::Real
+mutable struct KmeansResult{I <: Integer, R <: Real} <: ClusteringResult
+    assignments::Vector{I}
+    clusters::Matrix{R}
+    objective::R
+    objective_per_cluster::Vector{R}
+    iterations::I
+    elapsed::R
     converged::Bool
-    k::Integer
+    k::I
 
     function KmeansResult(
-        assignments::AbstractVector{<:Integer},
-        clusters::AbstractMatrix{<:Real},
-        objective::Real = Inf,
-        objective_per_cluster::AbstractVector{<:Real} = Inf * ones(size(clusters, 2)),
-        iterations::Integer = 0,
-        elapsed::Real = 0.0,
+        assignments::AbstractVector{I},
+        clusters::AbstractMatrix{R},
+        objective::R = Inf,
+        objective_per_cluster::AbstractVector{R} = Inf * ones(size(clusters, 2)),
+        iterations::I = 0,
+        elapsed::R = 0.0,
         converged::Bool = false,
-    )
-        return new(
+    ) where {I <: Integer, R <: Real}
+        return new{I, R}(
             assignments,
             clusters,
             objective,

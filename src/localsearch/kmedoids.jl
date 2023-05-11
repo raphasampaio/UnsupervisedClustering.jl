@@ -47,26 +47,26 @@ KmedoidsResult struct represents the result of the k-medoids clustering algorith
 - `converged`: indicates whether the algorithm has converged to a solution.
 - `k`: the number of clusters.
 """
-mutable struct KmedoidsResult <: ClusteringResult
-    assignments::AbstractVector{<:Integer}
-    clusters::AbstractVector{<:Integer}
-    objective::Real
-    objective_per_cluster::AbstractVector{<:Real}
-    iterations::Integer
-    elapsed::Real
+mutable struct KmedoidsResult{I <: Integer, R <: Real} <: ClusteringResult
+    assignments::Vector{I}
+    clusters::Vector{I}
+    objective::R
+    objective_per_cluster::Vector{R}
+    iterations::I
+    elapsed::R
     converged::Bool
-    k::Integer
+    k::I
 
     function KmedoidsResult(
-        assignments::AbstractVector{<:Integer},
-        clusters::AbstractVector{<:Integer},
-        objective::Real = Inf,
-        objective_per_cluster::AbstractVector{<:Real} = Inf * ones(length(clusters)),
-        iterations::Integer = 0,
-        elapsed::Real = 0.0,
+        assignments::AbstractVector{I},
+        clusters::AbstractVector{I},
+        objective::R = Inf,
+        objective_per_cluster::AbstractVector{R} = Inf * ones(length(clusters)),
+        iterations::I = 0,
+        elapsed::R = 0.0,
         converged::Bool = false,
-    )
-        return new(
+    ) where {I <: Integer, R <: Real}
+        return new{I, R}(
             assignments,
             clusters,
             objective,
