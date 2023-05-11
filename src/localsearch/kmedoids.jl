@@ -178,7 +178,7 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
             for j in eachindex(medoid)
                 distances_sum = 0
                 for l in eachindex(medoid)
-                    distances_sum += distances[medoid[j], medoid[l]]
+                    distances_sum += distances[medoid[l], medoid[j]]
                 end
 
                 if distances_sum < min_distance
