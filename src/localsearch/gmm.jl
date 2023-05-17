@@ -345,6 +345,7 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractV
     end
 
     @assert d > 0
+    @assert k > 0
     @assert n >= k
 
     for i in 1:k
@@ -396,6 +397,7 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
         return GMMResult(d, n, k)
     end
 
+    @assert k > 0
     @assert n >= k
 
     initial_clusters = StatsBase.sample(gmm.rng, 1:n, k, replace = false)

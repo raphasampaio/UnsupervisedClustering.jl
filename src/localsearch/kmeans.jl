@@ -242,6 +242,7 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Abs
     end
 
     @assert d > 0
+    @assert k > 0
     @assert n >= k
 
     for i in 1:d
@@ -293,6 +294,7 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansRe
         return KmeansResult(d, n, k)
     end
 
+    @assert k > 0
     @assert n >= k
 
     initial_clusters = StatsBase.sample(kmeans.rng, 1:n, k, replace = false)

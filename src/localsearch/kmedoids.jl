@@ -238,6 +238,7 @@ function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clus
         return result
     end
 
+    @assert k > 0
     @assert n >= k
 
     for i in 1:k
@@ -288,6 +289,7 @@ function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer):
         return KmedoidsResult(n, k)
     end
 
+    @assert k > 0
     @assert n >= k
 
     initial_clusters = StatsBase.sample(kmedoids.rng, 1:n, k, replace = false)
