@@ -37,11 +37,3 @@ function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::
 
     return min_cluster, min_distance
 end
-
-function identity_matrix(d::Integer)
-    return Symmetric(Matrix{Float64}(I, d, d))
-end
-
-function permutecols!(a::AbstractMatrix, p::AbstractVector{<:Integer})
-    return Base.permutecols!!(a, copy(p))
-end

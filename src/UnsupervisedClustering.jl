@@ -55,10 +55,10 @@ include("results/randomswap.jl")
 include("results/resetobjective.jl")
 include("results/sort.jl")
 
-include("common.jl")
+include("assignments.jl")
 include("concatenate.jl")
-
 include("distances.jl")
+include("linearalgebra.jl")
 include("print.jl")
 include("seed.jl")
 
