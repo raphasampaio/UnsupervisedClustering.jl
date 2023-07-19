@@ -24,7 +24,7 @@ The k-means is a clustering algorithm that aims to partition data into clusters 
   Least squares quantization in PCM.
   IEEE transactions on information theory 28.2 (1982): 129-137.
 """
-Base.@kwdef mutable struct Kmeans <: ClusteringAlgorithm
+Base.@kwdef mutable struct Kmeans <: UnsupervisedClusteringAlgorithm
     metric::SemiMetric = SqEuclidean()
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
@@ -56,7 +56,7 @@ KmeansResult struct represents the result of the k-means clustering algorithm.
 - `converged`: indicates whether the algorithm has converged to a solution.
 - `k`: the number of clusters.
 """
-mutable struct KmeansResult{I <: Integer, R <: Real} <: ClusteringResult
+mutable struct KmeansResult{I <: Integer, R <: Real} <: UnsupervisedClusteringResult
     assignments::Vector{I}
     clusters::Matrix{R}
     objective::R

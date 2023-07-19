@@ -17,11 +17,11 @@ const DEFAULT_MAX_ITERATIONS = 1000
 export fit,
     fit!,
     counts,
-    ClusteringResult,
+    UnsupervisedClusteringResult,
     KmeansResult,
     KmedoidsResult,
     GMMResult,
-    ClusteringAlgorithm,
+    UnsupervisedClusteringAlgorithm,
     Kmeans,
     Kmedoids,
     GMM,
@@ -30,8 +30,8 @@ export fit,
     GeneticAlgorithm,
     ClusteringChain
 
-abstract type ClusteringAlgorithm end
-abstract type ClusteringResult end
+abstract type UnsupervisedClusteringAlgorithm end
+abstract type UnsupervisedClusteringResult end
 
 include("localsearch/kmeans.jl")
 include("localsearch/kmedoids.jl")

@@ -1,9 +1,9 @@
 mutable struct Generation
-    population::AbstractVector{<:ClusteringResult}
+    population::AbstractVector{<:UnsupervisedClusteringResult}
     empty::Set{Integer}
 
     function Generation()
-        return new(Vector{ClusteringResult}(), Set{Int}())
+        return new(Vector{UnsupervisedClusteringResult}(), Set{Int}())
     end
 end
 
@@ -21,7 +21,7 @@ function remove(generation::Generation, i::Integer)
     return nothing
 end
 
-function add!(generation::Generation, result::ClusteringResult)
+function add!(generation::Generation, result::UnsupervisedClusteringResult)
     if length(generation.empty) > 0
         generation.population[pop!(generation.empty)] = result
     else
@@ -50,7 +50,7 @@ function get_best_solution(generation::Generation)
     return best_solution
 end
 
-function crossover(parent1::ClusteringResult, parent2::ClusteringResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+function crossover(parent1::UnsupervisedClusteringResult, parent2::UnsupervisedClusteringResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     k = parent1.k
 
     weights = zeros(k, k)

@@ -16,7 +16,7 @@ The k-medoids is a variation of k-means clustering algorithm that uses actual da
 
 # References
 """
-Base.@kwdef mutable struct Kmedoids <: ClusteringAlgorithm
+Base.@kwdef mutable struct Kmedoids <: UnsupervisedClusteringAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Real = DEFAULT_TOLERANCE
@@ -47,7 +47,7 @@ KmedoidsResult struct represents the result of the k-medoids clustering algorith
 - `converged`: indicates whether the algorithm has converged to a solution.
 - `k`: the number of clusters.
 """
-mutable struct KmedoidsResult{I <: Integer, R <: Real} <: ClusteringResult
+mutable struct KmedoidsResult{I <: Integer, R <: Real} <: UnsupervisedClusteringResult
     assignments::Vector{I}
     clusters::Vector{I}
     objective::R

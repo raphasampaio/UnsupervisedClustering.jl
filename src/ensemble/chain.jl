@@ -1,15 +1,15 @@
 @doc """
-    ClusteringChain(algorithms::ClusteringAlgorithm...)
+    ClusteringChain(algorithms::UnsupervisedClusteringAlgorithm...)
     
 ClusteringChain represents a chain of clustering algorithms that are executed sequentially. It allows for applying multiple clustering algorithms in a specific order to refine and improve the clustering results.
 
 # Fields
 - `algorithms`: the vector of clustering algorithms that will be executed in sequence.
 """
-Base.@kwdef struct ClusteringChain <: ClusteringAlgorithm
-    algorithms::AbstractVector{<:ClusteringAlgorithm}
+Base.@kwdef struct ClusteringChain <: UnsupervisedClusteringAlgorithm
+    algorithms::AbstractVector{<:UnsupervisedClusteringAlgorithm}
 
-    function ClusteringChain(algorithms::ClusteringAlgorithm...)
+    function ClusteringChain(algorithms::UnsupervisedClusteringAlgorithm...)
         return new(collect(algorithms))
     end
 end

@@ -1,8 +1,8 @@
-# function concatenate_k(result::ClusteringResult, results::ClusteringResult...)
+# function concatenate_k(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
 #     return result.k + sum([i.k for i in results])
 # end
 
-function concatenate_assignments(result::ClusteringResult, results::ClusteringResult...)
+function concatenate_assignments(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
     size = length(results)
     accumulated = zeros(Int, size)
     for i in 1:size
@@ -32,23 +32,23 @@ function concatenate_clusters(result::KmedoidsResult, results::KmedoidsResult...
     return vcat(result.clusters, [results[i].clusters .+ accumulated[i] for i in 1:size]...)
 end
 
-function concatenate_objective(result::ClusteringResult, results::ClusteringResult...)
+function concatenate_objective(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
     return result.objective + sum([i.objective for i in results])
 end
 
-function concatenate_objective_per_cluster(result::ClusteringResult, results::ClusteringResult...)
+function concatenate_objective_per_cluster(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
     return vcat(result.objective_per_cluster, [i.objective_per_cluster for i in results]...)
 end
 
-function concatenate_iterations(result::ClusteringResult, results::ClusteringResult...)
+function concatenate_iterations(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
     return result.iterations + sum([i.iterations for i in results])
 end
 
-function concatenate_elapsed(result::ClusteringResult, results::ClusteringResult...)
+function concatenate_elapsed(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
     return result.elapsed + sum([i.elapsed for i in results])
 end
 
-function concatenate_converged(result::ClusteringResult, results::ClusteringResult...)
+function concatenate_converged(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
     return result.converged && all([i.converged for i in results])
 end
 

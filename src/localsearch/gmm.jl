@@ -23,7 +23,7 @@ The GMM is a clustering algorithm that models the underlying data distribution a
   Maximum likelihood from incomplete data via the EM algorithm.
   Journal of the royal statistical society: series B (methodological) 39.1 (1977): 1-22.
 """
-Base.@kwdef mutable struct GMM <: ClusteringAlgorithm
+Base.@kwdef mutable struct GMM <: UnsupervisedClusteringAlgorithm
     estimator::CovarianceMatrixEstimator
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
@@ -58,7 +58,7 @@ GMMResult struct represents the result of the GMM clustering algorithm.
 - `converged`: indicates whether the algorithm has converged to a solution.
 - `k`: the number of clusters.
 """
-mutable struct GMMResult{I <: Integer, R <: Real} <: ClusteringResult
+mutable struct GMMResult{I <: Integer, R <: Real} <: UnsupervisedClusteringResult
     assignments::Vector{I}
     weights::Vector{R}
     clusters::Vector{Vector{R}}

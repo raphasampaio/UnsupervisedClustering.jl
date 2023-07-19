@@ -1,4 +1,4 @@
-function seed!(algorithm::ClusteringAlgorithm, seed::Integer)
+function seed!(algorithm::UnsupervisedClusteringAlgorithm, seed::Integer)
     Random.seed!(algorithm.rng, seed)
     return nothing
 end

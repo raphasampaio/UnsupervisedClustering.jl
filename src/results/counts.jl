@@ -1,3 +1,3 @@
-function counts(result::ClusteringResult)
+function counts(result::UnsupervisedClusteringResult)
     return StatsBase.counts(result.assignments, result.k)
 end
