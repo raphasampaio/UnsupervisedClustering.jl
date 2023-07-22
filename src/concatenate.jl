@@ -1,8 +1,8 @@
-# function concatenate_k(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+# function concatenate_k(result::Result, results::Result...)
 #     return result.k + sum([i.k for i in results])
 # end
 
-function concatenate_assignments(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+function concatenate_assignments(result::Result, results::Result...)
     size = length(results)
     accumulated = zeros(Int, size)
     for i in 1:size
@@ -32,23 +32,23 @@ function concatenate_clusters(result::KmedoidsResult, results::KmedoidsResult...
     return vcat(result.clusters, [results[i].clusters .+ accumulated[i] for i in 1:size]...)
 end
 
-function concatenate_objective(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+function concatenate_objective(result::Result, results::Result...)
     return result.objective + sum([i.objective for i in results])
 end
 
-function concatenate_objective_per_cluster(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+function concatenate_objective_per_cluster(result::Result, results::Result...)
     return vcat(result.objective_per_cluster, [i.objective_per_cluster for i in results]...)
 end
 
-function concatenate_iterations(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+function concatenate_iterations(result::Result, results::Result...)
     return result.iterations + sum([i.iterations for i in results])
 end
 
-function concatenate_elapsed(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+function concatenate_elapsed(result::Result, results::Result...)
     return result.elapsed + sum([i.elapsed for i in results])
 end
 
-function concatenate_converged(result::UnsupervisedClusteringResult, results::UnsupervisedClusteringResult...)
+function concatenate_converged(result::Result, results::Result...)
     return result.converged && all([i.converged for i in results])
 end
 

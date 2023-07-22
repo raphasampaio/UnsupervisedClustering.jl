@@ -41,25 +41,25 @@ function test_all()
         data = zeros(n, d)
 
         algorithm = Kmeans(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(algorithm, data, k)
+        result = fit(algorithm, data, k)
         @test length(result.assignments) == 0
 
-        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
+        result = fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
 
         algorithm = Kmedoids(rng = MersenneTwister(1))
         distances = pairwise(SqEuclidean(), data, dims = 1)
-        result = UnsupervisedClustering.fit(algorithm, distances, k)
+        result = fit(algorithm, distances, k)
         @test length(result.assignments) == 0
 
-        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
+        result = fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
 
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        result = UnsupervisedClustering.fit(algorithm, data, k)
+        result = fit(algorithm, data, k)
         @test length(result.assignments) == 0
 
-        result = UnsupervisedClustering.fit(algorithm, data, Vector{Int}())
+        result = fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
     end
 
@@ -68,10 +68,10 @@ function test_all()
         data = zeros(n, d)
 
         algorithm = Kmeans(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test_throws AssertionError result = fit(algorithm, data, k)
 
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test_throws AssertionError result = fit(algorithm, data, k)
     end
 
     @testset "k > n" begin
@@ -79,14 +79,14 @@ function test_all()
         data = zeros(n, d)
 
         algorithm = Kmeans(rng = MersenneTwister(1))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test_throws AssertionError result = fit(algorithm, data, k)
 
         algorithm = Kmedoids(rng = MersenneTwister(1))
         distances = pairwise(SqEuclidean(), data, dims = 1)
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, distances, k)
+        @test_throws AssertionError result = fit(algorithm, distances, k)
 
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        @test_throws AssertionError result = UnsupervisedClustering.fit(algorithm, data, k)
+        @test_throws AssertionError result = fit(algorithm, data, k)
     end
 
     @testset "n = k" begin
@@ -94,34 +94,34 @@ function test_all()
         data = rand(MersenneTwister(1), n, d)
 
         algorithm = Kmeans(rng = MersenneTwister(1))
-        result = UnsupervisedClustering.fit(algorithm, data, k)
+        result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
 
         algorithm = Kmedoids(rng = MersenneTwister(1))
         distances = pairwise(SqEuclidean(), data, dims = 1)
-        result = UnsupervisedClustering.fit(algorithm, distances, k)
+        result = fit(algorithm, distances, k)
         @test sort(result.assignments) == [i for i in 1:k]
 
         algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        result = UnsupervisedClustering.fit(algorithm, data, k)
+        result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
     @testset "convert" begin
-        kmeans_result = KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0])
-        gmm_result = GMMResult([1, 2, 2], [0.5, 0.5], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], [Symmetric(Matrix{Float64}(I, 3, 3)) for _ in 1:2])
+        kmeans_result = UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0])
+        gmm_result = UnsupervisedClustering.GMMResult([1, 2, 2], [0.5, 0.5], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], [Symmetric(Matrix{Float64}(I, 3, 3)) for _ in 1:2])
 
-        @test kmeans_result == convert(KmeansResult, gmm_result)
-        @test gmm_result == convert(GMMResult, kmeans_result)
+        @test kmeans_result == convert(UnsupervisedClustering.KmeansResult, gmm_result)
+        @test gmm_result == convert(UnsupervisedClustering.GMMResult, kmeans_result)
     end
 
     @testset "concatenate" begin
-        @test_throws MethodError UnsupervisedClustering.concatenate()
+        @test_throws MethodError concatenate()
 
-        result = UnsupervisedClustering.concatenate(
-            KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
-            KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
+        result = concatenate(
+            UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
+            UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
+            UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
         )
 
         @test result.k == 6
@@ -133,10 +133,10 @@ function test_all()
         @test result.elapsed ≈ 6.0
         @test result.converged == true
 
-        result = UnsupervisedClustering.concatenate(
-            KmedoidsResult([1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
-            KmedoidsResult([1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
-            KmedoidsResult([1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
+        result = concatenate(
+            UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
+            UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
+            UnsupervisedClustering.KmedoidsResult([1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
         )
 
         @test result.k == 6
@@ -150,8 +150,8 @@ function test_all()
     end
 
     @testset "sort" begin
-        result = KmeansResult([1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
-        UnsupervisedClustering.sort!(result)
+        result = UnsupervisedClustering.KmeansResult([1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+        sort!(result)
 
         @test result.k == 3
         @test result.assignments == [3, 1, 2, 2, 1, 3]
@@ -162,8 +162,8 @@ function test_all()
         @test result.elapsed ≈ 1.0
         @test result.converged == true
 
-        result = KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
-        UnsupervisedClustering.sort!(result)
+        result = UnsupervisedClustering.KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+        sort!(result)
 
         @test result.k == 3
         @test result.assignments == [3, 1, 2, 2, 1, 3]
@@ -354,21 +354,21 @@ function test_all()
 
         # @printf("\"%s\" => [", dataset)
         for (i, algorithm) in enumerate(algorithms)
-            UnsupervisedClustering.seed!(algorithm, 1)
+            seed!(algorithm, 1)
 
             result =
                 if algorithm == kmedoids || (hasproperty(algorithm, :local_search) && algorithm.local_search == kmedoids)
                     distances = pairwise(SqEuclidean(), data, dims = 1)
-                    UnsupervisedClustering.fit(algorithm, distances, k)
+                    fit(algorithm, distances, k)
                 else
-                    UnsupervisedClustering.fit(algorithm, data, k)
+                    fit(algorithm, data, k)
                 end
 
             # @printf("%.16f,", result.objective)
 
-            counts = UnsupervisedClustering.counts(result)
+            c = counts(result)
             for j in 1:k
-                @test counts[j] == count(==(j), result.assignments)
+                @test c[j] == count(==(j), result.assignments)
             end
 
             @test result.objective ≈ benchmark[i]

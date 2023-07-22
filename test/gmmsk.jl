@@ -1,4 +1,4 @@
-Base.@kwdef mutable struct GMMSK <: UnsupervisedClusteringAlgorithm
+Base.@kwdef mutable struct GMMSK <: UnsupervisedClustering.Algorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Real = 1e-3
@@ -10,7 +10,7 @@ function seed!(algorithm::GMMSK, seed::Integer)
     return nothing
 end
 
-function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:Real}, result::GMMResult)
+function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:Real}, result::UnsupervisedClustering.GMMResult)
     t = time()
 
     n, d = size(data)
@@ -77,7 +77,7 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
     return nothing
 end
 
-function UnsupervisedClustering.fit(parameters::GMMSK, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
+function UnsupervisedClustering.fit(parameters::GMMSK, data::AbstractMatrix{<:Real}, k::Integer)::UnsupervisedClustering.GMMResult
     n, d = size(data)
 
     result = GMMResult(d, n, k)

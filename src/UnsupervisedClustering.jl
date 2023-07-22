@@ -14,14 +14,12 @@ const DEFAULT_VERBOSE = false
 const DEFAULT_TOLERANCE = 1e-3
 const DEFAULT_MAX_ITERATIONS = 1000
 
-export fit,
-    fit!,
+export concatenate,
     counts,
-    UnsupervisedClusteringResult,
-    KmeansResult,
-    KmedoidsResult,
-    GMMResult,
-    UnsupervisedClusteringAlgorithm,
+    fit,
+    fit!,
+    seed!,
+    sort!,
     Kmeans,
     Kmedoids,
     GMM,
@@ -30,8 +28,8 @@ export fit,
     GeneticAlgorithm,
     ClusteringChain
 
-abstract type UnsupervisedClusteringAlgorithm end
-abstract type UnsupervisedClusteringResult end
+abstract type Algorithm end
+abstract type Result end
 
 include("localsearch/kmeans.jl")
 include("localsearch/kmedoids.jl")
@@ -46,14 +44,14 @@ include("ensemble/chain.jl")
 include("ensemble/kmeans.jl")
 include("ensemble/gmm.jl")
 
-include("results/convert.jl")
-include("results/copy.jl")
-include("results/counts.jl")
-include("results/equal.jl")
-include("results/isbetter.jl")
-include("results/randomswap.jl")
-include("results/resetobjective.jl")
-include("results/sort.jl")
+include("result/convert.jl")
+include("result/copy.jl")
+include("result/counts.jl")
+include("result/equal.jl")
+include("result/isbetter.jl")
+include("result/randomswap.jl")
+include("result/resetobjective.jl")
+include("result/sort.jl")
 
 include("assignments.jl")
 include("concatenate.jl")
