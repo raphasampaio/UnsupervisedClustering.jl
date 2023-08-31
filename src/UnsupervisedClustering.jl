@@ -3,7 +3,6 @@ module UnsupervisedClustering
 using Distances
 using Hungarian
 using LinearAlgebra
-using LogExpFunctions
 using Printf
 using Random
 using RegularizedCovarianceMatrices
