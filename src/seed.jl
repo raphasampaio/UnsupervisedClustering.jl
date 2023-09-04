@@ -3,6 +3,10 @@ function seed!(algorithm::Algorithm, seed::Integer)
     return nothing
 end
 
+function seed!(algorithm::Ksegmentation, seed::Integer)
+    return nothing
+end
+
 function seed!(algorithm::MultiStart, seed::Integer)
     Random.seed!(algorithm.local_search.rng, seed)
     return nothing

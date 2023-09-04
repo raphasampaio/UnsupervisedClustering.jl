@@ -1,5 +1,4 @@
 Base.@kwdef mutable struct Ksegmentation <: Algorithm
-    verbose::Bool = DEFAULT_VERBOSE
 end
 
 mutable struct KsegmentationResult{I <: Integer, R <: Real} <: Result
@@ -45,7 +44,7 @@ function KsegmentationResult(n::Integer, clusters::AbstractMatrix{<:Real})
     return result
 end
 
-function fit!(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, result::KsegmentationResult)
+function fit!(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, result::KsegmentationResult)::Nothing
     t = time()
 
     n, d = size(data)
@@ -135,5 +134,6 @@ function fit(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, k::Inte
     end
 
     result = KsegmentationResult(d, n, k)
-    return fit(ksegmentation, data, result)
+    fit!(ksegmentation, data, result)
+    return result
 end
