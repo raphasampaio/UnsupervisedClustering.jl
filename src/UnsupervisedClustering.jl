@@ -30,9 +30,10 @@ export concatenate,
 abstract type Algorithm end
 abstract type Result end
 
+include("localsearch/gmm.jl")
 include("localsearch/kmeans.jl")
 include("localsearch/kmedoids.jl")
-include("localsearch/gmm.jl")
+include("localsearch/ksegments.jl")
 
 include("metaheuristic/multistart.jl")
 include("metaheuristic/randomswap.jl")
