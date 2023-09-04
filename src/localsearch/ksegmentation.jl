@@ -37,13 +37,6 @@ function KsegmentationResult(d::Integer, n::Integer, k::Integer)
     return KsegmentationResult(zeros(Int, n), zeros(d, k))
 end
 
-function KsegmentationResult(n::Integer, clusters::AbstractMatrix{<:Real})
-    d, k = size(clusters)
-    result = KsegmentationResult(d, n, k)
-    result.clusters = copy(clusters)
-    return result
-end
-
 function fit!(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, result::KsegmentationResult)::Nothing
     t = time()
 
