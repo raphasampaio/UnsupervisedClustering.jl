@@ -22,7 +22,7 @@ export concatenate,
     GMM,
     Kmeans,
     Kmedoids,
-    Ksegments,
+    Ksegmentation,
     RandomSwap,
     MultiStart,
     GeneticAlgorithm,
@@ -34,7 +34,7 @@ abstract type Result end
 include("localsearch/gmm.jl")
 include("localsearch/kmeans.jl")
 include("localsearch/kmedoids.jl")
-include("localsearch/ksegments.jl")
+include("localsearch/ksegmentation.jl")
 
 include("metaheuristic/multistart.jl")
 include("metaheuristic/randomswap.jl")

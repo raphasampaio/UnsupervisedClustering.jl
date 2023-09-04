@@ -1,7 +1,8 @@
-Base.@kwdef mutable struct Ksegments <: Algorithm
+Base.@kwdef mutable struct Ksegmentation <: Algorithm
+    verbose::Bool = DEFAULT_VERBOSE
 end
 
-mutable struct KsegmentsResult{I <: Integer, R <: Real} <: Result
+mutable struct KsegmentationResult{I <: Integer, R <: Real} <: Result
     assignments::Vector{I}
     clusters::Matrix{R}
     objective::R
@@ -11,7 +12,7 @@ mutable struct KsegmentsResult{I <: Integer, R <: Real} <: Result
     converged::Bool
     k::I
 
-    function KsegmentsResult(
+    function KsegmentationResult(
         assignments::AbstractVector{I},
         clusters::AbstractMatrix{R},
         objective::R = Inf,
@@ -33,22 +34,26 @@ mutable struct KsegmentsResult{I <: Integer, R <: Real} <: Result
     end
 end
 
-function KsegmentsResult(d::Integer, n::Integer, k::Integer)
-    return KsegmentsResult(zeros(Int, n), zeros(d, k))
+function KsegmentationResult(d::Integer, n::Integer, k::Integer)
+    return KsegmentationResult(zeros(Int, n), zeros(d, k))
 end
 
-function KsegmentsResult(n::Integer, clusters::AbstractMatrix{<:Real})
+function KsegmentationResult(n::Integer, clusters::AbstractMatrix{<:Real})
     d, k = size(clusters)
-    result = KsegmentsResult(d, n, k)
+    result = KsegmentationResult(d, n, k)
     result.clusters = copy(clusters)
     return result
 end
 
-function fit!(ksegments::Ksegments, data::AbstractMatrix{<:Real}, result::KsegmentsResult)
+function fit!(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, result::KsegmentationResult)
     t = time()
 
     n, d = size(data)
     k = result.k
+
+    @assert d > 0
+    @assert k > 0
+    @assert n >= k
 
     means = zeros(n, n, d)
     for i in 1:n
@@ -87,7 +92,7 @@ function fit!(ksegments::Ksegments, data::AbstractMatrix{<:Real}, result::Ksegme
             value, index = findmin(choices)
 
             segments_path[i, j] = index - 1
-            segments_costs[i, j + 1] = value
+            segments_costs[i, j+1] = value
         end
     end
 
@@ -96,18 +101,18 @@ function fit!(ksegments::Ksegments, data::AbstractMatrix{<:Real}, result::Ksegme
         lhs = segments_path[cluster, rhs]
 
         # update assignments
-        for i in (lhs + 1):rhs
+        for i in (lhs+1):rhs
             result.assignments[i] = cluster
         end
 
         # update clusters
         for j in 1:d
-            result.clusters[j, cluster] = means[lhs + 1, rhs, j]
+            result.clusters[j, cluster] = means[lhs+1, rhs, j]
         end
 
         # update objective per cluster
         result.objective_per_cluster[cluster] = 0.0
-        for i in (lhs + 1):rhs
+        for i in (lhs+1):rhs
             result.objective_per_cluster[cluster] += distances[i, rhs]
         end
 
@@ -122,44 +127,13 @@ function fit!(ksegments::Ksegments, data::AbstractMatrix{<:Real}, result::Ksegme
     return nothing
 end
 
-function fit(ksegments::Ksegments, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KsegmentsResult
-    n, d = size(data)
-    k = length(initial_clusters)
-
-    result = KsegmentsResult(d, n, k)
-    if n == 0
-        return result
-    end
-
-    @assert d > 0
-    @assert k > 0
-    @assert n >= k
-
-    for i in 1:d
-        for j in 1:k
-            result.clusters[i, j] = data[initial_clusters[j], i]
-        end
-    end
-
-    if ksegments.verbose
-        print_initial_clusters(initial_clusters)
-    end
-
-    fit!(ksegments, data, result)
-
-    return result
-end
-
-function fit(ksegments::Ksegments, data::AbstractMatrix{<:Real}, k::Integer)::KsegmentsResult
+function fit(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, k::Integer)::KsegmentationResult
     n, d = size(data)
 
     if n == 0
-        return KsegmentsResult(d, n, k)
+        return KsegmentationResult(d, n, k)
     end
 
-    @assert k > 0
-    @assert n >= k
-
-    initial_clusters = StatsBase.sample(ksegments.rng, 1:n, k, replace = false)
-    return fit(ksegments, data, initial_clusters)
+    result = KsegmentationResult(d, n, k)
+    return fit(ksegmentation, data, result)
 end

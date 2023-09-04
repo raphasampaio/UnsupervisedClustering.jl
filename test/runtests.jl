@@ -40,71 +40,115 @@ function test_all()
         n, d, k = 0, 2, 3
         data = zeros(n, d)
 
-        algorithm = Kmeans(rng = MersenneTwister(1))
-        result = fit(algorithm, data, k)
-        @test length(result.assignments) == 0
+        @testset "kmeans" begin
+            algorithm = Kmeans(rng = MersenneTwister(1))
+            result = fit(algorithm, data, k)
+            @test length(result.assignments) == 0
 
-        result = fit(algorithm, data, Vector{Int}())
-        @test length(result.assignments) == 0
+            result = fit(algorithm, data, Vector{Int}())
+            @test length(result.assignments) == 0
+        end
 
-        algorithm = Kmedoids(rng = MersenneTwister(1))
-        distances = pairwise(SqEuclidean(), data, dims = 1)
-        result = fit(algorithm, distances, k)
-        @test length(result.assignments) == 0
+        @testset "kmedoids" begin
+            algorithm = Kmedoids(rng = MersenneTwister(1))
+            distances = pairwise(SqEuclidean(), data, dims = 1)
+            result = fit(algorithm, distances, k)
+            @test length(result.assignments) == 0
 
-        result = fit(algorithm, data, Vector{Int}())
-        @test length(result.assignments) == 0
+            result = fit(algorithm, data, Vector{Int}())
+            @test length(result.assignments) == 0
+        end
 
-        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        result = fit(algorithm, data, k)
-        @test length(result.assignments) == 0
+        @testset "gmm" begin
+            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            result = fit(algorithm, data, k)
+            @test length(result.assignments) == 0
 
-        result = fit(algorithm, data, Vector{Int}())
-        @test length(result.assignments) == 0
+            result = fit(algorithm, data, Vector{Int}())
+            @test length(result.assignments) == 0
+        end
+
+        @testset "ksegmentation" begin
+            algorithm = Ksegmentation()
+            result = fit(algorithm, data, k)
+            @test length(result.assignments) == 0
+        end
     end
 
     @testset "d = 0" begin
         n, d, k = 3, 0, 3
         data = zeros(n, d)
 
-        algorithm = Kmeans(rng = MersenneTwister(1))
-        @test_throws AssertionError result = fit(algorithm, data, k)
+        @testset "kmeans" begin
+            algorithm = Kmeans(rng = MersenneTwister(1))
+            @test_throws AssertionError result = fit(algorithm, data, k)
+        end
 
-        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        @test_throws AssertionError result = fit(algorithm, data, k)
+        @testset "gmm" begin
+            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            @test_throws AssertionError result = fit(algorithm, data, k)
+        end
+
+        @testset "ksegmentation" begin
+            algorithm = Ksegmentation()
+            @test_throws AssertionError result = fit(algorithm, data, k)
+        end
     end
 
     @testset "k > n" begin
         n, d, k = 2, 2, 3
         data = zeros(n, d)
 
-        algorithm = Kmeans(rng = MersenneTwister(1))
-        @test_throws AssertionError result = fit(algorithm, data, k)
+        @testset "kmeans" begin
+            algorithm = Kmeans(rng = MersenneTwister(1))
+            @test_throws AssertionError result = fit(algorithm, data, k)
+        end
 
-        algorithm = Kmedoids(rng = MersenneTwister(1))
-        distances = pairwise(SqEuclidean(), data, dims = 1)
-        @test_throws AssertionError result = fit(algorithm, distances, k)
+        @testset "kmedoids" begin
+            algorithm = Kmedoids(rng = MersenneTwister(1))
+            distances = pairwise(SqEuclidean(), data, dims = 1)
+            @test_throws AssertionError result = fit(algorithm, distances, k)
+        end
 
-        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        @test_throws AssertionError result = fit(algorithm, data, k)
+        @testset "gmm" begin
+            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            @test_throws AssertionError result = fit(algorithm, data, k)
+        end
+
+        @testset "ksegmentation" begin
+            algorithm = Ksegmentation()
+            @test_throws AssertionError result = fit(algorithm, data, k)
+        end
     end
 
     @testset "n = k" begin
         n, d, k = 3, 2, 3
         data = rand(MersenneTwister(1), n, d)
 
-        algorithm = Kmeans(rng = MersenneTwister(1))
-        result = fit(algorithm, data, k)
-        @test sort(result.assignments) == [i for i in 1:k]
+        @testset "kmeans" begin
+            algorithm = Kmeans(rng = MersenneTwister(1))
+            result = fit(algorithm, data, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
 
-        algorithm = Kmedoids(rng = MersenneTwister(1))
-        distances = pairwise(SqEuclidean(), data, dims = 1)
-        result = fit(algorithm, distances, k)
-        @test sort(result.assignments) == [i for i in 1:k]
+        @testset "kmedoids" begin
+            algorithm = Kmedoids(rng = MersenneTwister(1))
+            distances = pairwise(SqEuclidean(), data, dims = 1)
+            result = fit(algorithm, distances, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
 
-        algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
-        result = fit(algorithm, data, k)
-        @test sort(result.assignments) == [i for i in 1:k]
+        @testset "gmm" begin
+            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            result = fit(algorithm, data, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
+
+        @testset "ksegmentation" begin
+            algorithm = Ksegmentation()
+            result = fit(algorithm, data, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
     end
 
     @testset "convert" begin
@@ -118,61 +162,69 @@ function test_all()
     @testset "concatenate" begin
         @test_throws MethodError concatenate()
 
-        result = concatenate(
-            UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
-            UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-            UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
-        )
+        @testset "kmeans" begin
+            result = concatenate(
+                UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
+                UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
+                UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
+            )
 
-        @test result.k == 6
-        @test result.assignments == [1, 2, 3, 4, 5, 6, 6]
-        @test result.clusters ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
-        @test result.objective ≈ 6.0
-        @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
-        @test result.iterations == 6
-        @test result.elapsed ≈ 6.0
-        @test result.converged == true
+            @test result.k == 6
+            @test result.assignments == [1, 2, 3, 4, 5, 6, 6]
+            @test result.clusters ≈ [1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0; 1.0 2.0 1.0 2.0 1.0 2.0]
+            @test result.objective ≈ 6.0
+            @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
+            @test result.iterations == 6
+            @test result.elapsed ≈ 6.0
+            @test result.converged == true
+        end
 
-        result = concatenate(
-            UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
-            UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
-            UnsupervisedClustering.KmedoidsResult([1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
-        )
+        @testset "kmedoids" begin
+            result = concatenate(
+                UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
+                UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),
+                UnsupervisedClustering.KmedoidsResult([1, 2, 2], [1, 2], 3.0, [1.5, 1.5], 3, 3.0, true),
+            )
 
-        @test result.k == 6
-        @test result.assignments ≈ [1, 2, 3, 4, 5, 6, 6]
-        @test result.clusters == [1, 2, 3, 4, 5, 6]
-        @test result.objective ≈ 6.0
-        @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
-        @test result.iterations == 6
-        @test result.elapsed ≈ 6.0
-        @test result.converged == true
+            @test result.k == 6
+            @test result.assignments ≈ [1, 2, 3, 4, 5, 6, 6]
+            @test result.clusters == [1, 2, 3, 4, 5, 6]
+            @test result.objective ≈ 6.0
+            @test result.objective_per_cluster ≈ [0.5, 0.5, 1.0, 1.0, 1.5, 1.5]
+            @test result.iterations == 6
+            @test result.elapsed ≈ 6.0
+            @test result.converged == true
+        end
     end
 
     @testset "sort" begin
-        result = UnsupervisedClustering.KmeansResult([1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
-        sort!(result)
+        @testset "kmeans" begin
+            result = UnsupervisedClustering.KmeansResult([1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+            sort!(result)
 
-        @test result.k == 3
-        @test result.assignments == [3, 1, 2, 2, 1, 3]
-        @test result.clusters ≈ [1.0 2.0 3.0; 1.0 2.0 3.0]
-        @test result.objective ≈ 6.0
-        @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
-        @test result.iterations == 1
-        @test result.elapsed ≈ 1.0
-        @test result.converged == true
+            @test result.k == 3
+            @test result.assignments == [3, 1, 2, 2, 1, 3]
+            @test result.clusters ≈ [1.0 2.0 3.0; 1.0 2.0 3.0]
+            @test result.objective ≈ 6.0
+            @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
+            @test result.iterations == 1
+            @test result.elapsed ≈ 1.0
+            @test result.converged == true
+        end
 
-        result = UnsupervisedClustering.KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
-        sort!(result)
+        @testset "kmedoids" begin
+            result = UnsupervisedClustering.KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+            sort!(result)
 
-        @test result.k == 3
-        @test result.assignments == [3, 1, 2, 2, 1, 3]
-        @test result.clusters ≈ [1, 2, 3]
-        @test result.objective ≈ 6.0
-        @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
-        @test result.iterations == 1
-        @test result.elapsed ≈ 1.0
-        @test result.converged == true
+            @test result.k == 3
+            @test result.assignments == [3, 1, 2, 2, 1, 3]
+            @test result.clusters ≈ [1, 2, 3]
+            @test result.objective ≈ 6.0
+            @test result.objective_per_cluster ≈ [1.0, 2.0, 3.0]
+            @test result.iterations == 1
+            @test result.elapsed ≈ 1.0
+            @test result.converged == true
+        end
     end
 
     verbose = true
