@@ -19,9 +19,10 @@ export concatenate,
     fit!,
     seed!,
     sort!,
+    GMM,
     Kmeans,
     Kmedoids,
-    GMM,
+    Ksegmentation,
     RandomSwap,
     MultiStart,
     GeneticAlgorithm,
@@ -30,9 +31,10 @@ export concatenate,
 abstract type Algorithm end
 abstract type Result end
 
+include("localsearch/gmm.jl")
 include("localsearch/kmeans.jl")
 include("localsearch/kmedoids.jl")
-include("localsearch/gmm.jl")
+include("localsearch/ksegmentation.jl")
 
 include("metaheuristic/multistart.jl")
 include("metaheuristic/randomswap.jl")
