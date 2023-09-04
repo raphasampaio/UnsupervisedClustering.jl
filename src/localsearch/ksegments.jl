@@ -1,5 +1,54 @@
-function compute_ksegments_distances(data::AbstractMatrix{<:Real})
+Base.@kwdef mutable struct Ksegments <: Algorithm
+end
+
+mutable struct KsegmentsResult{I <: Integer, R <: Real} <: Result
+    assignments::Vector{I}
+    clusters::Matrix{R}
+    objective::R
+    objective_per_cluster::Vector{R}
+    iterations::I
+    elapsed::R
+    converged::Bool
+    k::I
+
+    function KsegmentsResult(
+        assignments::AbstractVector{I},
+        clusters::AbstractMatrix{R},
+        objective::R = Inf,
+        objective_per_cluster::AbstractVector{R} = Inf * ones(size(clusters, 2)),
+        iterations::I = 0,
+        elapsed::R = 0.0,
+        converged::Bool = false,
+    ) where {I <: Integer, R <: Real}
+        return new{I, R}(
+            assignments,
+            clusters,
+            objective,
+            objective_per_cluster,
+            iterations,
+            elapsed,
+            converged,
+            size(clusters, 2),
+        )
+    end
+end
+
+function KsegmentsResult(d::Integer, n::Integer, k::Integer)
+    return KsegmentsResult(zeros(Int, n), zeros(d, k))
+end
+
+function KsegmentsResult(n::Integer, clusters::AbstractMatrix{<:Real})
+    d, k = size(clusters)
+    result = KsegmentsResult(d, n, k)
+    result.clusters = copy(clusters)
+    return result
+end
+
+function fit!(ksegments::Ksegments, data::AbstractMatrix{<:Real}, result::KsegmentsResult)
+    t = time()
+
     n, d = size(data)
+    k = result.k
 
     means = zeros(n, n, d)
     for i in 1:n
@@ -21,78 +70,96 @@ function compute_ksegments_distances(data::AbstractMatrix{<:Real})
         end
     end
 
-    return distances, means
-end
+    segments_costs = zeros(k, n + 1)
+    segments_costs[1, 2:end] = distances[1, :]
 
-function regress_ksegments(data::AbstractMatrix{<:Real}, k::Integer)
-    n, d = size(data)
+    segments_path = zeros(Int, k, n)
+    segments_path[1, :] .= 0
 
-    one_seg_dist, one_seg_mean = compute_ksegments_distances(data)
-
-    # Keep a matrix of the total segmentation costs for any p-segmentation of
-    # a subsequence data[1:n] where 1<=p<=k and 1<=n<=n. The extra column at
-    # the beginning is an effective zero-th row which allows us to index to
-    # the case that a (k-1)-segmentation is actually disfavored to the
-    # whole-segment average.
-    k_seg_dist = zeros(k, n + 1)
-
-    # Also store a pointer structure which will allow reconstruction of the regression which matches.
-    # (Without this information, we'd only have the cost of the regression.)
-    k_seg_path = zeros(Int, k, n)
-
-    # Initialize the case k=1 directly from the pre-computed distances
-    k_seg_dist[1, 2:end] = one_seg_dist[1, :]
-
-    # Any path with only a single segment has a right (non-inclusive) boundary at the zeroth element.
-    k_seg_path[1, :] .= 0
-
-    # Then for p segments through p elements, the right boundary for the (p-1) case must obviously be (p-1).
     for i in 1:k
-        k_seg_path[Base._sub2ind(size(k_seg_path), i, i)] = i - 1
+        segments_path[Base._sub2ind(size(segments_path), i, i)] = i - 1
     end
 
-    # Now go through all remaining subcases 1 < p <= k
-    for p in 2:k
-        # Update the substructure as successively longer subsequences are considered.
-        for n in p:n
-            # Enumerate the choices and pick the best one. Encodes the recursion
-            # for even the case where j=1 by adding an extra boundary column on the
-            # left side of k_seg_dist. The j-1 indexing is then correct without
-            # subtracting by one since the real values need a plus one correction.
+    for i in 2:k
+        for j in i:n
+            choices = segments_costs[i-1, 1:j] + distances[1:j, j]
 
-            choices = k_seg_dist[p-1, 1:n] + one_seg_dist[1:n, n]
+            value, index = findmin(choices)
 
-            bestval, bestidx = findmin(choices)
-
-            # Store the sub-problem solution. For the path, store where the (p-1) case's right boundary is located.
-            k_seg_path[p, n] = bestidx - 1
-
-            # Then remember to offset the distance information due to the boundary (ghost) cells in the first column.
-            k_seg_dist[p, n+1] = bestval
+            segments_path[i, j] = index - 1
+            segments_costs[i, j + 1] = value
         end
     end
 
-    reg = zeros(n, d)
+    rhs = n
+    for cluster in k:-1:1
+        lhs = segments_path[cluster, rhs]
 
-    # Now use the solution information to reconstruct the optimal regression.
-    # Fill in each segment reg(i:j) in pieces, starting from the end where the solution is known.
-    rhs = size(reg, 1)
-    for p in k:-1:1
-        # Get the corresponding previous boundary
-        lhs = k_seg_path[p, rhs]
-
-        # The pair (lhs,rhs] is now a half-open interval, so set it appropriately
-
-        for i in lhs+1:rhs
-            for j in 1:d
-                reg[i, j] = one_seg_mean[lhs + 1, rhs, j]
-            end
+        # update assignments
+        for i in (lhs + 1):rhs
+            result.assignments[i] = cluster
         end
-        # reg[lhs+1:rhs, :] .= one_seg_mean[lhs+1, rhs, :]
 
-        # Update the right edge pointer
+        # update clusters
+        for j in 1:d
+            result.clusters[j, cluster] = means[lhs + 1, rhs, j]
+        end
+
+        # update objective per cluster
+        result.objective_per_cluster[cluster] = 0.0
+        for i in (lhs + 1):rhs
+            result.objective_per_cluster[cluster] += distances[i, rhs]
+        end
+
         rhs = lhs
     end
 
-    return reg
+    result.objective = sum(result.objective_per_cluster)
+    result.iterations = 1
+    result.converged = true
+    result.elapsed = time() - t
+
+    return nothing
+end
+
+function fit(ksegments::Ksegments, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KsegmentsResult
+    n, d = size(data)
+    k = length(initial_clusters)
+
+    result = KsegmentsResult(d, n, k)
+    if n == 0
+        return result
+    end
+
+    @assert d > 0
+    @assert k > 0
+    @assert n >= k
+
+    for i in 1:d
+        for j in 1:k
+            result.clusters[i, j] = data[initial_clusters[j], i]
+        end
+    end
+
+    if ksegments.verbose
+        print_initial_clusters(initial_clusters)
+    end
+
+    fit!(ksegments, data, result)
+
+    return result
+end
+
+function fit(ksegments::Ksegments, data::AbstractMatrix{<:Real}, k::Integer)::KsegmentsResult
+    n, d = size(data)
+
+    if n == 0
+        return KsegmentsResult(d, n, k)
+    end
+
+    @assert k > 0
+    @assert n >= k
+
+    initial_clusters = StatsBase.sample(ksegments.rng, 1:n, k, replace = false)
+    return fit(ksegments, data, initial_clusters)
 end

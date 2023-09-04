@@ -131,7 +131,7 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     t = time()
 
     n, d = size(data)
-    k = size(result.clusters, 2)
+    k = result.k
 
     previous_objective = -Inf
     reset_objective!(result)
