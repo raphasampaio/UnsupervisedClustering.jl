@@ -1,41 +1,7 @@
 Base.@kwdef mutable struct Ksegmentation <: Algorithm
 end
 
-mutable struct KsegmentationResult{I <: Integer, R <: Real} <: Result
-    assignments::Vector{I}
-    clusters::Matrix{R}
-    objective::R
-    objective_per_cluster::Vector{R}
-    iterations::I
-    elapsed::R
-    converged::Bool
-    k::I
-
-    function KsegmentationResult(
-        assignments::AbstractVector{I},
-        clusters::AbstractMatrix{R},
-        objective::R = Inf,
-        objective_per_cluster::AbstractVector{R} = Inf * ones(size(clusters, 2)),
-        iterations::I = 0,
-        elapsed::R = 0.0,
-        converged::Bool = false,
-    ) where {I <: Integer, R <: Real}
-        return new{I, R}(
-            assignments,
-            clusters,
-            objective,
-            objective_per_cluster,
-            iterations,
-            elapsed,
-            converged,
-            size(clusters, 2),
-        )
-    end
-end
-
-function KsegmentationResult(d::Integer, n::Integer, k::Integer)
-    return KsegmentationResult(zeros(Int, n), zeros(d, k))
-end
+const KsegmentationResult{I <: Integer, R <: Real} = KmeansResult{I, R}
 
 function fit!(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, result::KsegmentationResult)::Nothing
     t = time()
