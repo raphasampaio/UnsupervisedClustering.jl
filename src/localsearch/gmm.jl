@@ -194,11 +194,15 @@ function estimate_weighted_log_probabilities(
     return -0.5 * (d * log(2 * pi) .+ log_probabilities) .+ (log_det_cholesky') .+ log.(result.weights)'
 end
 
-function log_sum_exp(probabilities::AbstractArray{<:Number})
+function log_sum_exp(probabilities::AbstractMatrix{<:Number}, i::Integer)
     max = -Inf
     sum = 0.0
 
-    for p in probabilities
+    n = size(probabilities, 2)
+
+    for j in 1:n
+        p = probabilities[i, j]
+
         if isnan(p) || isnan(max)
             max, sum = NaN, sum + exp(NaN)
         else
@@ -227,7 +231,7 @@ function expectation_step(
 
     log_probabilities_norm = zeros(n)
     for i in 1:n
-        log_probabilities_norm[i] += log_sum_exp(weighted_log_probabilities[i, :])
+        log_probabilities_norm[i] += log_sum_exp(weighted_log_probabilities, i)
     end
 
     log_responsibilities = weighted_log_probabilities .- log_probabilities_norm
