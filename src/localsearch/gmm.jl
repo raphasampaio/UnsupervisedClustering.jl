@@ -149,9 +149,10 @@ function compute_precision_cholesky!(
     precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
 )
     k = length(result.covariances)
-    d = size(result.covariances[1], 1)
 
     for i in 1:k
+        d = size(result.covariances[i], 1)
+
         try
             covariances_cholesky = cholesky(result.covariances[i])
             precisions_cholesky[i] = covariances_cholesky.U \ identity_matrix(d)
