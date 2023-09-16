@@ -111,6 +111,22 @@ function GMMResult(n::Integer, clusters::AbstractVector{<:AbstractVector{<:Real}
     return result
 end
 
+mutable struct GMMCache
+    log_det_cholesky::Vector{Float64}
+    log_probabilities::Matrix{Float64}
+    weighted_log_probabilities::Vector{Vector{Float64}}
+    log_responsibilities::Vector{Vector{Float64}}
+
+    function GMMCache(n::Integer, k::Integer)
+        return new(
+            zeros(k),
+            zeros(n, k),
+            [zeros(n) for _ in 1:k],
+            [zeros(n) for _ in 1:k],
+        )
+    end
+end
+
 function estimate_gaussian_parameters(
     gmm::GMM,
     data::AbstractMatrix{<:Real},
@@ -176,12 +192,13 @@ function compute_precision_cholesky!(
     return nothing
 end
 
-function estimate_weighted_log_probabilities(
+function estimate_weighted_log_probabilities!(
     data::AbstractMatrix{<:Real},
     k::Integer,
     result::GMMResult,
     precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
-)
+    weighted_log_probabilities::AbstractVector{<:AbstractVector{<:Real}},
+)::Nothing
     n, d = size(data)
 
     log_det_cholesky = zeros(k)
@@ -203,14 +220,13 @@ function estimate_weighted_log_probabilities(
         end
     end
 
-    weighted_log_probabilities = [zeros(n) for _ in 1:k]
     for i in 1:k
         for j in 1:n
             weighted_log_probabilities[i][j] = log(result.weights[i]) - 0.5 * (d * log(2 * pi) + log_probabilities[j, i]) + log_det_cholesky[i]
         end
     end
 
-    return weighted_log_probabilities
+    return nothing
 end
 
 function log_sum_exp(probabilities::AbstractVector{<:AbstractVector{<:Real}}, j::Integer)
@@ -237,29 +253,30 @@ function log_sum_exp(probabilities::AbstractVector{<:AbstractVector{<:Real}}, j:
     return max + log1p(sum)
 end
 
-function expectation_step(
+function expectation_step!(
     data::AbstractMatrix{<:Real},
     k::Integer,
     result::GMMResult,
     precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
+    log_responsibilities::AbstractVector{<:AbstractVector{<:Real}},
+    weighted_log_probabilities::AbstractVector{<:AbstractVector{<:Real}},
 )
     n, d = size(data)
 
-    weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
+    estimate_weighted_log_probabilities!(data, k, result, precisions_cholesky, weighted_log_probabilities)
 
     log_probabilities_norm = zeros(n)
     for j in 1:n
         log_probabilities_norm[j] += log_sum_exp(weighted_log_probabilities, j)
     end
 
-    log_responsibilities = [zeros(n) for _ in 1:k]
     for i in 1:k
         for j in 1:n
             log_responsibilities[i][j] = weighted_log_probabilities[i][j] - log_probabilities_norm[j]
         end
     end
 
-    return mean(log_probabilities_norm), log_responsibilities
+    return mean(log_probabilities_norm)
 end
 
 function maximization_step!(
@@ -326,6 +343,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     result.converged = false
 
     log_responsibilities = [zeros(n) for _ in 1:k]
+    weighted_log_probabilities = [zeros(n) for _ in 1:k]
 
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(gmm, result, precisions_cholesky)
@@ -333,7 +351,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     for iteration in 1:gmm.max_iterations
         previous_objective = result.objective
 
-        t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
+        t1 = @elapsed result.objective = expectation_step!(data, k, result, precisions_cholesky, log_responsibilities, weighted_log_probabilities)
 
         t2 = @elapsed maximization_step!(gmm, data, k, result, log_responsibilities, precisions_cholesky)
 
@@ -354,7 +372,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
         end
     end
 
-    weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
+    estimate_weighted_log_probabilities!(data, k, result, precisions_cholesky, weighted_log_probabilities)
     for j in 1:n
         max = -Inf
         for i in 1:k
