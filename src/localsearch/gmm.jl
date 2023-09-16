@@ -189,7 +189,13 @@ function estimate_weighted_log_probabilities(
     log_probabilities = zeros(n, k)
     for i in 1:k
         y = data * precisions_cholesky[i] .- (result.clusters[i]' * precisions_cholesky[i])
-        log_probabilities[:, i] = sum(y .^ 2, dims = 2)
+
+        for l in 1:n
+            log_probabilities[l, i] = 0
+            for j in 1:d
+                log_probabilities[l, i] += y[l, j] ^ 2
+            end
+        end
     end
 
     return -0.5 * (d * log(2 * pi) .+ log_probabilities) .+ (log_det_cholesky') .+ log.(result.weights)'
