@@ -1,5 +1,5 @@
 function identity_matrix(d::Integer)
-    return Symmetric(Matrix{Float64}(I, d, d))
+    return Matrix{Float64}(I, d, d)
 end
 
 function permutecols!(a::AbstractMatrix, p::AbstractVector{<:Integer})

@@ -37,7 +37,7 @@ end
         assignments::AbstractVector{<:Integer}
         weights::AbstractVector{<:Real}
         clusters::AbstractVector{<:AbstractVector{<:Real}}
-        covariances::AbstractVector{<:Symmetric{<:Real}}
+        covariances::AbstractVector{<:AbstractMatrix{<:Real}}
         objective::Real
         iterations::Integer
         elapsed::Real
@@ -62,7 +62,7 @@ mutable struct GMMResult{I <: Integer, R <: Real} <: Result
     assignments::Vector{I}
     weights::Vector{R}
     clusters::Vector{Vector{R}}
-    covariances::Vector{<:Symmetric{R}}
+    covariances::Vector{Matrix{R}}
     objective::R
     iterations::I
     elapsed::R
@@ -73,7 +73,7 @@ mutable struct GMMResult{I <: Integer, R <: Real} <: Result
         assignments::AbstractVector{I},
         weights::AbstractVector{R},
         clusters::AbstractVector{<:AbstractVector{R}},
-        covariances::AbstractVector{<:Symmetric{R}},
+        covariances::AbstractVector{<:AbstractMatrix{R}},
         objective::R = -Inf,
         iterations::I = 0,
         elapsed::R = 0.0,
@@ -161,21 +161,25 @@ function estimate_gaussian_parameters!(gmm::GMM, data::AbstractMatrix{<:Real}, r
     end
 
     for i in 1:k
-        covariances_i, result.clusters[i] = RegularizedCovarianceMatrices.fit(gmm.estimator, data, cache.responsibilities[i])
-        result.covariances[i] = Symmetric(covariances_i)
+        RegularizedCovarianceMatrices.fit!(
+            gmm.estimator,
+            data,
+            cache.responsibilities[i],
+            result.covariances[i],
+            result.clusters[i],
+        )
     end
 
     return nothing
 end
 
-function compute_precision_cholesky!(gmm::GMM, result::GMMResult, cache::GMMCache)
+function compute_precision_cholesky!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult, cache::GMMCache)::Nothing
+    n, d = size(data)
     k = result.k
 
     for i in 1:k
-        d = size(result.covariances[i], 1)
-
         try
-            covariances_cholesky = cholesky(result.covariances[i])
+            covariances_cholesky = cholesky(Symmetric(result.covariances[i]))
             cache.precisions_cholesky[i] = covariances_cholesky.U \ identity_matrix(d)
         catch e
             if gmm.decompose_if_fails
@@ -266,7 +270,7 @@ function expectation_step!(data::AbstractMatrix{<:Real}, result::GMMResult, cach
     return mean(cache.log_probabilities_norm)
 end
 
-function maximization_step!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult, cache::GMMCache)
+function maximization_step!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult, cache::GMMCache)::Nothing
     n, d = size(data)
     k = result.k
 
@@ -277,7 +281,7 @@ function maximization_step!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMR
     end
     
     estimate_gaussian_parameters!(gmm, data, result, cache)
-    compute_precision_cholesky!(gmm, result, cache)
+    compute_precision_cholesky!(gmm, data, result, cache)
 
     return nothing
 end
@@ -324,7 +328,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
 
     cache = GMMCache(d, n, k)
 
-    compute_precision_cholesky!(gmm, result, cache)
+    compute_precision_cholesky!(gmm, data, result, cache)
 
     for iteration in 1:gmm.max_iterations
         previous_objective = result.objective
