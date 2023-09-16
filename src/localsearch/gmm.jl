@@ -115,7 +115,7 @@ function estimate_gaussian_parameters(
     gmm::GMM,
     data::AbstractMatrix{<:Real},
     k::Integer,
-    responsibilities::AbstractMatrix{<:Real},
+    responsibilities::AbstractVector{<:AbstractVector{<:Real}},
 )
     n, d = size(data)
 
@@ -123,17 +123,17 @@ function estimate_gaussian_parameters(
     for i in 1:k
         responsibilities_sum = 0.0
         for j in 1:n
-            responsibilities_sum += responsibilities[j, i]
+            responsibilities_sum += responsibilities[i][j]
         end
 
         if responsibilities_sum < 1e-32
             for j in 1:n
-                responsibilities[j, i] = 1.0 / n
+                responsibilities[i][j] = 1.0 / n
             end
         end
 
         for j in 1:n
-            weights[i] += responsibilities[j, i]
+            weights[i] += responsibilities[i][j]
         end
     end
     weights = weights / sum(weights)
@@ -142,7 +142,7 @@ function estimate_gaussian_parameters(
     covariances = [identity_matrix(d) for _ in 1:k]
 
     for i in 1:k
-        covariances_i, clusters[i] = RegularizedCovarianceMatrices.fit(gmm.estimator, data, responsibilities[:, i])
+        covariances_i, clusters[i] = RegularizedCovarianceMatrices.fit(gmm.estimator, data, responsibilities[i])
         covariances[i] = Symmetric(covariances_i)
     end
     return weights, clusters, covariances
@@ -203,17 +203,23 @@ function estimate_weighted_log_probabilities(
         end
     end
 
-    return -0.5 * (d * log(2 * pi) .+ log_probabilities) .+ (log_det_cholesky') .+ log.(result.weights)'
+    weighted_log_probabilities = [zeros(n) for _ in 1:k]
+    for i in 1:k
+        for j in 1:n
+            weighted_log_probabilities[i][j] = log(result.weights[i]) - 0.5 * (d * log(2 * pi) + log_probabilities[j, i]) + log_det_cholesky[i]
+        end
+    end
+
+    return weighted_log_probabilities
 end
 
-function log_sum_exp(probabilities::AbstractMatrix{<:Number}, i::Integer)
+function log_sum_exp(probabilities::AbstractVector{<:AbstractVector{<:Real}}, j::Integer)
     max = -Inf
     sum = 0.0
 
-    n = size(probabilities, 2)
-
-    for j in 1:n
-        p = probabilities[i, j]
+    k = length(probabilities)
+    for i in 1:k
+        p = probabilities[i][j]
 
         if isnan(p) || isnan(max)
             max, sum = NaN, sum + exp(NaN)
@@ -242,11 +248,17 @@ function expectation_step(
     weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
 
     log_probabilities_norm = zeros(n)
-    for i in 1:n
-        log_probabilities_norm[i] += log_sum_exp(weighted_log_probabilities, i)
+    for j in 1:n
+        log_probabilities_norm[j] += log_sum_exp(weighted_log_probabilities, j)
     end
 
-    log_responsibilities = weighted_log_probabilities .- log_probabilities_norm
+    log_responsibilities = [zeros(n) for _ in 1:k]
+    for i in 1:k
+        for j in 1:n
+            log_responsibilities[i][j] = weighted_log_probabilities[i][j] - log_probabilities_norm[j]
+        end
+    end
+
     return mean(log_probabilities_norm), log_responsibilities
 end
 
@@ -255,11 +267,18 @@ function maximization_step!(
     data::AbstractMatrix{<:Real},
     k::Integer,
     result::GMMResult,
-    log_responsibilities::AbstractMatrix{<:Real},
+    log_responsibilities::AbstractVector{<:AbstractVector{<:Real}},
     precisions_cholesky::AbstractVector{<:AbstractMatrix{<:Real}},
 )
-    responsibilities = exp.(log_responsibilities)
+    n, d = size(data)
+    responsibilities = [zeros(n) for _ in 1:k]
 
+    for i in 1:k
+        for j in 1:n
+            responsibilities[i][j] = exp(log_responsibilities[i][j])
+        end
+    end
+    
     result.weights, result.clusters, result.covariances = estimate_gaussian_parameters(gmm, data, k, responsibilities)
     compute_precision_cholesky!(gmm, result, precisions_cholesky)
 
@@ -306,7 +325,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     result.iterations = gmm.max_iterations
     result.converged = false
 
-    log_responsibilities = zeros(n, k)
+    log_responsibilities = [zeros(n) for _ in 1:k]
 
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(gmm, result, precisions_cholesky)
@@ -336,8 +355,15 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     end
 
     weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
-    for i in 1:n
-        result.assignments[i] = argmax(weighted_log_probabilities[i, :])
+    for j in 1:n
+        max = -Inf
+        for i in 1:k
+            probability = weighted_log_probabilities[i][j]
+            if probability > max
+                max = probability
+                result.assignments[j] = i
+            end
+        end
     end
 
     result.elapsed = time() - t
