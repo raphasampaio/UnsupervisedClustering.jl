@@ -121,7 +121,12 @@ function estimate_gaussian_parameters(
 
     weights = ones(k) * 10 * eps(Float64)
     for i in 1:k
-        if sum(responsibilities[:, i]) < 1e-32
+        responsibilities_sum = 0.0
+        for j in 1:n
+            responsibilities_sum += responsibilities[j, i]
+        end
+
+        if responsibilities_sum < 1e-32
             for j in 1:n
                 responsibilities[j, i] = 1.0 / n
             end
@@ -191,7 +196,7 @@ function estimate_weighted_log_probabilities(
         y = data * precisions_cholesky[i] .- (result.clusters[i]' * precisions_cholesky[i])
 
         for l in 1:n
-            log_probabilities[l, i] = 0
+            log_probabilities[l, i] = 0.0
             for j in 1:d
                 log_probabilities[l, i] += y[l, j] ^ 2
             end
