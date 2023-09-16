@@ -149,7 +149,7 @@ function estimate_gaussian_parameters!(gmm::GMM, data::AbstractMatrix{<:Real}, r
             end
         end
 
-        result.weights[i] = 10 * eps(Float64) 
+        result.weights[i] = 10 * eps(Float64)
         for j in 1:n
             result.weights[i] += cache.responsibilities[i][j]
         end
@@ -213,7 +213,7 @@ function estimate_weighted_log_probabilities!(data::AbstractMatrix{<:Real}, resu
         for l in 1:n
             cache.log_probabilities[l, i] = 0.0
             for j in 1:d
-                cache.log_probabilities[l, i] += y[l, j] ^ 2
+                cache.log_probabilities[l, i] += y[l, j]^2
             end
         end
     end
@@ -279,7 +279,7 @@ function maximization_step!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMR
             cache.responsibilities[i][j] = exp(cache.log_responsibilities[i][j])
         end
     end
-    
+
     estimate_gaussian_parameters!(gmm, data, result, cache)
     compute_precision_cholesky!(gmm, data, result, cache)
 
