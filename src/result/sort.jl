@@ -1,8 +1,13 @@
-function Base.sort!(result::KmeansResult; lt = Base.isless)
+function Base.sort!(
+    result::KmeansResult;
+    lt = Base.isless,
+    data::AbstractArray{<:Number} = result.objective_per_cluster,
+    rev::Bool = false,
+)
     k = result.k
     n = length(result.assignments)
 
-    permutation = sortperm(result.objective_per_cluster, lt = lt)
+    permutation = sortperm(data, lt = lt, rev = rev)
 
     map = zeros(Int, k)
     for i in 1:k
@@ -20,11 +25,16 @@ function Base.sort!(result::KmeansResult; lt = Base.isless)
     return nothing
 end
 
-function Base.sort!(result::KmedoidsResult; lt = Base.isless)
+function Base.sort!(
+    result::KmedoidsResult;
+    lt = Base.isless,
+    data::AbstractArray{<:Number} = result.objective_per_cluster,
+    rev::Bool = false,
+)
     k = result.k
     n = length(result.assignments)
 
-    permutation = sortperm(result.objective_per_cluster, lt = lt)
+    permutation = sortperm(data, lt = lt, rev = rev)
 
     map = zeros(Int, k)
     for i in 1:k
