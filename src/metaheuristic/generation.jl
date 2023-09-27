@@ -126,8 +126,8 @@ function distance(a::KmedoidsResult, i::Integer, b::KmedoidsResult, j::Integer, 
 end
 
 function distance(a::GMMResult, i::Integer, b::GMMResult, j::Integer, data::AbstractMatrix{<:Real})
-    d1 = Distances.evaluate(SqMahalanobis(a.covariances[i], skipchecks = true), a.clusters[i], b.clusters[j])
-    d2 = Distances.evaluate(SqMahalanobis(b.covariances[j], skipchecks = true), a.clusters[i], b.clusters[j])
+    d1 = Distances.evaluate(SqMahalanobis(Symmetric(a.covariances[i]), skipchecks = true), a.clusters[i], b.clusters[j])
+    d2 = Distances.evaluate(SqMahalanobis(Symmetric(b.covariances[j]), skipchecks = true), a.clusters[i], b.clusters[j])
     return (d1 + d2) / 2
 end
 
