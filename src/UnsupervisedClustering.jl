@@ -19,6 +19,7 @@ export concatenate,
     fit!,
     seed!,
     sort!,
+    stochastic_matrix,
     GMM,
     Kmeans,
     Kmedoids,
@@ -58,6 +59,7 @@ include("assignments.jl")
 include("concatenate.jl")
 include("distances.jl")
 include("linearalgebra.jl")
+include("markov.jl")
 include("print.jl")
 include("seed.jl")
 

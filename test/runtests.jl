@@ -244,6 +244,13 @@ function test_all()
         end
     end
 
+    @testset "markov" begin
+        result1 = UnsupervisedClustering.KmeansResult([1, 2, 3, 3, 2, 1], zeros(0, 3), 0.0, zeros(0), 0, 0.0, false)
+        result2 = UnsupervisedClustering.KmeansResult([2, 3, 1, 3, 1, 2], zeros(0, 3), 0.0, zeros(0), 0, 0.0, false)
+
+        @test stochastic_matrix(result1, result2) ≈ [0.0 1.0 0.0; 0.5 0.0 0.5; 0.5 0.0 0.5]
+    end
+
     verbose = true
     max_iterations = 30
     max_iterations_without_improvement = 15
