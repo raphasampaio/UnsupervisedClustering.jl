@@ -319,9 +319,13 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
         end
     end
 
+    is_empty = trues(k)
     weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
     for i in 1:n
-        result.assignments[i] = argmax(weighted_log_probabilities[i, :])
+        cluster, _ = assign(gmm, i, weighted_log_probabilities, is_empty)
+
+        is_empty[cluster] = false
+        result.assignments[i] = cluster
     end
 
     result.elapsed = time() - t

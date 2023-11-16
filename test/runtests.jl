@@ -151,6 +151,30 @@ function test_all()
         end
     end
 
+    @testset "n = k (zeros)" begin
+        n, d, k = 3, 2, 3
+        data = zeros(n, d)
+
+        @testset "kmeans" begin
+            algorithm = Kmeans(rng = MersenneTwister(1))
+            result = fit(algorithm, data, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
+
+        @testset "kmedoids" begin
+            algorithm = Kmedoids(rng = MersenneTwister(1))
+            distances = pairwise(SqEuclidean(), data, dims = 1)
+            result = fit(algorithm, distances, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
+
+        @testset "gmm" begin
+            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            result = fit(algorithm, data, k)
+            @test sort(result.assignments) == [i for i in 1:k]
+        end
+    end
+
     @testset "convert" begin
         kmeans_result = UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0])
         gmm_result = UnsupervisedClustering.GMMResult([1, 2, 2], [0.5, 0.5], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], [Symmetric(Matrix{Float64}(I, 3, 3)) for _ in 1:2])
