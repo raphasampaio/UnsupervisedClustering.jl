@@ -1,7 +1,7 @@
 name = "UnsupervisedClustering"
 uuid = "c6b3b713-2a2b-4e07-a35c-d57ac4f46186"
 authors = ["raphasampaio", "joaquimg", "mvpoggi", "vidalt"]
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
@@ -14,12 +14,18 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
-Aqua = "0.7"
+Aqua = "0.7, 0.8"
+DelimitedFiles = "1.6 - 1.9"
 Distances = "0.10"
 Hungarian = "0.6, 0.7"
+LinearAlgebra = "1.6 - 1.11"
+Printf = "1.6 - 1.11"
+Random = "1.6 - 1.11"
 RegularizedCovarianceMatrices = "0.1.2"
-Statistics = "1.6, 1.7, 1.8, 1.9, 1.10, 1.11"
+Statistics = "1.6 - 1.11"
 StatsBase = "0.33, 0.34"
+Test = "1.6 - 1.11"
+TimerOutputs = "0.5"
 julia = "1.6"
 
 [extras]
