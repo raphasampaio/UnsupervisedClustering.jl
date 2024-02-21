@@ -9,7 +9,7 @@ Pkg.add("UnsupervisedClustering")
 
 ## Citing
 
-If you find UnsupervisedClustering useful in your work, we kindly request that you cite the following paper ([preprint](https://arxiv.org/abs/2302.02450)):
+If you find UnsupervisedClustering useful in your work, we kindly request that you cite the following [paper](https://www.sciencedirect.com/science/article/abs/pii/S003132032400061X):
 
 ```bibtex
 @article{sampaio2024regularization,
