@@ -62,5 +62,6 @@ include("linearalgebra.jl")
 include("markov.jl")
 include("print.jl")
 include("seed.jl")
+include("random.jl")
 
 end
