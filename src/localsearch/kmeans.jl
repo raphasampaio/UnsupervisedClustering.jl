@@ -99,6 +99,23 @@ function KmeansResult(n::Integer, clusters::AbstractMatrix{<:Real})
     return result
 end
 
+function initialize!(result::KmeansResult, data::AbstractMatrix{<:Real}, indices::AbstractVector{<:Integer}; verbose::Bool = false)
+    n, d = size(data)
+    k = length(indices)
+
+    for i in 1:d
+        for j in 1:k
+            result.clusters[i, j] = data[indices[j], i]
+        end
+    end
+
+    if verbose
+        print_initial_clusters(indices)
+    end
+
+    return nothing
+end
+
 @doc """
     fit!(
         kmeans::Kmeans,
@@ -248,15 +265,7 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::Abs
     @assert k > 0
     @assert n >= k
 
-    for i in 1:d
-        for j in 1:k
-            result.clusters[i, j] = data[initial_clusters[j], i]
-        end
-    end
-
-    if kmeans.verbose
-        print_initial_clusters(initial_clusters)
-    end
+    initialize!(result, data, initial_clusters, verbose = kmeans.verbose)
 
     fit!(kmeans, data, result)
 
@@ -293,13 +302,19 @@ result = fit(kmeans, data, k)
 function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 
+    result = KmeansResult(d, n, k)
     if n == 0
-        return KmeansResult(d, n, k)
+        return result
     end
 
+    @assert d > 0
     @assert k > 0
     @assert n >= k
 
-    initial_clusters = StatsBase.sample(kmeans.rng, 1:n, k, replace = false)
-    return fit(kmeans, data, initial_clusters)
+    unique_data, indices = sample_unique_data(kmeans.rng, data, k)
+    initialize!(result, unique_data, indices, verbose = kmeans.verbose)
+
+    fit!(kmeans, data, result)
+
+    return result
 end
