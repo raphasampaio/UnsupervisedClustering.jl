@@ -90,6 +90,20 @@ function KmedoidsResult(n::Integer, clusters::AbstractVector{<:Integer})
     return result
 end
 
+function initialize!(result::KmedoidsResult, indices::AbstractVector{<:Integer}; verbose::Bool = false)
+    k = length(indices)
+
+    for i in 1:k
+        result.clusters[i] = indices[i]
+    end
+
+    if verbose
+        print_initial_clusters(indices)
+    end
+
+    return nothing
+end
+
 @doc """
     fit!(
         kmedoids::Kmedoids,
@@ -241,13 +255,7 @@ function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clus
     @assert k > 0
     @assert n >= k
 
-    for i in 1:k
-        result.clusters[i] = initial_clusters[i]
-    end
-
-    if kmedoids.verbose
-        print_initial_clusters(initial_clusters)
-    end
+    initialize!(result, initial_clusters, verbose = kmedoids.verbose)
 
     fit!(kmedoids, distances, result)
 
@@ -285,13 +293,18 @@ result = fit(kmedoids, distances, k)
 function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
     n = size(distances, 1)
 
+    result = KmedoidsResult(n, k)
     if n == 0
-        return KmedoidsResult(n, k)
+        return result
     end
 
     @assert k > 0
     @assert n >= k
 
     initial_clusters = StatsBase.sample(kmedoids.rng, 1:n, k, replace = false)
-    return fit(kmedoids, distances, initial_clusters)
+    initialize!(result, initial_clusters, verbose = kmedoids.verbose)
+
+    fit!(kmedoids, distances, result)
+
+    return result
 end
