@@ -2,7 +2,7 @@
 #     return (number == 0) ? 1 : (log10(number) + 1)
 # end
 
-print_objective(result::Result) = print_objective(result.objective)
+print_objective(result::AbstractResult) = print_objective(result.objective)
 function print_objective(objective::Real)
     @printf("%12.4f ", objective)
     return nothing
@@ -13,13 +13,13 @@ function print_iteration(iteration::Integer)
     return nothing
 end
 
-print_iterations(result::Result) = print_iterations(result.iterations)
+print_iterations(result::AbstractResult) = print_iterations(result.iterations)
 function print_iterations(iterations::Integer)
     @printf("%8dit ", iterations)
     return nothing
 end
 
-print_elapsed(result::Result) = print_elapsed(result.elapsed)
+print_elapsed(result::AbstractResult) = print_elapsed(result.elapsed)
 function print_elapsed(elapsed::Real)
     @printf("%10.2fs ", elapsed)
     return nothing
@@ -30,7 +30,7 @@ function print_change(change::Real)
     return nothing
 end
 
-function print_result(result::Result)
+function print_result(result::AbstractResult)
     print_objective(result)
     print_iterations(result)
     print_elapsed(result)

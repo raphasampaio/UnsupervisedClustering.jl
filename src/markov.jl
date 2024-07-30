@@ -12,7 +12,7 @@ function stochastic_matrix(k::Integer, from::AbstractVector{<:Integer}, to::Abst
     return matrix
 end
 
-function stochastic_matrix(from::Result, to::Result)
+function stochastic_matrix(from::AbstractResult, to::AbstractResult)
     @assert from.k == to.k
     return stochastic_matrix(from.k, from.assignments, to.assignments)
 end

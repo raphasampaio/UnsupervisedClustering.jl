@@ -1,9 +1,9 @@
 mutable struct Generation
-    population::AbstractVector{<:Result}
+    population::AbstractVector{<:AbstractResult}
     empty::Set{Integer}
 
     function Generation()
-        return new(Vector{Result}(), Set{Int}())
+        return new(Vector{AbstractResult}(), Set{Int}())
     end
 end
 
@@ -21,7 +21,7 @@ function remove(generation::Generation, i::Integer)
     return nothing
 end
 
-function add!(generation::Generation, result::Result)
+function add!(generation::Generation, result::AbstractResult)
     if length(generation.empty) > 0
         generation.population[pop!(generation.empty)] = result
     else
@@ -50,7 +50,7 @@ function get_best_solution(generation::Generation)
     return best_solution
 end
 
-function crossover(parent1::Result, parent2::Result, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
+function crossover(parent1::AbstractResult, parent2::AbstractResult, data::AbstractMatrix{<:Real}, rng::AbstractRNG)
     k = parent1.k
 
     weights = zeros(k, k)

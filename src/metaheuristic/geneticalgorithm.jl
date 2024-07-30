@@ -1,6 +1,6 @@
 @doc """
     GeneticAlgorithm(
-        local_search::Algorithm
+        local_search::AbstractAlgorithm
         verbose::Bool = DEFAULT_VERBOSE
         max_iterations::Integer = 200
         max_iterations_without_improvement::Integer = 150
@@ -20,8 +20,8 @@ GeneticAlgorithm represents a clustering algorithm that utilizes a genetic algor
 
 # References
 """
-Base.@kwdef struct GeneticAlgorithm <: Algorithm
-    local_search::Algorithm
+Base.@kwdef struct GeneticAlgorithm <: AbstractAlgorithm
+    local_search::AbstractAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     max_iterations::Integer = 200
     max_iterations_without_improvement::Integer = 150
@@ -57,7 +57,7 @@ genetic_algorithm = GeneticAlgorithm(local_search = kmeans)
 result = fit(genetic_algorithm, data, k)
 ```
 """
-function fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::Result
+function fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::AbstractResult
     generation = Generation()
 
     best_objective = 0.0

@@ -1,4 +1,4 @@
-function seed!(algorithm::Algorithm, seed::Integer)
+function seed!(algorithm::AbstractAlgorithm, seed::Integer)
     Random.seed!(algorithm.rng, seed)
     return nothing
 end
