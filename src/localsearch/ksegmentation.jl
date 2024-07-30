@@ -88,11 +88,12 @@ end
 function fit(ksegmentation::Ksegmentation, data::AbstractMatrix{<:Real}, k::Integer)::KsegmentationResult
     n, d = size(data)
 
+    result = KsegmentationResult(d, n, k)
     if n == 0
-        return KsegmentationResult(d, n, k)
+        return result
     end
 
-    result = KsegmentationResult(d, n, k)
     fit!(ksegmentation, data, result)
+
     return result
 end
