@@ -7,7 +7,7 @@ ClusteringChain represents a chain of clustering algorithms that are executed se
 - `algorithms`: the vector of clustering algorithms that will be executed in sequence.
 """
 Base.@kwdef struct ClusteringChain <: AbstractAlgorithm
-    algorithms::AbstractVector{<:AbstractAlgorithm}
+    algorithms::Vector{AbstractAlgorithm}
 
     function ClusteringChain(algorithms::AbstractAlgorithm...)
         return new(collect(algorithms))

@@ -2,7 +2,7 @@
     Kmedoids(
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Real = DEFAULT_TOLERANCE
+        tolerance::Float64 = DEFAULT_TOLERANCE
         max_iterations::Integer = DEFAULT_MAX_ITERATIONS
     )
 
@@ -19,8 +19,8 @@ The k-medoids is a variation of k-means clustering algorithm that uses actual da
 Base.@kwdef mutable struct Kmedoids <: AbstractAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = DEFAULT_TOLERANCE
-    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
 end
 
 @doc """
