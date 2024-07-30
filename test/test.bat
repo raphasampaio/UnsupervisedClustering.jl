@@ -2,4 +2,4 @@
 
 SET BASEPATH=%~dp0
 
-CALL "%JULIA_194%" --project=%BASEPATH%\.. -e "import Pkg; Pkg.test()"
+CALL "%JULIA_1104%" --project=%BASEPATH%\.. -e "import Pkg; Pkg.test()"

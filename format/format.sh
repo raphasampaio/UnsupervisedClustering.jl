@@ -2,4 +2,4 @@
 
 BASEPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-$JULIA_194 --project=$BASEPATH $BASEPATH/format.jl
+$JULIA_1104 --project=$BASEPATH $BASEPATH/format.jl
