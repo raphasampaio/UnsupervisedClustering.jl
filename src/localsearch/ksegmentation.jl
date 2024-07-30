@@ -1,4 +1,4 @@
-Base.@kwdef mutable struct Ksegmentation <: Algorithm
+Base.@kwdef mutable struct Ksegmentation <: AbstractAlgorithm
 end
 
 const KsegmentationResult{I <: Integer, R <: Real} = KmeansResult{I, R}

@@ -29,8 +29,7 @@ export concatenate,
     GeneticAlgorithm,
     ClusteringChain
 
-abstract type Algorithm end
-abstract type Result end
+include("abstract.jl")
 
 include("localsearch/gmm.jl")
 include("localsearch/kmeans.jl")
