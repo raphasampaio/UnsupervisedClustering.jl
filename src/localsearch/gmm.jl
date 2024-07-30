@@ -111,6 +111,23 @@ function GMMResult(n::Integer, clusters::AbstractVector{<:AbstractVector{<:Real}
     return result
 end
 
+function initialize!(result::GMMResult, data::AbstractMatrix{<:Real}, indices::AbstractVector{<:Integer}; verbose::Bool = false)
+    n, d = size(data)
+    k = length(indices)
+
+    for i in 1:k
+        for j in 1:d
+            result.clusters[i][j] = data[indices[i], j]
+        end
+    end
+
+    if verbose
+        print_initial_clusters(indices)
+    end
+
+    return nothing
+end
+
 function estimate_gaussian_parameters(
     gmm::GMM,
     data::AbstractMatrix{<:Real},
@@ -373,15 +390,7 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, initial_clusters::AbstractV
     @assert k > 0
     @assert n >= k
 
-    for i in 1:k
-        for j in 1:d
-            result.clusters[i][j] = data[initial_clusters[i], j]
-        end
-    end
-
-    if gmm.verbose
-        print_initial_clusters(initial_clusters)
-    end
+    initialize!(result, data, initial_clusters, verbose = gmm.verbose)
 
     fit!(gmm, data, result)
 
@@ -418,13 +427,19 @@ result = fit(gmm, data, k)
 function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     n, d = size(data)
 
+    result = GMMResult(d, n, k)
     if n == 0
-        return GMMResult(d, n, k)
+        return result
     end
 
+    @assert d > 0
     @assert k > 0
     @assert n >= k
 
-    initial_clusters = StatsBase.sample(gmm.rng, 1:n, k, replace = false)
-    return fit(gmm, data, initial_clusters)
+    unique_data, indices = sample_unique_data(gmm.rng, data, k)
+    initialize!(result, unique_data, indices, verbose = gmm.verbose)
+
+    fit!(gmm, data, result)
+
+    return result
 end
