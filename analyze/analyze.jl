@@ -11,6 +11,10 @@ using UnsupervisedClustering
 package_path = dirname(@__DIR__)
 module_path = joinpath(package_path, "src/UnsupervisedClustering.jl")
 
-@show report_file(module_path; analyze_from_definitions = true)
+report = report_file(module_path; analyze_from_definitions = true)
+println("Report 1")
+@show report
 
-# @show report_package(UnsupervisedClustering)
+report = report_package(UnsupervisedClustering)
+println("Report 2")
+@show report
