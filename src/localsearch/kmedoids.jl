@@ -126,7 +126,7 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     k = length(result.clusters)
 
     medoids = [Vector{Int}() for _ in 1:k]
-    count = zeros(Int, k)
+    clusters_size = zeros(Int, k)
 
     previous_objective = -Inf
     reset_objective!(result)
@@ -141,14 +141,14 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
         result.objective = 0
         for i in 1:k
             empty!(medoids[i])
-            count[i] = 0
+            clusters_size[i] = 0
             result.objective_per_cluster[i] = 0
         end
 
         for i in 1:n
             cluster, distance = assign(i, result.clusters, distances)
 
-            count[cluster] += 1
+            clusters_size[cluster] += 1
             push!(medoids[cluster], i)
 
             result.objective += distance
