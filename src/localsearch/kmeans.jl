@@ -311,7 +311,7 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansRe
     @assert k > 0
     @assert n >= k
 
-    unique_data, indices = sample_unique_data(kmeans.rng, data, k)
+    unique_data, indices = try_sampling_unique_data(kmeans.rng, data, k)
     initialize!(result, unique_data, indices, verbose = kmeans.verbose)
 
     fit!(kmeans, data, result)
