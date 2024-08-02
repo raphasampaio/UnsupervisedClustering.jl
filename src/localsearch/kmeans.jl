@@ -156,7 +156,7 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     result.iterations = kmeans.max_iterations
     result.converged = false
 
-    count = zeros(Int, k)
+    clusters_size = zeros(Int, k)
     distances = zeros(k, n)
     is_empty = trues(k)
 
@@ -198,7 +198,7 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
 
         # update step
         for i in 1:k
-            count[i] = 0
+            clusters_size[i] = 0
             for j in 1:d
                 result.clusters[j, i] = 0
             end
@@ -209,11 +209,11 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
             for j in 1:d
                 result.clusters[j, assignment] += data[i, j]
             end
-            count[assignment] += 1
+            clusters_size[assignment] += 1
         end
 
         for i in 1:k
-            cluster_size = max(1, count[i])
+            cluster_size = max(1, clusters_size[i])
             for j in 1:d
                 result.clusters[j, i] = result.clusters[j, i] / cluster_size
             end
@@ -311,7 +311,7 @@ function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansRe
     @assert k > 0
     @assert n >= k
 
-    unique_data, indices = sample_unique_data(kmeans.rng, data, k)
+    unique_data, indices = try_sampling_unique_data(kmeans.rng, data, k)
     initialize!(result, unique_data, indices, verbose = kmeans.verbose)
 
     fit!(kmeans, data, result)
