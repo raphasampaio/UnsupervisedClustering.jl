@@ -4,7 +4,7 @@
 
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://raphasampaio.github.io/UnsupervisedClustering.jl.jl/stable)
 [![CI](https://github.com/raphasampaio/UnsupervisedClustering.jl.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/raphasampaio/UnsupervisedClustering.jl.jl/actions/workflows/CI.yml)
-[![Codecov](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl.jl)
+[![codecov](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/graph/badge.svg?token=7VJDYN91SR)](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 ## Introduction
