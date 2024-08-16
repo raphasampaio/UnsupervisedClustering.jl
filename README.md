@@ -1,4 +1,4 @@
-<div align="center"> <img src="/docs/src/assets/logo.svg" alt="UnsupervisedClustering.jl"></img></div>
+<div align="center"><img src="/docs/src/assets/logo.svg" width=250px alt="UnsupervisedClustering.jl"></img></div>
 
 # UnsupervisedClustering.jl
 
