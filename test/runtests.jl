@@ -26,14 +26,19 @@ function get_data(filename::String)
     end
 end
 
+function test_aqua()
+    @testset "Ambiguities" begin
+        Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
+    end
+    Aqua.test_all(UnsupervisedClustering, ambiguities = false)
+    return nothing
+end
+
 function test_all()
     # println("BLAS: $(BLAS.get_config())")
 
     @testset "Aqua.jl" begin
-        @testset "Ambiguities" begin
-            Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
-        end
-        Aqua.test_all(UnsupervisedClustering, ambiguities = false)
+        test_aqua()
     end
 
     @testset "n = 0" begin
