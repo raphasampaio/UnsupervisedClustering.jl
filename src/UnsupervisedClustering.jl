@@ -63,4 +63,35 @@ include("print.jl")
 include("seed.jl")
 include("random.jl")
 
+@setup_workload begin
+    n, d, k = 100, 2, 2
+
+    Random.seed!(1)
+    data = rand(n, d)
+    distances = pairwise(SqEuclidean(), data, dims = 1)
+
+    @compile_workload begin
+        kmeans = Kmeans(rng = MersenneTwister(1))
+        fit(kmeans, data, k)
+
+        ksegmentation = Ksegmentation()
+        fit(ksegmentation, data, k)
+
+        kmedoids = Kmedoids(rng = MersenneTwister(1))
+        fit(kmedoids, distances, k)
+
+        gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+        fit(gmm, data, k)
+
+        multi_start = MultiStart(local_search = kmeans)
+        fit(multi_start, data, k)
+
+        random_swap = RandomSwap(local_search = kmeans)
+        fit(random_swap, data, k)
+
+        genetic_algorithm = GeneticAlgorithm(local_search = kmeans)
+        fit(genetic_algorithm, data, k)
+    end
+end
+
 end
