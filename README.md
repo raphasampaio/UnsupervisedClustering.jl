@@ -1,31 +1,11 @@
+<div align="center"><img src="/docs/src/assets/logo.svg" width=250px alt="UnsupervisedClustering.jl"></img></div>
+
 # UnsupervisedClustering.jl
 
-<div align="center">
-    <a href="/docs/src/assets/">
-        <img src="/docs/src/assets/logo.svg" width=250px alt="UnsupervisedClustering.jl" />
-    </a>
-    <br>
-    <br>
-    <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/stable">
-        <img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Stable">
-    </a>
-    <a href="https://raphasampaio.github.io/UnsupervisedClustering.jl/dev">
-        <img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Dev">
-    </a>
-    <a href="https://github.com/JuliaTesting/Aqua.jl">
-        <img src="https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg" alt="Coverage"/>
-    </a>
-    <br>
-    <a href="https://juliahub.com/ui/Packages/UnsupervisedClustering/sHGR0">
-        <img src="https://juliahub.com/docs/UnsupervisedClustering/version.svg" alt="Version"/>
-    </a>
-    <a href="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml">
-        <img src="https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg" alt="CI"/>
-    </a>
-    <a href="https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl">
-        <img src="https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/branch/main/graph/badge.svg" alt="Coverage"/>
-    </a>
-</div>
+[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://raphasampaio.github.io/UnsupervisedClustering.jl/stable)
+[![CI](https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/graph/badge.svg?token=7VJDYN91SR)](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl)
+[![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 ## Introduction
 UnsupervisedClustering.jl is a Julia package that implements several unsupervised clustering algorithms.

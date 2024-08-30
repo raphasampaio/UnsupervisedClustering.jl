@@ -436,7 +436,7 @@ function fit(gmm::GMM, data::AbstractMatrix{<:Real}, k::Integer)::GMMResult
     @assert k > 0
     @assert n >= k
 
-    unique_data, indices = sample_unique_data(gmm.rng, data, k)
+    unique_data, indices = try_sampling_unique_data(gmm.rng, data, k)
     initialize!(result, unique_data, indices, verbose = gmm.verbose)
 
     fit!(gmm, data, result)
