@@ -312,7 +312,10 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(gmm, result, precisions_cholesky)
 
-    if n > k
+    if n == k
+        result.converged = true
+        result.iterations = 1
+    else
         for iteration in 1:gmm.max_iterations
             previous_objective = result.objective
 
@@ -330,7 +333,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
                 print_newline()
             end
 
-            if change < gmm.tolerance || n == k
+            if change < gmm.tolerance
                 result.converged = true
                 result.iterations = iteration
                 break
