@@ -7,6 +7,7 @@ using LinearAlgebra
 using Printf
 using Random
 using RegularizedCovarianceMatrices
+using StableRNGs
 using Test
 using TimerOutputs
 
@@ -46,7 +47,7 @@ function test_all()
         data = zeros(n, d)
 
         @testset "kmeans" begin
-            algorithm = Kmeans(rng = MersenneTwister(1))
+            algorithm = Kmeans(rng = StableRNG(1))
             result = fit(algorithm, data, k)
             @test length(result.assignments) == 0
 
@@ -61,7 +62,7 @@ function test_all()
         end
 
         @testset "kmedoids" begin
-            algorithm = Kmedoids(rng = MersenneTwister(1))
+            algorithm = Kmedoids(rng = StableRNG(1))
             distances = pairwise(SqEuclidean(), data, dims = 1)
             result = fit(algorithm, distances, k)
             @test length(result.assignments) == 0
@@ -71,7 +72,7 @@ function test_all()
         end
 
         @testset "gmm" begin
-            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
             result = fit(algorithm, data, k)
             @test length(result.assignments) == 0
 
@@ -85,7 +86,7 @@ function test_all()
         data = zeros(n, d)
 
         @testset "kmeans" begin
-            algorithm = Kmeans(rng = MersenneTwister(1))
+            algorithm = Kmeans(rng = StableRNG(1))
             @test_throws AssertionError result = fit(algorithm, data, k)
         end
 
@@ -95,7 +96,7 @@ function test_all()
         end
 
         @testset "gmm" begin
-            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
             @test_throws AssertionError result = fit(algorithm, data, k)
         end
     end
@@ -105,7 +106,7 @@ function test_all()
         data = zeros(n, d)
 
         @testset "kmeans" begin
-            algorithm = Kmeans(rng = MersenneTwister(1))
+            algorithm = Kmeans(rng = StableRNG(1))
             @test_throws AssertionError result = fit(algorithm, data, k)
         end
 
@@ -115,23 +116,23 @@ function test_all()
         end
 
         @testset "kmedoids" begin
-            algorithm = Kmedoids(rng = MersenneTwister(1))
+            algorithm = Kmedoids(rng = StableRNG(1))
             distances = pairwise(SqEuclidean(), data, dims = 1)
             @test_throws AssertionError result = fit(algorithm, distances, k)
         end
 
         @testset "gmm" begin
-            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
             @test_throws AssertionError result = fit(algorithm, data, k)
         end
     end
 
     @testset "n = k" begin
         n, d, k = 3, 2, 3
-        data = rand(MersenneTwister(1), n, d)
+        data = rand(StableRNG(1), n, d)
 
         @testset "kmeans" begin
-            algorithm = Kmeans(rng = MersenneTwister(1))
+            algorithm = Kmeans(rng = StableRNG(1))
             result = fit(algorithm, data, k)
             @test sort(result.assignments) == [i for i in 1:k]
         end
@@ -143,14 +144,14 @@ function test_all()
         end
 
         @testset "kmedoids" begin
-            algorithm = Kmedoids(rng = MersenneTwister(1))
+            algorithm = Kmedoids(rng = StableRNG(1))
             distances = pairwise(SqEuclidean(), data, dims = 1)
             result = fit(algorithm, distances, k)
             @test sort(result.assignments) == [i for i in 1:k]
         end
 
         @testset "gmm" begin
-            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d), verbose = true)
             result = fit(algorithm, data, k)
             @test sort(result.assignments) == [i for i in 1:k]
         end
@@ -161,20 +162,20 @@ function test_all()
         data = zeros(n, d)
 
         @testset "kmeans" begin
-            algorithm = Kmeans(rng = MersenneTwister(1))
+            algorithm = Kmeans(rng = StableRNG(1))
             result = fit(algorithm, data, k)
             @test sort(result.assignments) == [i for i in 1:k]
         end
 
         @testset "kmedoids" begin
-            algorithm = Kmedoids(rng = MersenneTwister(1))
+            algorithm = Kmedoids(rng = StableRNG(1))
             distances = pairwise(SqEuclidean(), data, dims = 1)
             result = fit(algorithm, distances, k)
             @test sort(result.assignments) == [i for i in 1:k]
         end
 
         @testset "gmm" begin
-            algorithm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
+            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
             result = fit(algorithm, data, k)
             @test sort(result.assignments) == [i for i in 1:k]
         end
@@ -303,40 +304,40 @@ function test_all()
 
         kmeans = Kmeans(
             verbose = verbose,
-            rng = MersenneTwister(1),
+            rng = StableRNG(1),
         )
 
         ksegmentation = Ksegmentation()
 
         kmedoids = Kmedoids(
             verbose = verbose,
-            rng = MersenneTwister(1),
+            rng = StableRNG(1),
         )
 
         gmm = GMM(
             verbose = verbose,
-            rng = MersenneTwister(1),
+            rng = StableRNG(1),
             estimator = EmpiricalCovarianceMatrix(n, d),
             decompose_if_fails = false,
         )
 
         gmm_shrunk = GMM(
             verbose = verbose,
-            rng = MersenneTwister(1),
+            rng = StableRNG(1),
             estimator = ShrunkCovarianceMatrix(n, d),
             decompose_if_fails = false,
         )
 
         gmm_oas = GMM(
             verbose = verbose,
-            rng = MersenneTwister(1),
+            rng = StableRNG(1),
             estimator = LedoitWolfCovarianceMatrix(n, d),
             decompose_if_fails = false,
         )
 
         gmm_lw = GMM(
             verbose = verbose,
-            rng = MersenneTwister(1),
+            rng = StableRNG(1),
             estimator = LedoitWolfCovarianceMatrix(n, d),
             decompose_if_fails = false,
         )

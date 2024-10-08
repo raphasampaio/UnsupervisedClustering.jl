@@ -1,4 +1,4 @@
-function assign(kmeans::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function assign(::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
 
     min_cluster = 0
@@ -21,7 +21,6 @@ function assign(kmeans::Kmeans, point::Integer, distances::AbstractMatrix{<:Real
 end
 
 function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
-    n = size(distances, 1)
     k = length(clusters)
 
     min_cluster = 0
@@ -43,7 +42,7 @@ function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::
     return min_cluster, min_distance
 end
 
-function assign(gmm::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function assign(::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     n, k = size(probabilities)
 
     max_cluster = 0

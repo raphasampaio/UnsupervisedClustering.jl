@@ -312,27 +312,29 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     precisions_cholesky = [zeros(d, d) for _ in 1:k]
     compute_precision_cholesky!(gmm, result, precisions_cholesky)
 
-    for iteration in 1:gmm.max_iterations
-        previous_objective = result.objective
+    if n > k
+        for iteration in 1:gmm.max_iterations
+            previous_objective = result.objective
 
-        t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
+            t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
 
-        t2 = @elapsed maximization_step!(gmm, data, k, result, log_responsibilities, precisions_cholesky)
+            t2 = @elapsed maximization_step!(gmm, data, k, result, log_responsibilities, precisions_cholesky)
 
-        change = abs(result.objective - previous_objective)
+            change = abs(result.objective - previous_objective)
 
-        if gmm.verbose
-            print_iteration(iteration)
-            print_objective(result)
-            print_change(change)
-            print_elapsed(t1 + t2)
-            print_newline()
-        end
+            if gmm.verbose
+                print_iteration(iteration)
+                print_objective(result)
+                print_change(change)
+                print_elapsed(t1 + t2)
+                print_newline()
+            end
 
-        if change < gmm.tolerance || n == k
-            result.converged = true
-            result.iterations = iteration
-            break
+            if change < gmm.tolerance || n == k
+                result.converged = true
+                result.iterations = iteration
+                break
+            end
         end
     end
 
