@@ -170,7 +170,7 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
             is_empty[i] = true
         end
 
-        pairwise!(distances, kmeans.metric, result.clusters, data', dims = 2)
+        pairwise!(kmeans.metric, distances, result.clusters, data', dims = 2)
         for i in 1:n
             cluster, distance = assign(kmeans, i, distances, is_empty)
 
