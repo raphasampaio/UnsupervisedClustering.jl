@@ -1,8 +1,8 @@
 Base.@kwdef mutable struct GMMSK <: UnsupervisedClustering.AbstractAlgorithm
     verbose::Bool = false
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = 1e-3
-    max_iterations::Integer = 1000
+    tolerance::Float64 = 1e-3
+    max_iterations::Int = 1000
 end
 
 function seed!(algorithm::GMMSK, seed::Integer)

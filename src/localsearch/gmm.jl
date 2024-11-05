@@ -3,8 +3,8 @@
         estimator::CovarianceMatrixEstimator
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Real = DEFAULT_TOLERANCE
-        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Int = DEFAULT_MAX_ITERATIONS
         decompose_if_fails::Bool = true
     )
 
@@ -27,8 +27,8 @@ Base.@kwdef mutable struct GMM <: AbstractAlgorithm
     estimator::CovarianceMatrixEstimator
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = DEFAULT_TOLERANCE
-    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
     decompose_if_fails::Bool = true
 end
 

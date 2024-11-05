@@ -1,6 +1,6 @@
-mutable struct Generation
-    population::AbstractVector{<:AbstractResult}
-    empty::Set{Integer}
+mutable struct Generation{T <: AbstractResult}
+    population::Vector{T}
+    empty::Set{Int}
 
     function Generation()
         return new(Vector{AbstractResult}(), Set{Int}())

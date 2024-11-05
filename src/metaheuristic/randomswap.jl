@@ -2,8 +2,8 @@
     RandomSwap(
         local_search::AbstractAlgorithm
         verbose::Bool = DEFAULT_VERBOSE
-        max_iterations::Integer = 200
-        max_iterations_without_improvement::Integer = 150
+        max_iterations::Int = 200
+        max_iterations_without_improvement::Int = 150
     )
 
 RandomSwap is a meta-heuristic approach used for clustering problems. It follows an iterative process that combines local optimization with perturbation to explore the search space effectively. A local optimization algorithm is applied at each iteration to converge toward a local optimum. Then, a perturbation operator generates a new starting point and continues the search.
@@ -22,8 +22,8 @@ RandomSwap is a meta-heuristic approach used for clustering problems. It follows
 Base.@kwdef struct RandomSwap <: AbstractAlgorithm
     local_search::AbstractAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
-    max_iterations::Integer = 200
-    max_iterations_without_improvement::Integer = 150
+    max_iterations::Int = 200
+    max_iterations_without_improvement::Int = 150
 end
 
 @doc """
