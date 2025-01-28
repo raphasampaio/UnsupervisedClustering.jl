@@ -544,7 +544,9 @@ function test_all()
 
             @test result.objective ≈ benchmark[i]
 
-            # @test result.objective ≈ sum(result.objective_per_cluster)
+            if hasproperty(result, :objective_per_cluster)
+                @test result.objective ≈ sum(result.objective_per_cluster)
+            end
         end
         # @printf("],\n")
     end
