@@ -23,6 +23,7 @@ export concatenate,
     stochastic_matrix,
     GMM,
     Kmeans,
+    BalancedKmeans,
     Kmedoids,
     Ksegmentation,
     RandomSwap,
@@ -34,6 +35,7 @@ include("abstract.jl")
 
 include("localsearch/gmm.jl")
 include("localsearch/kmeans.jl")
+include("localsearch/balancedkmeans.jl")
 include("localsearch/kmedoids.jl")
 include("localsearch/ksegmentation.jl")
 
