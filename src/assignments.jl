@@ -38,33 +38,30 @@ end
 
 function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
-    cluster_capacity = div(n, k)
+    capacity = div(n, k)
 
-    # flatten all (cluster, point) pairs into a single list, store tuples of the form (distance, point, cluster)
-    assignment_candidates = Vector{Tuple{Float64, Int, Int}}(undef, n * k)
-    index = 1
+    candidates = Vector{Tuple{Float64, Int, Int}}()
+    sizehint!(candidates, k * n)
+
     for cluster in 1:k
         for point in 1:n
-            assignment_candidates[index] = (distances[cluster, point], point, cluster)
-            index += 1
+            push!(candidates, (distances[cluster, point], point, cluster))
         end
     end
-    sort!(assignment_candidates, by = x -> x[1])
+    sort!(candidates, by = x -> x[1])
 
     fill!(result.assignments, 0)
-    cluster_load = fill(0, k)
+    load = zeros(Int, k)
     objective = 0.0
     assigned_count = 0
 
-    # greedily assign
-    for (dist, point, cluster) in assignment_candidates
-        if result.assignments[point] == 0 && cluster_load[cluster] < cluster_capacity
+    for (distance, point, cluster) in candidates
+        if result.assignments[point] == 0 && load[cluster] < capacity
             result.assignments[point] = cluster
-            cluster_load[cluster] += 1
-            objective += dist
+            load[cluster] += 1
+            objective += distance
             assigned_count += 1
 
-            # if all points assigned, we can stop early
             if assigned_count == n
                 break
             end
