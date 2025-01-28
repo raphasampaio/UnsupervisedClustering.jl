@@ -41,7 +41,7 @@ function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::Abs
     cluster_capacity = div(n, k)
 
     # Flatten all (cluster, point) pairs into a single list, store tuples of the form (distance, point, cluster)
-    assignment_candidates = Vector{Tuple{Float64, Int, Int}}(undef, n*k)
+    assignment_candidates = Vector{Tuple{Float64, Int, Int}}(undef, n * k)
     index = 1
     for cluster in 1:k
         for point in 1:n

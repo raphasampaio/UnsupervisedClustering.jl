@@ -62,7 +62,7 @@ function test_all()
 
             result = fit(algorithm, data, Vector{Int}())
             @test length(result.assignments) == 0
-        end        
+        end
 
         @testset "ksegmentation" begin
             algorithm = Ksegmentation()
@@ -214,7 +214,12 @@ function test_all()
 
     @testset "convert" begin
         kmeans_result = UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0])
-        gmm_result = UnsupervisedClustering.GMMResult([1, 2, 2], [0.5, 0.5], [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], [Symmetric(Matrix{Float64}(I, 3, 3)) for _ in 1:2])
+        gmm_result = UnsupervisedClustering.GMMResult(
+            [1, 2, 2],
+            [0.5, 0.5],
+            [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]],
+            [Symmetric(Matrix{Float64}(I, 3, 3)) for _ in 1:2],
+        )
 
         @test kmeans_result == convert(UnsupervisedClustering.KmeansResult, gmm_result)
         @test gmm_result == convert(UnsupervisedClustering.GMMResult, kmeans_result)
@@ -417,7 +422,7 @@ function test_all()
                 verbose = verbose,
                 max_iterations = max_iterations,
                 max_iterations_without_improvement = max_iterations_without_improvement,
-            ),            
+            ),
             # KSEGMENTATION
             ksegmentation,
             # KMEDOIDS

@@ -34,6 +34,22 @@ Base.@kwdef mutable struct Kmeans <: AbstractKmeans
 end
 
 @doc """
+    BalancedKmeans(
+        metric::SemiMetric = SqEuclidean()
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        tolerance::Real = DEFAULT_TOLERANCE
+        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    )
+    
+The balanced kmeans is a variation of the k-means clustering algorithm that balances the number of data points assigned to each cluster.
+
+# Fields
+- `metric`: defines the distance metric used to compute the distances between data points and cluster centroids.
+- `verbose`: controls whether the algorithm should display additional information during execution.
+- `rng`: represents the random number generator to be used by the algorithm.
+- `tolerance`: represents the convergence criterion for the algorithm. It determines the maximum change allowed in the centroid positions between consecutive iterations.
+- `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping, even if convergence has not been reached.
 """
 Base.@kwdef mutable struct BalancedKmeans <: AbstractKmeans
     metric::SemiMetric = SqEuclidean()
