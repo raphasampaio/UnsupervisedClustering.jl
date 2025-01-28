@@ -55,7 +55,7 @@ function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::Abs
     sort!(assignment_candidates, by = x -> x[1])
 
     # Prepare for assignment
-    fill!(result.assignments, 0)        # 0 => unassigned
+    fill!(result.assignments, 0) # 0 => unassigned
     cluster_load = fill(0, k)    # how many points in each cluster
     total_objective = 0.0
     assigned_count = 0

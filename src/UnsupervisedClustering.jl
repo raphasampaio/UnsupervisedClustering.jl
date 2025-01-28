@@ -35,7 +35,6 @@ include("abstract.jl")
 
 include("localsearch/gmm.jl")
 include("localsearch/kmeans.jl")
-include("localsearch/balanced_kmeans.jl")
 include("localsearch/kmedoids.jl")
 include("localsearch/ksegmentation.jl")
 

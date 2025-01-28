@@ -24,13 +24,24 @@ The k-means is a clustering algorithm that aims to partition data into clusters 
   Least squares quantization in PCM.
   IEEE transactions on information theory 28.2 (1982): 129-137.
 """
-Base.@kwdef mutable struct Kmeans <: AbstractAlgorithm
+Base.@kwdef mutable struct Kmeans <: AbstractKmeans
     metric::SemiMetric = SqEuclidean()
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Real = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
     assignment_step::Function = kmeans_assignment_step!
+end
+
+@doc """
+"""
+Base.@kwdef mutable struct BalancedKmeans <: AbstractKmeans
+    metric::SemiMetric = SqEuclidean()
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    tolerance::Real = DEFAULT_TOLERANCE
+    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    assignment_step::Function = balanced_kmeans_assignment_step!
 end
 
 @doc """
@@ -145,7 +156,7 @@ result = KmeansResult(n, [1.0 2.0; 1.0 2.0])
 fit!(kmeans, data, result)
 ```
 """
-function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+function fit!(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
 
     n, d = size(data)
@@ -225,7 +236,7 @@ end
 
 @doc """
     fit(
-        kmeans::Kmeans,
+        kmeans::AbstractKmeans,
         data::AbstractMatrix{<:Real},
         initial_clusters::AbstractVector{<:Integer}
     )
@@ -250,7 +261,7 @@ kmeans = Kmeans()
 result = fit(kmeans, data, [4, 12])
 ```
 """
-function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
+function fit(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
     n, d = size(data)
     k = length(initial_clusters)
 
@@ -297,7 +308,7 @@ kmeans = Kmeans()
 result = fit(kmeans, data, k)
 ```
 """
-function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+function fit(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 
     result = KmeansResult(d, n, k)
