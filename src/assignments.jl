@@ -20,6 +20,21 @@ function assign(::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_
     return min_cluster, min_distance
 end
 
+function assignment_step!(; kmeans::Kmeans, result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+    k, n = size(distances)
+
+    for i in 1:n
+        cluster, distance = assign(kmeans, i, distances, is_empty)
+
+        is_empty[cluster] = false
+        result.assignments[i] = cluster
+        result.objective += distance
+        result.objective_per_cluster[cluster] += distance
+    end
+
+    return nothing
+end
+
 function assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, cluster_capacity::Integer)
     k, n = size(distances)
 
@@ -38,16 +53,16 @@ function assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Re
     sort!(assignment_candidates, by = x -> x[1])
 
     # Prepare for assignment
-    fill!(assignments, 0)        # 0 => unassigned
+    fill!(result.assignments, 0)        # 0 => unassigned
     cluster_load = fill(0, k)    # how many points in each cluster
     total_objective = 0.0
     assigned_count = 0
 
     # Greedily assign
     for (dist, point, cluster) in assignment_candidates
-        if assignments[point] == 0 && cluster_load[cluster] < cluster_capacity
+        if result.assignments[point] == 0 && cluster_load[cluster] < cluster_capacity
             # Assign this point to this cluster
-            assignments[point] = cluster
+            result.assignments[point] = cluster
             cluster_load[cluster] += 1
             total_objective += dist
             assigned_count += 1
