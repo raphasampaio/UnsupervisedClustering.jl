@@ -24,12 +24,40 @@ The k-means is a clustering algorithm that aims to partition data into clusters 
   Least squares quantization in PCM.
   IEEE transactions on information theory 28.2 (1982): 129-137.
 """
-Base.@kwdef mutable struct Kmeans <: AbstractAlgorithm
+Base.@kwdef mutable struct Kmeans <: AbstractKmeans
     metric::SemiMetric = SqEuclidean()
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Real = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    assignment_step::Function = kmeans_assignment_step!
+end
+
+@doc """
+    BalancedKmeans(
+        metric::SemiMetric = SqEuclidean()
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        tolerance::Real = DEFAULT_TOLERANCE
+        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    )
+    
+The balanced kmeans is a variation of the k-means clustering algorithm that balances the number of data points assigned to each cluster.
+
+# Fields
+- `metric`: defines the distance metric used to compute the distances between data points and cluster centroids.
+- `verbose`: controls whether the algorithm should display additional information during execution.
+- `rng`: represents the random number generator to be used by the algorithm.
+- `tolerance`: represents the convergence criterion for the algorithm. It determines the maximum change allowed in the centroid positions between consecutive iterations.
+- `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping, even if convergence has not been reached.
+"""
+Base.@kwdef mutable struct BalancedKmeans <: AbstractKmeans
+    metric::SemiMetric = SqEuclidean()
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    tolerance::Real = DEFAULT_TOLERANCE
+    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    assignment_step::Function = balanced_kmeans_assignment_step!
 end
 
 @doc """
@@ -144,7 +172,7 @@ result = KmeansResult(n, [1.0 2.0; 1.0 2.0])
 fit!(kmeans, data, result)
 ```
 """
-function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
+function fit!(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, result::KmeansResult)
     t = time()
 
     n, d = size(data)
@@ -163,7 +191,6 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
     for iteration in 1:kmeans.max_iterations
         previous_objective = result.objective
 
-        # assignment step
         result.objective = 0.0
         for i in 1:k
             result.objective_per_cluster[i] = 0.0
@@ -171,13 +198,17 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
         end
 
         pairwise!(kmeans.metric, distances, result.clusters, data', dims = 2)
-        for i in 1:n
-            cluster, distance = assign(kmeans, i, distances, is_empty)
 
-            is_empty[cluster] = false
-            result.assignments[i] = cluster
-            result.objective += distance
-            result.objective_per_cluster[cluster] += distance
+        result.objective = kmeans.assignment_step(
+            result = result,
+            distances = distances,
+            is_empty = is_empty,
+        )
+
+        fill!(result.objective_per_cluster, 0.0)
+        for i in 1:n
+            cluster = result.assignments[i]
+            result.objective_per_cluster[cluster] += distances[cluster, i]
         end
 
         change = abs(result.objective - previous_objective)
@@ -227,7 +258,7 @@ end
 
 @doc """
     fit(
-        kmeans::Kmeans,
+        kmeans::AbstractKmeans,
         data::AbstractMatrix{<:Real},
         initial_clusters::AbstractVector{<:Integer}
     )
@@ -252,7 +283,7 @@ kmeans = Kmeans()
 result = fit(kmeans, data, [4, 12])
 ```
 """
-function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
+function fit(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
     n, d = size(data)
     k = length(initial_clusters)
 
@@ -299,7 +330,7 @@ kmeans = Kmeans()
 result = fit(kmeans, data, k)
 ```
 """
-function fit(kmeans::Kmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
+function fit(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, k::Integer)::KmeansResult
     n, d = size(data)
 
     result = KmeansResult(d, n, k)

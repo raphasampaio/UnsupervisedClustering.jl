@@ -1,4 +1,4 @@
-function assign(::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function kmeans_assign(point::Integer, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
 
     min_cluster = 0
@@ -18,6 +18,60 @@ function assign(::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_
     end
 
     return min_cluster, min_distance
+end
+
+function kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+    k, n = size(distances)
+
+    objective = 0.0
+
+    for i in 1:n
+        cluster, distance = kmeans_assign(i, distances, is_empty)
+
+        is_empty[cluster] = false
+        result.assignments[i] = cluster
+        objective += distance
+    end
+
+    return objective
+end
+
+function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+    k, n = size(distances)
+    cluster_capacity = div(n, k)
+
+    # flatten all (cluster, point) pairs into a single list, store tuples of the form (distance, point, cluster)
+    assignment_candidates = Vector{Tuple{Float64, Int, Int}}(undef, n * k)
+    index = 1
+    for cluster in 1:k
+        for point in 1:n
+            assignment_candidates[index] = (distances[cluster, point], point, cluster)
+            index += 1
+        end
+    end
+    sort!(assignment_candidates, by = x -> x[1])
+
+    fill!(result.assignments, 0)
+    cluster_load = fill(0, k)
+    objective = 0.0
+    assigned_count = 0
+
+    # greedily assign
+    for (dist, point, cluster) in assignment_candidates
+        if result.assignments[point] == 0 && cluster_load[cluster] < cluster_capacity
+            result.assignments[point] = cluster
+            cluster_load[cluster] += 1
+            objective += dist
+            assigned_count += 1
+
+            # if all points assigned, we can stop early
+            if assigned_count == n
+                break
+            end
+        end
+    end
+
+    return objective
 end
 
 function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
