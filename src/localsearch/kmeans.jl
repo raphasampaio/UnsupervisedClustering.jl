@@ -30,6 +30,7 @@ Base.@kwdef mutable struct Kmeans <: AbstractAlgorithm
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Real = DEFAULT_TOLERANCE
     max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    assignment_step::Function = kmeans_assignment_step!
 end
 
 @doc """
@@ -171,8 +172,7 @@ function fit!(kmeans::Kmeans, data::AbstractMatrix{<:Real}, result::KmeansResult
 
         pairwise!(kmeans.metric, distances, result.clusters, data', dims = 2)
 
-        assignment_step!(
-            kmeans = kmeans,
+        kmeans.assignment_step(
             result = result,
             distances = distances,
             is_empty = is_empty,

@@ -1,4 +1,4 @@
-function assign(::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function kmeans_assign(point::Integer, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
 
     min_cluster = 0
@@ -20,11 +20,11 @@ function assign(::Kmeans, point::Integer, distances::AbstractMatrix{<:Real}, is_
     return min_cluster, min_distance
 end
 
-function assignment_step!(; kmeans::Kmeans, result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
 
     for i in 1:n
-        cluster, distance = assign(kmeans, i, distances, is_empty)
+        cluster, distance = kmeans_assign(i, distances, is_empty)
 
         is_empty[cluster] = false
         result.assignments[i] = cluster
@@ -35,8 +35,10 @@ function assignment_step!(; kmeans::Kmeans, result::KmeansResult, distances::Abs
     return nothing
 end
 
-function assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, cluster_capacity::Integer)
+function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
+
+    cluster_capacity = div(n, k)
 
     # Flatten all (cluster, point) pairs into a single list
     # We'll store tuples of the form (distance, point, cluster)
