@@ -199,11 +199,17 @@ function fit!(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, result::Kmea
 
         pairwise!(kmeans.metric, distances, result.clusters, data', dims = 2)
 
-        kmeans.assignment_step(
+        result.objective = kmeans.assignment_step(
             result = result,
             distances = distances,
             is_empty = is_empty,
         )
+
+        fill!(result.objective_per_cluster, 0.0)
+        for i in 1:n
+            cluster = result.assignments[i]
+            result.objective_per_cluster[cluster] += distances[cluster, i]
+        end
 
         change = abs(result.objective - previous_objective)
 

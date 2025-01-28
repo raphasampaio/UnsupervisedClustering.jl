@@ -23,24 +23,24 @@ end
 function kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
 
+    objective = 0.0
+
     for i in 1:n
         cluster, distance = kmeans_assign(i, distances, is_empty)
 
         is_empty[cluster] = false
         result.assignments[i] = cluster
-        result.objective += distance
-        result.objective_per_cluster[cluster] += distance
+        objective += distance
     end
 
-    return nothing
+    return objective
 end
 
 function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
-
     cluster_capacity = div(n, k)
 
-    # Flatten all (cluster, point) pairs into a single list, store tuples of the form (distance, point, cluster)
+    # flatten all (cluster, point) pairs into a single list, store tuples of the form (distance, point, cluster)
     assignment_candidates = Vector{Tuple{Float64, Int, Int}}(undef, n * k)
     index = 1
     for cluster in 1:k
@@ -49,24 +49,21 @@ function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::Abs
             index += 1
         end
     end
-
-    # Sort all pairs by ascending distance
     sort!(assignment_candidates, by = x -> x[1])
 
-    # Prepare for assignment
-    fill!(result.assignments, 0) # 0 => unassigned
-    cluster_load = fill(0, k)    # how many points in each cluster
-    total_objective = 0.0
+    fill!(result.assignments, 0)
+    cluster_load = fill(0, k)
+    objective = 0.0
     assigned_count = 0
 
-    # Greedily assign
+    # greedily assign
     for (dist, point, cluster) in assignment_candidates
         if result.assignments[point] == 0 && cluster_load[cluster] < cluster_capacity
-            # Assign this point to this cluster
             result.assignments[point] = cluster
             cluster_load[cluster] += 1
-            total_objective += dist
+            objective += dist
             assigned_count += 1
+
             # if all points assigned, we can stop early
             if assigned_count == n
                 break
@@ -74,9 +71,7 @@ function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::Abs
         end
     end
 
-    result.objective = total_objective
-
-    return nothing
+    return objective
 end
 
 function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
