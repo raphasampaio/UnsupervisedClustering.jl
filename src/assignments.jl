@@ -20,57 +20,6 @@ function kmeans_assign(point::Integer, distances::AbstractMatrix{<:Real}, is_emp
     return min_cluster, min_distance
 end
 
-function kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
-    k, n = size(distances)
-
-    objective = 0.0
-
-    for i in 1:n
-        cluster, distance = kmeans_assign(i, distances, is_empty)
-
-        is_empty[cluster] = false
-        result.assignments[i] = cluster
-        objective += distance
-    end
-
-    return objective
-end
-
-function balanced_kmeans_assignment_step!(; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
-    k, n = size(distances)
-    capacity = div(n, k)
-
-    candidates = Vector{Tuple{Float64, Int, Int}}()
-    sizehint!(candidates, k * n)
-
-    for cluster in 1:k
-        for point in 1:n
-            push!(candidates, (distances[cluster, point], point, cluster))
-        end
-    end
-    sort!(candidates, by = x -> x[1])
-
-    fill!(result.assignments, 0)
-    load = zeros(Int, k)
-    objective = 0.0
-    assigned_count = 0
-
-    for (distance, point, cluster) in candidates
-        if result.assignments[point] == 0 && load[cluster] < capacity
-            result.assignments[point] = cluster
-            load[cluster] += 1
-            objective += distance
-            assigned_count += 1
-
-            if assigned_count == n
-                break
-            end
-        end
-    end
-
-    return objective
-end
-
 function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
     k = length(clusters)
 
@@ -113,4 +62,55 @@ function assign(::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is
     end
 
     return max_cluster, max_probability
+end
+
+function assignment_step!(::Kmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+    k, n = size(distances)
+
+    objective = 0.0
+
+    for i in 1:n
+        cluster, distance = kmeans_assign(i, distances, is_empty)
+
+        is_empty[cluster] = false
+        result.assignments[i] = cluster
+        objective += distance
+    end
+
+    return objective
+end
+
+function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+    k, n = size(distances)
+    capacity = div(n, k)
+
+    candidates = Vector{Tuple{Float64, Int, Int}}()
+    sizehint!(candidates, k * n)
+
+    for cluster in 1:k
+        for point in 1:n
+            push!(candidates, (distances[cluster, point], point, cluster))
+        end
+    end
+    sort!(candidates, by = x -> x[1])
+
+    fill!(result.assignments, 0)
+    load = zeros(Int, k)
+    objective = 0.0
+    assigned_count = 0
+
+    for (distance, point, cluster) in candidates
+        if result.assignments[point] == 0 && load[cluster] < capacity
+            result.assignments[point] = cluster
+            load[cluster] += 1
+            objective += distance
+            assigned_count += 1
+
+            if assigned_count == n
+                break
+            end
+        end
+    end
+
+    return objective
 end

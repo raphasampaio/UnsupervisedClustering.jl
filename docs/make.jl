@@ -26,9 +26,9 @@ makedocs(
             "GMM"=>"localsearch/gmm.md",
         ]
         "Metaheuristic" => Any[
-            "Multi-Start"=>"metaheuristic/multistart.md",
-            "Random Swap"=>"metaheuristic/randomswap.md",
-            "Genetic Algorithm"=>"metaheuristic/geneticalgorithm.md",
+            "Multi-Start"=>"metaheuristic/multi_start.md",
+            "Random Swap"=>"metaheuristic/random_swap.md",
+            "Genetic Algorithm"=>"metaheuristic/genetic_algorithm.md",
         ]
         "Ensemble" => Any[
             "Clustering Chain"=>"ensemble/chain.md"
