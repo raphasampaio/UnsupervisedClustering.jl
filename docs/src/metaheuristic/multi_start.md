@@ -2,5 +2,5 @@
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["metaheuristic/multistart.jl"]
+Pages   = ["metaheuristic/multi_start.jl"]
 ```
