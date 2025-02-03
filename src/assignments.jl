@@ -80,27 +80,37 @@ end
 function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
     capacities = build_capacities_vector(n, k)
+    total_candidates = k * n
 
-    candidates = Vector{Tuple{Float64, Int, Int}}()
-    sizehint!(candidates, k * n)
+    candidates_distances = Vector{Float64}(undef, total_candidates)
+    candidates_point = Vector{Int}(undef, total_candidates)
+    candidates_cluster = Vector{Int}(undef, total_candidates)
 
-    for cluster in 1:k
+    index = 1
+    @inbounds for cluster in 1:k
         for point in 1:n
-            push!(candidates, (distances[cluster, point], point, cluster))
+            candidates_distances[index] = distances[cluster, point]
+            candidates_point[index] = point
+            candidates_cluster[index] = cluster
+            index += 1
         end
     end
-    sort!(candidates, by = x -> x[1])
+
+    permutation = sortperm(candidates_distances)
 
     fill!(result.assignments, 0)
     load = zeros(Int, k)
     assigned_count = 0
 
-    for (distance, point, cluster) in candidates
+    @inbounds for i in permutation
+        point = candidates_point[i]
+        cluster = candidates_cluster[i]
+
         if result.assignments[point] == 0 && load[cluster] < capacities[cluster]
             result.assignments[point] = cluster
             load[cluster] += 1
-            assigned_count += 1
 
+            assigned_count += 1
             if assigned_count == n
                 break
             end
