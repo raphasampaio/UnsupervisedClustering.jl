@@ -67,22 +67,19 @@ end
 function assignment_step!(::Kmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
 
-    objective = 0.0
-
     for i in 1:n
         cluster, distance = kmeans_assign(i, distances, is_empty)
 
         is_empty[cluster] = false
         result.assignments[i] = cluster
-        objective += distance
     end
 
-    return objective
+    return nothing
 end
 
 function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     k, n = size(distances)
-    capacity = div(n, k)
+    capacities = build_capacities_vector(n, k)
 
     candidates = Vector{Tuple{Float64, Int, Int}}()
     sizehint!(candidates, k * n)
@@ -96,14 +93,12 @@ function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::Abs
 
     fill!(result.assignments, 0)
     load = zeros(Int, k)
-    objective = 0.0
     assigned_count = 0
 
     for (distance, point, cluster) in candidates
-        if result.assignments[point] == 0 && load[cluster] < capacity
+        if result.assignments[point] == 0 && load[cluster] < capacities[cluster]
             result.assignments[point] = cluster
             load[cluster] += 1
-            objective += distance
             assigned_count += 1
 
             if assigned_count == n
@@ -112,5 +107,5 @@ function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::Abs
         end
     end
 
-    return objective
+    return nothing
 end
