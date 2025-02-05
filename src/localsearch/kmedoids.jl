@@ -168,13 +168,14 @@ function fit!(kmedoids::AbstractKmedoids, distances::AbstractMatrix{<:Real}, res
 
         assignment_step!(kmedoids; result, distances, medoids)
 
-        for (cluster, medoid) in enumerate(medoids)
+        for (i, medoid) in enumerate(medoids)
+            cluster = result.clusters[i]
             for point in medoid
                 distance = distances[point, cluster]
 
-                clusters_size[cluster] += 1
+                clusters_size[i] += 1
                 result.objective += distance
-                result.objective_per_cluster[cluster] += distance
+                result.objective_per_cluster[i] += distance
             end
         end
 
