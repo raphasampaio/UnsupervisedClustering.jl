@@ -144,16 +144,16 @@ function assignment_step!(::BalancedKmedoids; result::KmedoidsResult, distances:
     total_candidates = k * n
 
     candidates_distances = Vector{Float64}(undef, total_candidates)
-    candidates_point     = Vector{Int}(undef, total_candidates)
-    candidates_cluster   = Vector{Int}(undef, total_candidates)
+    candidates_point = Vector{Int}(undef, total_candidates)
+    candidates_cluster = Vector{Int}(undef, total_candidates)
 
     index = 1
     for cluster_idx in 1:k
         medoid = result.clusters[cluster_idx]
         for point in 1:n
             candidates_distances[index] = distances[point, medoid]
-            candidates_point[index]     = point
-            candidates_cluster[index]   = cluster_idx
+            candidates_point[index] = point
+            candidates_cluster[index] = cluster_idx
             index += 1
         end
     end
@@ -170,7 +170,7 @@ function assignment_step!(::BalancedKmedoids; result::KmedoidsResult, distances:
     assigned = fill(false, n)
 
     for idx in permutation
-        point   = candidates_point[idx]
+        point = candidates_point[idx]
         cluster = candidates_cluster[idx]
 
         if !assigned[point] && load[cluster] < capacities[cluster]
