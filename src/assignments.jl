@@ -20,7 +20,7 @@ function kmeans_assign(point::Integer, distances::AbstractMatrix{<:Real}, is_emp
     return min_cluster, min_distance
 end
 
-function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
+function kmedoids_assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
     k = length(clusters)
 
     min_cluster = 0
@@ -117,5 +117,20 @@ function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::Abs
         end
     end
 
+    return nothing
+end
+
+function assignment_step!(::Kmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, medoids::AbstractVector{<:Vector{Int}})
+    @show n = size(distances, 1)
+
+    for i in 1:n
+        @show cluster, distance = kmedoids_assign(i, result.clusters, distances)
+        push!(medoids[cluster], i)
+    end
+
+    return nothing
+end
+
+function assignment_step!(::BalancedKmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     return nothing
 end
