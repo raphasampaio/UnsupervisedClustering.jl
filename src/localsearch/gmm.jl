@@ -344,7 +344,7 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
     is_empty = trues(k)
     weighted_log_probabilities = estimate_weighted_log_probabilities(data, k, result, precisions_cholesky)
     for i in 1:n
-        cluster, _ = assign(gmm, i, weighted_log_probabilities, is_empty)
+        cluster = gmm_assign(i, weighted_log_probabilities, is_empty)
 
         is_empty[cluster] = false
         result.assignments[i] = cluster

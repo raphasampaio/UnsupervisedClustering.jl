@@ -77,11 +77,17 @@ include("random.jl")
         kmeans = Kmeans(rng = MersenneTwister(1))
         fit(kmeans, data, k)
 
+        balanced_kmeans = BalancedKmeans(rng = MersenneTwister(1))
+        fit(balanced_kmeans, data, k)
+
         ksegmentation = Ksegmentation()
         fit(ksegmentation, data, k)
 
         kmedoids = Kmedoids(rng = MersenneTwister(1))
         fit(kmedoids, distances, k)
+
+        balanced_kmedoids = BalancedKmedoids(rng = MersenneTwister(1))
+        fit(balanced_kmedoids, distances, k)
 
         gmm = GMM(rng = MersenneTwister(1), estimator = EmpiricalCovarianceMatrix(n, d))
         fit(gmm, data, k)

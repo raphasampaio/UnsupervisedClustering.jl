@@ -29,7 +29,7 @@ function kmedoids_assign(point::Integer, clusters::AbstractVector{<:Integer}, di
     for j in 1:k
         cluster = clusters[j]
         if point == cluster
-            return j, 0.0
+            return j
         end
 
         distance = distances[point, cluster]
@@ -39,10 +39,10 @@ function kmedoids_assign(point::Integer, clusters::AbstractVector{<:Integer}, di
         end
     end
 
-    return min_cluster, min_distance
+    return min_cluster
 end
 
-function assign(::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function gmm_assign(point::Integer, probabilities::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     n, k = size(probabilities)
 
     max_cluster = 0
@@ -61,7 +61,7 @@ function assign(::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is
         end
     end
 
-    return max_cluster, max_probability
+    return max_cluster
 end
 
 function assignment_step!(::Kmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
@@ -129,7 +129,7 @@ function assignment_step!(::Kmedoids; result::KmedoidsResult, distances::Abstrac
     end
 
     for i in 1:n
-        cluster, distance = kmedoids_assign(i, result.clusters, distances)
+        cluster = kmedoids_assign(i, result.clusters, distances)
         push!(medoids[cluster], i)
     end
 
