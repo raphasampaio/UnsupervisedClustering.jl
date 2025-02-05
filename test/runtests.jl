@@ -553,10 +553,9 @@ function test_all()
 
             result =
                 if algorithm == kmedoids ||
-                    algorithm == balanced_kmedoids ||
-                    (hasproperty(algorithm, :local_search) && algorithm.local_search == kmedoids) ||
-                    (hasproperty(algorithm, :local_search) && algorithm.local_search == balanced_kmedoids)
-
+                   algorithm == balanced_kmedoids ||
+                   (hasproperty(algorithm, :local_search) && algorithm.local_search == kmedoids) ||
+                   (hasproperty(algorithm, :local_search) && algorithm.local_search == balanced_kmedoids)
                     distances = pairwise(SqEuclidean(), data, dims = 1)
                     fit(algorithm, distances, k)
                 else
@@ -565,9 +564,9 @@ function test_all()
 
             # @printf("%.16f,", result.objective)
 
-            c = counts(result)
+            result_counts = counts(result)
             for j in 1:k
-                @test c[j] == count(==(j), result.assignments)
+                @test result_counts[j] == count(==(j), result.assignments)
             end
 
             @test result.objective ≈ benchmark[i]
