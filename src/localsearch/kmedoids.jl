@@ -16,7 +16,31 @@ The k-medoids is a variation of k-means clustering algorithm that uses actual da
 
 # References
 """
-Base.@kwdef mutable struct Kmedoids <: AbstractAlgorithm
+Base.@kwdef mutable struct Kmedoids <: AbstractKmedoids
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    tolerance::Real = DEFAULT_TOLERANCE
+    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+end
+
+@doc """
+    BalancedKmedoids(
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        tolerance::Real = DEFAULT_TOLERANCE
+        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    )
+
+The balanced k-medoids is a variation of the k-medoids algorithm that balances the number of data points assigned to each cluster. It uses the same parameters as the k-medoids algorithm.
+
+# Fields
+- `verbose`: controls whether the algorithm should display additional information during execution.
+- `rng`: represents the random number generator to be used by the algorithm.
+- `tolerance`: represents the convergence criterion for the algorithm. It determines the maximum change allowed in the centroid positions between consecutive iterations.
+- `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping, even if convergence has not been reached.
+
+"""
+Base.@kwdef mutable struct BalancedKmedoids <: AbstractKmedoids
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
     tolerance::Real = DEFAULT_TOLERANCE
@@ -106,7 +130,7 @@ end
 
 @doc """
     fit!(
-        kmedoids::Kmedoids,
+        kmedoids::AbstractKmedoids,
         distances::AbstractMatrix{<:Real},
         result::KmedoidsResult
     )
@@ -133,7 +157,7 @@ result = KmedoidsResult(n, [1.0 2.0; 1.0 2.0])
 fit!(kmedoids, distances, result)
 ```
 """
-function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
+function fit!(kmedoids::AbstractKmedoids, distances::AbstractMatrix{<:Real}, result::KmedoidsResult)
     t = time()
 
     n = size(distances, 1)
@@ -151,23 +175,21 @@ function fit!(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, result::Kme
     for iteration in 1:kmedoids.max_iterations
         previous_objective = result.objective
 
-        # assignment step
-        result.objective = 0
-        for i in 1:k
-            empty!(medoids[i])
-            clusters_size[i] = 0
+        assignment_step!(kmedoids; result, distances, medoids)
+
+        for (i, medoid) in enumerate(medoids)
+            cluster = result.clusters[i]
+
             result.objective_per_cluster[i] = 0
+            for point in medoid
+                distance = distances[point, cluster]
+                result.objective_per_cluster[i] += distance
+            end
+
+            clusters_size[i] = length(medoid)
         end
 
-        for i in 1:n
-            cluster, distance = assign(i, result.clusters, distances)
-
-            clusters_size[cluster] += 1
-            push!(medoids[cluster], i)
-
-            result.objective += distance
-            result.objective_per_cluster[cluster] += distance
-        end
+        result.objective = sum(result.objective_per_cluster)
 
         change = abs(result.objective - previous_objective)
 
@@ -217,7 +239,7 @@ end
 
 @doc """
     fit(
-        kmedoids::Kmedoids,
+        kmedoids::AbstractKmedoids,
         distances::AbstractMatrix{<:Real},
         initial_clusters::AbstractVector{<:Integer}
     )
@@ -243,7 +265,7 @@ kmedoids = Kmedoids()
 result = fit(kmedoids, distances, [4, 12])
 ```
 """
-function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
+function fit(kmedoids::AbstractKmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
     n = size(distances, 1)
     k = length(initial_clusters)
 
@@ -264,7 +286,7 @@ end
 
 @doc """
     fit(
-        kmedoids::Kmedoids,
+        kmedoids::AbstractKmedoids,
         distances::AbstractMatrix{<:Real},
         k::Integer
     )
@@ -290,7 +312,7 @@ kmedoids = Kmedoids()
 result = fit(kmedoids, distances, k)
 ```
 """
-function fit(kmedoids::Kmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
+function fit(kmedoids::AbstractKmedoids, distances::AbstractMatrix{<:Real}, k::Integer)::KmedoidsResult
     n = size(distances, 1)
 
     result = KmedoidsResult(n, k)

@@ -144,7 +144,7 @@ end
 
 @doc """
     fit!(
-        kmeans::Kmeans,
+        kmeans::AbstractKmeans,
         data::AbstractMatrix{<:Real},
         result::KmeansResult
     )
@@ -305,7 +305,7 @@ end
 
 @doc """
     fit(
-        kmeans::Kmeans,
+        kmeans::AbstractKmeans,
         data::AbstractMatrix{<:Real},
         k::Integer
     )

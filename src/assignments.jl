@@ -20,7 +20,7 @@ function kmeans_assign(point::Integer, distances::AbstractMatrix{<:Real}, is_emp
     return min_cluster, min_distance
 end
 
-function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
+function kmedoids_assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::AbstractMatrix{<:Real})
     k = length(clusters)
 
     min_cluster = 0
@@ -29,7 +29,7 @@ function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::
     for j in 1:k
         cluster = clusters[j]
         if point == cluster
-            return j, 0.0
+            return j
         end
 
         distance = distances[point, cluster]
@@ -39,10 +39,10 @@ function assign(point::Integer, clusters::AbstractVector{<:Integer}, distances::
         end
     end
 
-    return min_cluster, min_distance
+    return min_cluster
 end
 
-function assign(::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function gmm_assign(point::Integer, probabilities::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
     n, k = size(probabilities)
 
     max_cluster = 0
@@ -61,7 +61,7 @@ function assign(::GMM, point::Integer, probabilities::AbstractMatrix{<:Real}, is
         end
     end
 
-    return max_cluster, max_probability
+    return max_cluster
 end
 
 function assignment_step!(::Kmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
@@ -111,6 +111,74 @@ function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::Abs
             load[cluster] += 1
 
             assigned_count += 1
+            if assigned_count == n
+                break
+            end
+        end
+    end
+
+    return nothing
+end
+
+function assignment_step!(::Kmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, medoids::AbstractVector{<:Vector{Int}})
+    k = length(result.clusters)
+    n = size(distances, 1)
+
+    for i in 1:k
+        empty!(medoids[i])
+    end
+
+    for i in 1:n
+        cluster = kmedoids_assign(i, result.clusters, distances)
+        push!(medoids[cluster], i)
+    end
+
+    return nothing
+end
+
+function assignment_step!(::BalancedKmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, medoids::AbstractVector{<:Vector{Int}})
+    k = length(result.clusters)
+    n = size(distances, 1)
+
+    capacities = build_capacities_vector(n, k)
+    total_candidates = k * n
+
+    candidates_distances = Vector{Float64}(undef, total_candidates)
+    candidates_point = Vector{Int}(undef, total_candidates)
+    candidates_cluster = Vector{Int}(undef, total_candidates)
+
+    index = 1
+    for cluster_idx in 1:k
+        medoid = result.clusters[cluster_idx]
+        for point in 1:n
+            candidates_distances[index] = distances[point, medoid]
+            candidates_point[index] = point
+            candidates_cluster[index] = cluster_idx
+            index += 1
+        end
+    end
+
+    permutation = sortperm(candidates_distances)
+
+    for j in 1:k
+        empty!(medoids[j])
+    end
+
+    load = zeros(Int, k)
+    assigned_count = 0
+
+    assigned = fill(false, n)
+
+    for idx in permutation
+        point = candidates_point[idx]
+        cluster = candidates_cluster[idx]
+
+        if !assigned[point] && load[cluster] < capacities[cluster]
+            push!(medoids[cluster], point)
+            assigned[point] = true
+            load[cluster] += 1
+            assigned_count += 1
+
             if assigned_count == n
                 break
             end
