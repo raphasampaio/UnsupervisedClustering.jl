@@ -121,7 +121,12 @@ function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::Abs
 end
 
 function assignment_step!(::Kmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, medoids::AbstractVector{<:Vector{Int}})
+    k = length(result.clusters)
     n = size(distances, 1)
+
+    for i in 1:k
+        empty!(medoids[i])
+    end
 
     for i in 1:n
         cluster, distance = kmedoids_assign(i, result.clusters, distances)
