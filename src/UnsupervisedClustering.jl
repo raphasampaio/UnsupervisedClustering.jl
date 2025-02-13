@@ -34,10 +34,10 @@ export concatenate,
 
 include("abstract.jl")
 
-include("localsearch/gmm.jl")
-include("localsearch/kmeans.jl")
-include("localsearch/kmedoids.jl")
-include("localsearch/ksegmentation.jl")
+include("local_search/gmm.jl")
+include("local_search/kmeans.jl")
+include("local_search/kmedoids.jl")
+include("local_search/ksegmentation.jl")
 
 include("metaheuristic/multi_start.jl")
 include("metaheuristic/random_swap.jl")
@@ -65,7 +65,7 @@ include("markov.jl")
 include("print.jl")
 include("seed.jl")
 include("random.jl")
-include("silhouette_score.jl")
+include("evaluation/silhouette_score.jl")
 
 @setup_workload begin
     n, d, k = 100, 2, 2
