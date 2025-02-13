@@ -17,7 +17,7 @@ function silhouette_score(; data::AbstractMatrix{<:Real}, assignments::AbstractV
 
         # average intra-cluster distance
         cohesion = if length(in_cluster) > 1
-            mean(distances[i, in_cluster[in_cluster .!= i]]) # exclude self
+            mean(distances[i, in_cluster[in_cluster.!=i]]) # exclude self
         else
             0
         end
