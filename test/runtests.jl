@@ -317,6 +317,31 @@ function test_all()
         @test stochastic_matrix(result1, result2) ≈ [0.0 1.0 0.0; 0.5 0.0 0.5; 0.5 0.0 0.5]
     end
 
+    @testset "silhouette score" begin
+        data = [1.0 1.0; 2.0 2.0; 3.0 3.0; 4.0 4.0; 5.0 5.0]
+        assignments = [1, 2, 2, 1, 1]
+
+        @test silhouette_score(data, assignments, Euclidean()) ≈ 0.0
+
+        data = [
+            2  5; 
+            3  4; 
+            4  6; 
+            8  3; 
+            9  2; 
+            10 5; 
+            6  10;
+            7  8; 
+            8  9  
+        ]
+        assignments = [1, 1, 1, 2, 2, 2, 3, 3, 3]
+
+        @test silhouette_score(data, assignments, Euclidean()) ≈ 0.5
+
+    end
+
+    exit(1)
+
     verbose = true
     decompose_if_fails = true
     max_iterations = 30
