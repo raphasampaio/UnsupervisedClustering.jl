@@ -320,14 +320,12 @@ function test_all()
     @testset "silhouette score" begin
         data = [1.0 1.0; 2.0 2.0; 3.0 3.0; 4.0 4.0; 5.0 5.0]
         assignments = [1, 2, 2, 1, 1]
-        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.0
+        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.016
 
         data = [2 5; 3 4; 4 6; 8 3; 9 2; 10 5; 6 10; 7 8; 8 9]
         assignments = [1, 1, 1, 2, 2, 2, 3, 3, 3]
-        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.5
+        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.615
     end
-
-    exit(1)
 
     verbose = true
     decompose_if_fails = true
