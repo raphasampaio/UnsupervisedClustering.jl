@@ -65,6 +65,7 @@ include("markov.jl")
 include("print.jl")
 include("seed.jl")
 include("random.jl")
+include("silhouette_score.jl")
 
 @setup_workload begin
     n, d, k = 100, 2, 2
