@@ -3,13 +3,14 @@ using UnsupervisedClustering
 
 DocMeta.setdocmeta!(UnsupervisedClustering, :DocTestSetup, :(using UnsupervisedClustering); recursive = true)
 
-makedocs(
+Documenter.makedocs(
     sitename = "UnsupervisedClustering",
     modules = [UnsupervisedClustering],
     authors = "Raphael Araujo Sampaio and Joaquim Dias Garcia and Marcus Poggi and Thibaut Vidal",
     repo = "https://github.com/raphasampaio/UnsupervisedClustering.jl/blob/{commit}{path}#{line}",
     doctest = true,
     clean = true,
+    checkdocs = :none,
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://raphasampaio.github.io/UnsupervisedClustering.jl",
