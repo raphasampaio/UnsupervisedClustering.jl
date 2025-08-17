@@ -3,9 +3,9 @@ Pkg.instantiate()
 
 using JuliaFormatter
 
-formatted = format(dirname(@__FILE__))
 
-if formatted
+
+if format(dirname(dirname(@__FILE__)))
     @info "All files have been formatted!"
     exit(0)
 else
