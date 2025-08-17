@@ -3,8 +3,6 @@ Pkg.instantiate()
 
 using JuliaFormatter
 
-
-
 if format(dirname(dirname(@__FILE__)))
     @info "All files have been formatted!"
     exit(0)

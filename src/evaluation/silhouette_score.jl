@@ -1,4 +1,8 @@
-function silhouette_score(; data::AbstractMatrix{<:Real}, assignments::AbstractVector{<:Integer}, metric::SemiMetric = SqEuclidean())
+function silhouette_score(;
+    data::AbstractMatrix{<:Real},
+    assignments::AbstractVector{<:Integer},
+    metric::SemiMetric = SqEuclidean(),
+)
     n, _ = size(data)
     unique_assignments = unique(assignments)
     k = length(unique_assignments)
@@ -17,7 +21,7 @@ function silhouette_score(; data::AbstractMatrix{<:Real}, assignments::AbstractV
 
         # average intra-cluster distance
         cohesion = if length(in_cluster) > 1
-            mean(distances[i, in_cluster[in_cluster.!=i]]) # exclude self
+            mean(distances[i, in_cluster[in_cluster .!= i]]) # exclude self
         else
             0
         end

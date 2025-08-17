@@ -7,5 +7,6 @@ end
 # end
 
 function Base.:(==)(a::GMMResult, b::GMMResult)
-    return a.k == b.k && a.assignments == b.assignments && a.weights == b.weights && a.clusters == b.clusters && a.covariances == b.covariances
+    return a.k == b.k && a.assignments == b.assignments && a.weights == b.weights && a.clusters == b.clusters &&
+           a.covariances == b.covariances
 end

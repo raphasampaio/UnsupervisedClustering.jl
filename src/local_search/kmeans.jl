@@ -125,7 +125,12 @@ function KmeansResult(n::Integer, clusters::AbstractMatrix{<:Real})
     return result
 end
 
-function initialize!(result::KmeansResult, data::AbstractMatrix{<:Real}, indices::AbstractVector{<:Integer}; verbose::Bool = false)
+function initialize!(
+    result::KmeansResult,
+    data::AbstractMatrix{<:Real},
+    indices::AbstractVector{<:Integer};
+    verbose::Bool = false,
+)
     n, d = size(data)
     k = length(indices)
 
@@ -283,7 +288,11 @@ kmeans = Kmeans()
 result = fit(kmeans, data, [4, 12])
 ```
 """
-function fit(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmeansResult
+function fit(
+    kmeans::AbstractKmeans,
+    data::AbstractMatrix{<:Real},
+    initial_clusters::AbstractVector{<:Integer},
+)::KmeansResult
     n, d = size(data)
     k = length(initial_clusters)
 

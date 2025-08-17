@@ -10,7 +10,11 @@ function seed!(algorithm::GMMSK, seed::Integer)
     return nothing
 end
 
-function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:Real}, result::UnsupervisedClustering.GMMResult)
+function UnsupervisedClustering.fit!(
+    parameters::GMMSK,
+    data::AbstractMatrix{<:Real},
+    result::UnsupervisedClustering.GMMResult,
+)
     t = time()
 
     n, d = size(data)
@@ -77,7 +81,11 @@ function UnsupervisedClustering.fit!(parameters::GMMSK, data::AbstractMatrix{<:R
     return nothing
 end
 
-function UnsupervisedClustering.fit(parameters::GMMSK, data::AbstractMatrix{<:Real}, k::Integer)::UnsupervisedClustering.GMMResult
+function UnsupervisedClustering.fit(
+    parameters::GMMSK,
+    data::AbstractMatrix{<:Real},
+    k::Integer,
+)::UnsupervisedClustering.GMMResult
     n, d = size(data)
 
     result = GMMResult(d, n, k)

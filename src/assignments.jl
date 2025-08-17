@@ -64,7 +64,12 @@ function gmm_assign(point::Integer, probabilities::AbstractMatrix{<:Real}, is_em
     return max_cluster
 end
 
-function assignment_step!(::Kmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function assignment_step!(
+    ::Kmeans;
+    result::KmeansResult,
+    distances::AbstractMatrix{<:Real},
+    is_empty::AbstractVector{<:Bool},
+)
     k, n = size(distances)
 
     for i in 1:n
@@ -77,7 +82,12 @@ function assignment_step!(::Kmeans; result::KmeansResult, distances::AbstractMat
     return nothing
 end
 
-function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::AbstractMatrix{<:Real}, is_empty::AbstractVector{<:Bool})
+function assignment_step!(
+    ::BalancedKmeans;
+    result::KmeansResult,
+    distances::AbstractMatrix{<:Real},
+    is_empty::AbstractVector{<:Bool},
+)
     k, n = size(distances)
     capacities = build_capacities_vector(n, k)
     total_candidates = k * n
@@ -120,7 +130,12 @@ function assignment_step!(::BalancedKmeans; result::KmeansResult, distances::Abs
     return nothing
 end
 
-function assignment_step!(::Kmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, medoids::AbstractVector{<:Vector{Int}})
+function assignment_step!(
+    ::Kmedoids;
+    result::KmedoidsResult,
+    distances::AbstractMatrix{<:Real},
+    medoids::AbstractVector{<:Vector{Int}},
+)
     k = length(result.clusters)
     n = size(distances, 1)
 
@@ -136,7 +151,12 @@ function assignment_step!(::Kmedoids; result::KmedoidsResult, distances::Abstrac
     return nothing
 end
 
-function assignment_step!(::BalancedKmedoids; result::KmedoidsResult, distances::AbstractMatrix{<:Real}, medoids::AbstractVector{<:Vector{Int}})
+function assignment_step!(
+    ::BalancedKmedoids;
+    result::KmedoidsResult,
+    distances::AbstractMatrix{<:Real},
+    medoids::AbstractVector{<:Vector{Int}},
+)
     k = length(result.clusters)
     n = size(distances, 1)
 

@@ -265,7 +265,11 @@ kmedoids = Kmedoids()
 result = fit(kmedoids, distances, [4, 12])
 ```
 """
-function fit(kmedoids::AbstractKmedoids, distances::AbstractMatrix{<:Real}, initial_clusters::AbstractVector{<:Integer})::KmedoidsResult
+function fit(
+    kmedoids::AbstractKmedoids,
+    distances::AbstractMatrix{<:Real},
+    initial_clusters::AbstractVector{<:Integer},
+)::KmedoidsResult
     n = size(distances, 1)
     k = length(initial_clusters)
 

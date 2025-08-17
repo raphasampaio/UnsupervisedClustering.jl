@@ -111,7 +111,12 @@ function GMMResult(n::Integer, clusters::AbstractVector{<:AbstractVector{<:Real}
     return result
 end
 
-function initialize!(result::GMMResult, data::AbstractMatrix{<:Real}, indices::AbstractVector{<:Integer}; verbose::Bool = false)
+function initialize!(
+    result::GMMResult,
+    data::AbstractMatrix{<:Real},
+    indices::AbstractVector{<:Integer};
+    verbose::Bool = false,
+)
     n, d = size(data)
     k = length(indices)
 
@@ -319,7 +324,8 @@ function fit!(gmm::GMM, data::AbstractMatrix{<:Real}, result::GMMResult)
         for iteration in 1:gmm.max_iterations
             previous_objective = result.objective
 
-            t1 = @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
+            t1 =
+                @elapsed result.objective, log_responsibilities = expectation_step(data, k, result, precisions_cholesky)
 
             t2 = @elapsed maximization_step!(gmm, data, k, result, log_responsibilities, precisions_cholesky)
 

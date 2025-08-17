@@ -105,7 +105,11 @@ function eliminate(generation::Generation, to_remove::Integer, rng::AbstractRNG)
 
     if to_remove > removed
         size = population_size(generation)
-        threshold = partialsort(generation.population, active_population_size(generation) - (to_remove - removed), lt = isbetter)
+        threshold = partialsort(
+            generation.population,
+            active_population_size(generation) - (to_remove - removed),
+            lt = isbetter,
+        )
 
         for i in 1:size
             if in(i, generation.empty) == false && isbetter(threshold, generation.population[i])
@@ -147,15 +151,30 @@ function copy_clusters!(destiny::GMMResult, destiny_i::Integer, source::GMMResul
     return nothing
 end
 
-function update_weights!(child::KmeansResult, parent1::KmeansResult, parent2::KmeansResult, assignment::AbstractVector{<:Integer})
+function update_weights!(
+    child::KmeansResult,
+    parent1::KmeansResult,
+    parent2::KmeansResult,
+    assignment::AbstractVector{<:Integer},
+)
     return nothing
 end
 
-function update_weights!(child::KmedoidsResult, parent1::KmedoidsResult, parent2::KmedoidsResult, assignment::AbstractVector{<:Integer})
+function update_weights!(
+    child::KmedoidsResult,
+    parent1::KmedoidsResult,
+    parent2::KmedoidsResult,
+    assignment::AbstractVector{<:Integer},
+)
     return nothing
 end
 
-function update_weights!(child::GMMResult, parent1::GMMResult, parent2::GMMResult, assignment::AbstractVector{<:Integer})
+function update_weights!(
+    child::GMMResult,
+    parent1::GMMResult,
+    parent2::GMMResult,
+    assignment::AbstractVector{<:Integer},
+)
     k = length(assignment)
     for i in 1:k
         child.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2

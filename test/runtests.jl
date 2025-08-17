@@ -232,7 +232,15 @@ function test_all()
             result = concatenate(
                 UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
                 UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-                UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
+                UnsupervisedClustering.KmeansResult(
+                    [1, 2, 2],
+                    [1.0 2.0; 1.0 2.0; 1.0 2.0],
+                    3.0,
+                    [1.5, 1.5],
+                    3,
+                    3.0,
+                    true,
+                ),
             )
 
             @test result.k == 6
@@ -247,9 +255,33 @@ function test_all()
 
         @testset "ksegmentation result" begin
             result = concatenate(
-                UnsupervisedClustering.KsegmentationResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
-                UnsupervisedClustering.KsegmentationResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
-                UnsupervisedClustering.KsegmentationResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 3.0, [1.5, 1.5], 3, 3.0, true),
+                UnsupervisedClustering.KsegmentationResult(
+                    [1, 2],
+                    [1.0 2.0; 1.0 2.0; 1.0 2.0],
+                    1.0,
+                    [0.5, 0.5],
+                    1,
+                    1.0,
+                    true,
+                ),
+                UnsupervisedClustering.KsegmentationResult(
+                    [1, 2],
+                    [1.0 2.0; 1.0 2.0; 1.0 2.0],
+                    2.0,
+                    [1.0, 1.0],
+                    2,
+                    2.0,
+                    true,
+                ),
+                UnsupervisedClustering.KsegmentationResult(
+                    [1, 2, 2],
+                    [1.0 2.0; 1.0 2.0; 1.0 2.0],
+                    3.0,
+                    [1.5, 1.5],
+                    3,
+                    3.0,
+                    true,
+                ),
             )
 
             @test result.k == 6
@@ -282,7 +314,15 @@ function test_all()
 
     @testset "sort" begin
         @testset "kmeans result" begin
-            result = UnsupervisedClustering.KmeansResult([1, 2, 3, 3, 2, 1], [3.0 1.0 2.0; 3.0 1.0 2.0], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+            result = UnsupervisedClustering.KmeansResult(
+                [1, 2, 3, 3, 2, 1],
+                [3.0 1.0 2.0; 3.0 1.0 2.0],
+                6.0,
+                [3.0, 1.0, 2.0],
+                1,
+                1.0,
+                true,
+            )
             sort!(result)
 
             @test result.k == 3
@@ -296,7 +336,8 @@ function test_all()
         end
 
         @testset "kmedoids result" begin
-            result = UnsupervisedClustering.KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
+            result =
+                UnsupervisedClustering.KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
             sort!(result)
 
             @test result.k == 3
@@ -320,15 +361,18 @@ function test_all()
     @testset "silhouette score" begin
         data = [1.0 1.0; 2.0 2.0; 3.0 3.0; 4.0 4.0; 5.0 5.0]
         assignments = [1, 2, 2, 1, 1]
-        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.015714285714285747
+        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈
+              0.015714285714285747
 
         data = [2 5; 3 4; 4 6; 8 3; 9 2; 10 5; 6 10; 7 8; 8 9]
         assignments = [1, 1, 1, 2, 2, 2, 3, 3, 3]
-        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.6148550278971129
+        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈
+              0.6148550278971129
 
         data = [1.0 0.0; 1.0 1.0; 1.0 2.0; 2.0 3.0; 2.0 2.0; 1.0 2.0; 3.0 1.0; 3.0 3.0; 2.0 1.0]
         assignments = [1, 1, 2, 2, 2, 2, 3, 3, 3]
-        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈ 0.23320709938729836
+        @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈
+              0.23320709938729836
     end
 
     verbose = true
