@@ -15,7 +15,7 @@ UnsupervisedClustering.jl is a Julia package that implements several unsupervise
 ### Installation
 
 ```julia
-julia> ] add UnsupervisedClustering
+pkg> add UnsupervisedClustering
 ```
 
 ### Example
