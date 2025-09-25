@@ -6,7 +6,7 @@ using StableRNGs
 using UnsupervisedClustering
 using Test
 
-@testset "silhouette score" begin
+@testset "Silhouette Score" begin
     data = [1.0 1.0; 2.0 2.0; 3.0 3.0; 4.0 4.0; 5.0 5.0]
     assignments = [1, 2, 2, 1, 1]
     @test UnsupervisedClustering.silhouette_score(data = data, assignments = assignments, metric = Euclidean()) ≈
