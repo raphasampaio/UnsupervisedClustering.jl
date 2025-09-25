@@ -1,5 +1,7 @@
 module TestNEqualsTo0
 
+using Distances
+using RegularizedCovarianceMatrices
 using StableRNGs
 using UnsupervisedClustering
 using Test

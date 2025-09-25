@@ -1,5 +1,7 @@
 module TestKLargerThanN
 
+using Distances
+using RegularizedCovarianceMatrices
 using StableRNGs
 using UnsupervisedClustering
 using Test
