@@ -27,21 +27,7 @@ function get_data(filename::String)
     end
 end
 
-function test_aqua()
-    @testset "Ambiguities" begin
-        Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
-    end
-    Aqua.test_all(UnsupervisedClustering, ambiguities = false)
-    return nothing
-end
-
 function test_all()
-    # println("BLAS: $(BLAS.get_config())")
-
-    @testset "Aqua.jl" begin
-        test_aqua()
-    end
-
     @testset "n = 0" begin
         n, d, k = 0, 2, 3
         data = zeros(n, d)
@@ -642,3 +628,27 @@ end
 reset_timer!()
 test_all()
 print_timer(sortby = :firstexec)
+
+# using Test
+
+function recursive_include(path::String)
+    for file in readdir(path)
+        file_path = joinpath(path, file)
+        if isdir(file_path)
+            recursive_include(file_path)
+            continue
+        elseif !endswith(file, ".jl")
+            continue
+        elseif startswith(file, "test_")
+            include(file_path)
+        end
+    end
+end
+
+@testset verbose = true begin
+    if length(ARGS) > 0
+        include(joinpath(@__DIR__, ARGS[1]))
+    else
+        recursive_include(@__DIR__)
+    end
+end
