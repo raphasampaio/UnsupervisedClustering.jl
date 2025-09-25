@@ -1,7 +1,5 @@
 module TestNEqualsTo0
 
-using Distances
-using Random
 using StableRNGs
 using UnsupervisedClustering
 using Test
