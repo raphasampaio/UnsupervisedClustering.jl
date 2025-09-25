@@ -10,22 +10,22 @@ using Test
     n, d, k = 3, 0, 3
     data = zeros(n, d)
 
-    @testset "kmeans" begin
+    @testset "KMeans" begin
         algorithm = Kmeans(rng = StableRNG(1))
         @test_throws AssertionError result = fit(algorithm, data, k)
     end
 
-    @testset "balanced kmeans" begin
+    @testset "Balanced KMeans" begin
         algorithm = BalancedKmeans(rng = StableRNG(1))
         @test_throws AssertionError result = fit(algorithm, data, k)
     end
 
-    @testset "ksegmentation" begin
+    @testset "KSegmentation" begin
         algorithm = Ksegmentation()
         @test_throws AssertionError result = fit(algorithm, data, k)
     end
 
-    @testset "gmm" begin
+    @testset "GMM" begin
         algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
         @test_throws AssertionError result = fit(algorithm, data, k)
     end
