@@ -6,7 +6,7 @@ using StableRNGs
 using UnsupervisedClustering
 using Test
 
-@testset "markov" begin
+@testset "Markov" begin
     result1 = UnsupervisedClustering.KmeansResult([1, 2, 3, 3, 2, 1], zeros(0, 3), 0.0, zeros(0), 0, 0.0, false)
     result2 = UnsupervisedClustering.KmeansResult([2, 3, 1, 3, 1, 2], zeros(0, 3), 0.0, zeros(0), 0, 0.0, false)
 

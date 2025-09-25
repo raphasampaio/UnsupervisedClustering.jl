@@ -6,10 +6,10 @@ using StableRNGs
 using UnsupervisedClustering
 using Test
 
-@testset "concatenate" begin
+@testset "Concatenate" begin
     @test_throws MethodError concatenate()
 
-    @testset "kmeans result" begin
+    @testset "KMeans Result" begin
         result = concatenate(
             UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 1.0, [0.5, 0.5], 1, 1.0, true),
             UnsupervisedClustering.KmeansResult([1, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0], 2.0, [1.0, 1.0], 2, 2.0, true),
@@ -34,7 +34,7 @@ using Test
         @test result.converged == true
     end
 
-    @testset "ksegmentation result" begin
+    @testset "KSegmentation Result" begin
         result = concatenate(
             UnsupervisedClustering.KsegmentationResult(
                 [1, 2],
@@ -75,7 +75,7 @@ using Test
         @test result.converged == true
     end
 
-    @testset "kmedoids result" begin
+    @testset "KMedoids Result" begin
         result = concatenate(
             UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 1.0, [0.5, 0.5], 1, 1.0, true),
             UnsupervisedClustering.KmedoidsResult([1, 2], [1, 2], 2.0, [1.0, 1.0], 2, 2.0, true),

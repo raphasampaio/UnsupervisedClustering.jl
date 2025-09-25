@@ -10,13 +10,13 @@ using Test
     n, d, k = 3, 2, 3
     data = rand(StableRNG(1), n, d)
 
-    @testset "kmeans" begin
+    @testset "KMeans" begin
         algorithm = Kmeans(rng = StableRNG(1))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
-    @testset "balanced kmeans" begin
+    @testset "Balanced KMeans" begin
         algorithm = BalancedKmeans(rng = StableRNG(1))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
@@ -28,14 +28,14 @@ using Test
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
-    @testset "kmedoids" begin
+    @testset "KMedoids" begin
         algorithm = Kmedoids(rng = StableRNG(1))
         distances = pairwise(SqEuclidean(), data, dims = 1)
         result = fit(algorithm, distances, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
-    @testset "gmm" begin
+    @testset "GMM" begin
         algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
@@ -46,26 +46,26 @@ end
     n, d, k = 3, 2, 3
     data = zeros(n, d)
 
-    @testset "kmeans" begin
+    @testset "KMeans" begin
         algorithm = Kmeans(rng = StableRNG(1))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
-    @testset "balanced kmeans" begin
+    @testset "Balanced KMeans" begin
         algorithm = BalancedKmeans(rng = StableRNG(1))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
-    @testset "kmedoids" begin
+    @testset "KMedoids" begin
         algorithm = Kmedoids(rng = StableRNG(1))
         distances = pairwise(SqEuclidean(), data, dims = 1)
         result = fit(algorithm, distances, k)
         @test sort(result.assignments) == [i for i in 1:k]
     end
 
-    @testset "gmm" begin
+    @testset "GMM" begin
         algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]

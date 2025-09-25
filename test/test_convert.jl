@@ -1,12 +1,13 @@
 module TestConvert
 
 using Distances
+using LinearAlgebra
 using RegularizedCovarianceMatrices
 using StableRNGs
 using UnsupervisedClustering
 using Test
 
-@testset "convert" begin
+@testset "Convert" begin
     kmeans_result = UnsupervisedClustering.KmeansResult([1, 2, 2], [1.0 2.0; 1.0 2.0; 1.0 2.0])
     gmm_result = UnsupervisedClustering.GMMResult(
         [1, 2, 2],

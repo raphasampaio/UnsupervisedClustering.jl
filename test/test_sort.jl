@@ -6,8 +6,8 @@ using StableRNGs
 using UnsupervisedClustering
 using Test
 
-@testset "sort" begin
-    @testset "kmeans result" begin
+@testset "Sort" begin
+    @testset "KMeans" begin
         result = UnsupervisedClustering.KmeansResult(
             [1, 2, 3, 3, 2, 1],
             [3.0 1.0 2.0; 3.0 1.0 2.0],
@@ -29,7 +29,7 @@ using Test
         @test result.converged == true
     end
 
-    @testset "kmedoids result" begin
+    @testset "KMedoids" begin
         result =
             UnsupervisedClustering.KmedoidsResult([1, 2, 3, 3, 2, 1], [3, 1, 2], 6.0, [3.0, 1.0, 2.0], 1, 1.0, true)
         sort!(result)
