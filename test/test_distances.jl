@@ -16,8 +16,6 @@ using Test
 
     @test UnsupervisedClustering.pairwise_distances(kmeans; result, data) ≈
           pairwise(kmeans.metric, result.clusters, data', dims = 2)
-
-    return nothing
 end
 
 end
