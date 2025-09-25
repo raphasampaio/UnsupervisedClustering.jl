@@ -1,6 +1,5 @@
 using UnsupervisedClustering
 
-using Aqua
 using DelimitedFiles
 using Distances
 using LinearAlgebra
@@ -11,141 +10,9 @@ using StableRNGs
 using Test
 using TimerOutputs
 
-function get_data(filename::String)
-    open(joinpath("data", "$filename.csv")) do file
-        table = readdlm(file, ',')
-        n = size(table, 1)
-
-        clusters = Set{Int}()
-        for i in 1:n
-            expected = Int(table[i, 1])
-            push!(clusters, expected)
-        end
-        k = length(clusters)
-
-        return table[:, 2:size(table, 2)], k
-    end
-end
-
-function test_aqua()
-    @testset "Ambiguities" begin
-        Aqua.test_ambiguities(UnsupervisedClustering, recursive = false)
-    end
-    Aqua.test_all(UnsupervisedClustering, ambiguities = false)
-    return nothing
-end
+include("util.jl")
 
 function test_all()
-    # println("BLAS: $(BLAS.get_config())")
-
-    @testset "Aqua.jl" begin
-        test_aqua()
-    end
-
-    @testset "n = 0" begin
-        n, d, k = 0, 2, 3
-        data = zeros(n, d)
-
-        @testset "kmeans" begin
-            algorithm = Kmeans(rng = StableRNG(1))
-            result = fit(algorithm, data, k)
-            @test length(result.assignments) == 0
-
-            result = fit(algorithm, data, Vector{Int}())
-            @test length(result.assignments) == 0
-        end
-
-        @testset "balanced kmeans" begin
-            algorithm = BalancedKmeans(rng = StableRNG(1))
-            result = fit(algorithm, data, k)
-            @test length(result.assignments) == 0
-
-            result = fit(algorithm, data, Vector{Int}())
-            @test length(result.assignments) == 0
-        end
-
-        @testset "ksegmentation" begin
-            algorithm = Ksegmentation()
-            result = fit(algorithm, data, k)
-            @test length(result.assignments) == 0
-        end
-
-        @testset "kmedoids" begin
-            algorithm = Kmedoids(rng = StableRNG(1))
-            distances = pairwise(SqEuclidean(), data, dims = 1)
-            result = fit(algorithm, distances, k)
-            @test length(result.assignments) == 0
-
-            result = fit(algorithm, data, Vector{Int}())
-            @test length(result.assignments) == 0
-        end
-
-        @testset "gmm" begin
-            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
-            result = fit(algorithm, data, k)
-            @test length(result.assignments) == 0
-
-            result = fit(algorithm, data, Vector{Int}())
-            @test length(result.assignments) == 0
-        end
-    end
-
-    @testset "d = 0" begin
-        n, d, k = 3, 0, 3
-        data = zeros(n, d)
-
-        @testset "kmeans" begin
-            algorithm = Kmeans(rng = StableRNG(1))
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-
-        @testset "balanced kmeans" begin
-            algorithm = BalancedKmeans(rng = StableRNG(1))
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-
-        @testset "ksegmentation" begin
-            algorithm = Ksegmentation()
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-
-        @testset "gmm" begin
-            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-    end
-
-    @testset "k > n" begin
-        n, d, k = 2, 2, 3
-        data = zeros(n, d)
-
-        @testset "kmeans" begin
-            algorithm = Kmeans(rng = StableRNG(1))
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-
-        @testset "balanced kmeans" begin
-            algorithm = BalancedKmeans(rng = StableRNG(1))
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-
-        @testset "ksegmentation" begin
-            algorithm = Ksegmentation()
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-
-        @testset "kmedoids" begin
-            algorithm = Kmedoids(rng = StableRNG(1))
-            distances = pairwise(SqEuclidean(), data, dims = 1)
-            @test_throws AssertionError result = fit(algorithm, distances, k)
-        end
-
-        @testset "gmm" begin
-            algorithm = GMM(rng = StableRNG(1), estimator = EmpiricalCovarianceMatrix(n, d))
-            @test_throws AssertionError result = fit(algorithm, data, k)
-        end
-    end
-
     @testset "n = k" begin
         n, d, k = 3, 2, 3
         data = rand(StableRNG(1), n, d)
@@ -642,3 +509,27 @@ end
 reset_timer!()
 test_all()
 print_timer(sortby = :firstexec)
+
+# using Test
+
+function recursive_include(path::String)
+    for file in readdir(path)
+        file_path = joinpath(path, file)
+        if isdir(file_path)
+            recursive_include(file_path)
+            continue
+        elseif !endswith(file, ".jl")
+            continue
+        elseif startswith(file, "test_")
+            include(file_path)
+        end
+    end
+end
+
+@testset verbose = true begin
+    if length(ARGS) > 0
+        include(joinpath(@__DIR__, ARGS[1]))
+    else
+        recursive_include(@__DIR__)
+    end
+end
