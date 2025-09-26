@@ -62,11 +62,11 @@ function gmm_assign(point::Integer, probabilities::AbstractMatrix{<:Real}, is_em
     end
 
     return max_cluster
-end
+end 
 
 function assignment_step!(
-    ::Kmeans;
-    result::KmeansResult,
+    ::Kmeans,
+    assignments::AbstractVector{<:Integer};
     distances::AbstractMatrix{<:Real},
     is_empty::AbstractVector{<:Bool},
 )
@@ -76,15 +76,15 @@ function assignment_step!(
         cluster, distance = kmeans_assign(i, distances, is_empty)
 
         is_empty[cluster] = false
-        result.assignments[i] = cluster
+        assignments[i] = cluster
     end
 
     return nothing
 end
 
 function assignment_step!(
-    ::BalancedKmeans;
-    result::KmeansResult,
+    ::BalancedKmeans,
+    assignments::AbstractVector{<:Integer};
     distances::AbstractMatrix{<:Real},
     is_empty::AbstractVector{<:Bool},
 )
@@ -108,7 +108,7 @@ function assignment_step!(
 
     permutation = sortperm(candidates_distances)
 
-    fill!(result.assignments, 0)
+    fill!(assignments, 0)
     load = zeros(Int, k)
     assigned_count = 0
 
@@ -116,8 +116,8 @@ function assignment_step!(
         point = candidates_point[i]
         cluster = candidates_cluster[i]
 
-        if result.assignments[point] == 0 && load[cluster] < capacities[cluster]
-            result.assignments[point] = cluster
+        if assignments[point] == 0 && load[cluster] < capacities[cluster]
+            assignments[point] = cluster
             load[cluster] += 1
 
             assigned_count += 1
@@ -128,6 +128,20 @@ function assignment_step!(
     end
 
     return nothing
+end
+
+function assignment_step!(
+    kmeans::AbstractKmeans,
+    result::KmeansResult;
+    distances::AbstractMatrix{<:Real},
+    is_empty::AbstractVector{<:Bool},
+)
+    return assignment_step!(
+        kmeans, 
+        result.assignments;
+        distances,
+        is_empty,
+    )
 end
 
 function assignment_step!(
