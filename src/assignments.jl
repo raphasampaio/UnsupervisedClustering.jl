@@ -62,7 +62,7 @@ function gmm_assign(point::Integer, probabilities::AbstractMatrix{<:Real}, is_em
     end
 
     return max_cluster
-end 
+end
 
 function assignment_step!(
     ::Kmeans,
@@ -137,7 +137,7 @@ function assignment_step!(
     is_empty::AbstractVector{<:Bool},
 )
     return assignment_step!(
-        kmeans, 
+        kmeans,
         result.assignments;
         distances,
         is_empty,
