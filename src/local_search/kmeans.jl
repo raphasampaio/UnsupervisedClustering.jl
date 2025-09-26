@@ -201,13 +201,7 @@ function fit!(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, result::Kmea
         end
 
         pairwise_distances!(kmeans; result, data, distances)
-
-        assignment_step!(
-            kmeans,
-            result = result,
-            distances = distances,
-            is_empty = is_empty,
-        )
+        assignment_step!(kmeans, result; distances, is_empty)
 
         fill!(result.objective_per_cluster, 0.0)
         for i in 1:n
