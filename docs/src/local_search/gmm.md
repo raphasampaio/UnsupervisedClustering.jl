@@ -2,5 +2,5 @@
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["localsearch/gmm.jl"]
+Pages   = ["local_search/gmm.jl"]
 ```

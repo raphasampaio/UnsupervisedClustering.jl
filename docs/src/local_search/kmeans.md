@@ -1,6 +1,6 @@
-# k-medoids
+# k-means
 
 ```@autodocs
 Modules = [UnsupervisedClustering]
-Pages   = ["localsearch/kmedoids.jl"]
+Pages   = ["local_search/kmeans.jl"]
 ```
