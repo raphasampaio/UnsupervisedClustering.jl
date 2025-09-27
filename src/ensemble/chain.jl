@@ -23,13 +23,7 @@ function ClusteringChain(algorithms::AbstractAlgorithm...)
         throw(ArgumentError("ClusteringChain requires at least one algorithm"))
     end
 
-    # Check if all algorithms are the same type
-    first_type = typeof(algorithms[1])
-    if all(algo -> typeof(algo) == first_type, algorithms)
-        return ClusteringChain{first_type}(collect(algorithms))
-    else
-        return ClusteringChain{AbstractAlgorithm}(collect(algorithms))
-    end
+    return ClusteringChain{AbstractAlgorithm}(collect(algorithms))
 end
 
 @doc """
