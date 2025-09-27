@@ -1,27 +1,27 @@
-mutable struct Generation{T<:AbstractResult}
-    population::Vector{T}
+mutable struct Generation{R <: AbstractResult}
+    population::Vector{R}
     empty::Set{Int}
 
-    function Generation{T}() where {T<:AbstractResult}
-        return new{T}(Vector{T}(), Set{Int}())
+    function Generation{R}() where {R <: AbstractResult}
+        return new{R}(Vector{R}(), Set{Int}())
     end
 end
 
-function population_size(generation::Generation{T}) where {T<:AbstractResult}
+function population_size(generation::Generation{R}) where {R <: AbstractResult}
     return length(generation.population)
 end
 
-function active_population_size(generation::Generation{T}) where {T<:AbstractResult}
+function active_population_size(generation::Generation{R}) where {R <: AbstractResult}
     return population_size(generation) - length(generation.empty)
 end
 
-function remove(generation::Generation{T}, i::Integer) where {T<:AbstractResult}
+function remove(generation::Generation{R}, i::Integer) where {R <: AbstractResult}
     reset_objective!(generation.population[i])
     push!(generation.empty, i)
     return nothing
 end
 
-function add!(generation::Generation{T}, result::T) where {T<:AbstractResult}
+function add!(generation::Generation{R}, result::R) where {R <: AbstractResult}
     if length(generation.empty) > 0
         generation.population[pop!(generation.empty)] = result
     else
@@ -29,7 +29,7 @@ function add!(generation::Generation{T}, result::T) where {T<:AbstractResult}
     end
 end
 
-function binary_tournament(generation::Generation{T}, rng::AbstractRNG) where {T<:AbstractResult}
+function binary_tournament(generation::Generation{R}, rng::AbstractRNG) where {R <: AbstractResult}
     size = population_size(generation)
     indices = sample(rng, 1:size, aweights([(in(i, generation.empty) ? 0 : 1) for i in 1:size]), 4, replace = false)
     parent1 = generation.population[indices[1]]
@@ -40,7 +40,7 @@ function binary_tournament(generation::Generation{T}, rng::AbstractRNG) where {T
     return isbetter(parent1, parent2) ? parent1 : parent2, isbetter(parent3, parent4) ? parent3 : parent4
 end
 
-function get_best_solution(generation::Generation{T}) where {T<:AbstractResult}
+function get_best_solution(generation::Generation{R}) where {R <: AbstractResult}
     best_solution = generation.population[1]
     for (i, solution) in enumerate(generation.population)
         if in(i, generation.empty) == false && isbetter(solution, best_solution)
@@ -77,7 +77,7 @@ function crossover(parent1::AbstractResult, parent2::AbstractResult, data::Abstr
     return offspring
 end
 
-function eliminate(generation::Generation{T}, to_remove::Integer, rng::AbstractRNG) where {T<:AbstractResult}
+function eliminate(generation::Generation{R}, to_remove::Integer, rng::AbstractRNG) where {R <: AbstractResult}
     removed = 0
     size = population_size(generation)
     for i in 1:size
