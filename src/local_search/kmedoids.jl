@@ -2,8 +2,8 @@
     Kmedoids(
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Real = DEFAULT_TOLERANCE
-        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Int = DEFAULT_MAX_ITERATIONS
     )
 
 The k-medoids is a variation of k-means clustering algorithm that uses actual data points (medoids) as representatives of each cluster instead of the mean.
@@ -19,16 +19,16 @@ The k-medoids is a variation of k-means clustering algorithm that uses actual da
 Base.@kwdef mutable struct Kmedoids <: AbstractKmedoids
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = DEFAULT_TOLERANCE
-    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
 end
 
 @doc """
     BalancedKmedoids(
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Real = DEFAULT_TOLERANCE
-        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Int = DEFAULT_MAX_ITERATIONS
     )
 
 The balanced k-medoids is a variation of the k-medoids algorithm that balances the number of data points assigned to each cluster. It uses the same parameters as the k-medoids algorithm.
@@ -43,8 +43,8 @@ The balanced k-medoids is a variation of the k-medoids algorithm that balances t
 Base.@kwdef mutable struct BalancedKmedoids <: AbstractKmedoids
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = DEFAULT_TOLERANCE
-    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
 end
 
 @doc """

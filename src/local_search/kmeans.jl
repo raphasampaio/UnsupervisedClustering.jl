@@ -3,8 +3,8 @@
         metric::SemiMetric = SqEuclidean()
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Real = DEFAULT_TOLERANCE
-        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Int = DEFAULT_MAX_ITERATIONS
     )
 
 The k-means is a clustering algorithm that aims to partition data into clusters by minimizing the distances between data points and their cluster centroids.
@@ -28,8 +28,8 @@ Base.@kwdef mutable struct Kmeans <: AbstractKmeans
     metric::SemiMetric = SqEuclidean()
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = DEFAULT_TOLERANCE
-    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
 end
 
 @doc """
@@ -37,8 +37,8 @@ end
         metric::SemiMetric = SqEuclidean()
         verbose::Bool = DEFAULT_VERBOSE
         rng::AbstractRNG = Random.GLOBAL_RNG
-        tolerance::Real = DEFAULT_TOLERANCE
-        max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Int = DEFAULT_MAX_ITERATIONS
     )
     
 The balanced kmeans is a variation of the k-means clustering algorithm that balances the number of data points assigned to each cluster.
@@ -54,8 +54,8 @@ Base.@kwdef mutable struct BalancedKmeans <: AbstractKmeans
     metric::SemiMetric = SqEuclidean()
     verbose::Bool = DEFAULT_VERBOSE
     rng::AbstractRNG = Random.GLOBAL_RNG
-    tolerance::Real = DEFAULT_TOLERANCE
-    max_iterations::Integer = DEFAULT_MAX_ITERATIONS
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
 end
 
 @doc """
