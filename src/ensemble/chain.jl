@@ -6,12 +6,16 @@ ClusteringChain represents a chain of clustering algorithms that are executed se
 # Fields
 - `algorithms`: the vector of clustering algorithms that will be executed in sequence.
 """
-Base.@kwdef struct ClusteringChain <: AbstractAlgorithm
-    algorithms::AbstractVector{<:AbstractAlgorithm}
+Base.@kwdef struct ClusteringChain{T<:AbstractAlgorithm} <: AbstractAlgorithm
+    algorithms::Vector{T}
 
-    function ClusteringChain(algorithms::AbstractAlgorithm...)
-        return new(collect(algorithms))
+    function ClusteringChain(algorithms::T...) where {T<:AbstractAlgorithm}
+        return new{T}(collect(algorithms))
     end
+end
+
+function ClusteringChain(algorithms::AbstractAlgorithm...)
+    return ClusteringChain{AbstractAlgorithm}(; algorithms=collect(algorithms))
 end
 
 @doc """
@@ -40,7 +44,7 @@ chain = ClusteringChain(kmeans, gmm)
 result = fit(chain, data, k)
 ```
 """
-function fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
+function fit(chain::ClusteringChain{T}, data::AbstractMatrix{<:Real}, k::Integer) where {T<:AbstractAlgorithm}
     size = length(chain.algorithms)
     @assert size > 0
 

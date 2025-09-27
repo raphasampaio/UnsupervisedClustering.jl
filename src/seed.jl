@@ -22,7 +22,7 @@ function seed!(algorithm::GeneticAlgorithm{LS}, seed::Integer) where {LS <: Abst
     return nothing
 end
 
-function seed!(algorithm::ClusteringChain, seed::Integer)
+function seed!(algorithm::ClusteringChain{T}, seed::Integer) where {T<:AbstractAlgorithm}
     for algorithm in algorithm.algorithms
         seed!(algorithm, seed)
     end
