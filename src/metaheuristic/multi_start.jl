@@ -15,7 +15,7 @@ The MultiStart approach repeatedly applies a clustering algorithm to generate mu
 Base.@kwdef struct MultiStart <: AbstractAlgorithm
     local_search::AbstractAlgorithm
     verbose::Bool = DEFAULT_VERBOSE
-    max_iterations::Integer = 200
+    max_iterations::Int = 200
 end
 
 @doc """

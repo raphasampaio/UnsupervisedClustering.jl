@@ -39,6 +39,8 @@ include("local_search/kmeans.jl")
 include("local_search/kmedoids.jl")
 include("local_search/ksegmentation.jl")
 
+include("result_type.jl")
+
 include("metaheuristic/multi_start.jl")
 include("metaheuristic/random_swap.jl")
 include("metaheuristic/generation.jl")
