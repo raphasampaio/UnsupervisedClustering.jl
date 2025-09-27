@@ -23,7 +23,7 @@ using Test
     @testset "KMeans++" begin
         algorithm = KmeansPlusPlus(rng = StableRNG(1))
         @test_throws AssertionError result = fit(algorithm, data, k)
-    end    
+    end
 
     @testset "KSegmentation" begin
         algorithm = Ksegmentation()

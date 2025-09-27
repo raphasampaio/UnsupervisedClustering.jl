@@ -26,7 +26,7 @@ using Test
         algorithm = KmeansPlusPlus(rng = StableRNG(1))
         result = fit(algorithm, data, k)
         @test sort(result.assignments) == [i for i in 1:k]
-    end    
+    end
 
     @testset "ksegmentation" begin
         algorithm = Ksegmentation()

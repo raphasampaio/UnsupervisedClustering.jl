@@ -35,7 +35,7 @@ using Test
 
         result = fit(algorithm, data, Vector{Int}())
         @test length(result.assignments) == 0
-    end    
+    end
 
     @testset "ksegmentation" begin
         algorithm = Ksegmentation()
