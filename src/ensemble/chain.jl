@@ -13,13 +13,17 @@ ClusteringChain represents a chain of clustering algorithms that are executed se
 Base.@kwdef struct ClusteringChain{T <: AbstractAlgorithm} <: AbstractAlgorithm
     algorithms::Vector{T}
 
+    function ClusteringChain{T}(algorithms::Vector{T}) where {T <: AbstractAlgorithm}
+        return new{T}(algorithms)
+    end
+
     function ClusteringChain(algorithms::T...) where {T <: AbstractAlgorithm}
         return new{T}(collect(algorithms))
     end
 end
 
 function ClusteringChain(algorithms::AbstractAlgorithm...)
-    return ClusteringChain{AbstractAlgorithm}(; algorithms = collect(algorithms))
+    return ClusteringChain{AbstractAlgorithm}(collect(algorithms))
 end
 
 @doc """
