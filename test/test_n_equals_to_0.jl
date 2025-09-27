@@ -28,6 +28,15 @@ using Test
         @test length(result.assignments) == 0
     end
 
+    @testset "KMeans++" begin
+        algorithm = KmeansPlusPlus(rng = StableRNG(1))
+        result = fit(algorithm, data, k)
+        @test length(result.assignments) == 0
+
+        result = fit(algorithm, data, Vector{Int}())
+        @test length(result.assignments) == 0
+    end    
+
     @testset "ksegmentation" begin
         algorithm = Ksegmentation()
         result = fit(algorithm, data, k)
