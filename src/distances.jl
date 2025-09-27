@@ -1,10 +1,25 @@
 function pairwise_distances!(
-    kmeans::AbstractKmeans;
-    result::KmeansResult,
-    distances::AbstractMatrix{<:Real},
+    metric::SemiMetric;
+    distances::AbstractMatrix{<:Real},    
+    clusters::Matrix{<:Real},
     data::AbstractMatrix{<:Real},
 )
-    pairwise!(kmeans.metric, distances, result.clusters, data', dims = 2)
+    pairwise!(metric, distances, clusters, data', dims = 2)
+    return nothing
+end
+
+function pairwise_distances!(
+    kmeans::AbstractKmeans;
+    distances::AbstractMatrix{<:Real},
+    result::KmeansResult,
+    data::AbstractMatrix{<:Real},
+)
+    pairwise_distances!(
+        kmeans.metric;
+        distances = distances,
+        clusters = result.clusters,
+        data = data',
+    )
     return nothing
 end
 
