@@ -2,8 +2,8 @@
 
 # UnsupervisedClustering.jl
 
-[![arXiv](https://img.shields.io/badge/arXiv-2302.02450-b31b1b.svg)](https://arxiv.org/abs/2302.02450)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://raphasampaio.github.io/UnsupervisedClustering.jl/stable)
+[![arXiv](https://img.shields.io/badge/arXiv-2302.02450-b31b1b.svg)](https://arxiv.org/abs/2302.02450)
 [![CI](https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/raphasampaio/UnsupervisedClustering.jl/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl/graph/badge.svg?token=7VJDYN91SR)](https://codecov.io/gh/raphasampaio/UnsupervisedClustering.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
