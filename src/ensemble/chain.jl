@@ -10,20 +10,26 @@ ClusteringChain represents a chain of clustering algorithms that are executed se
 # Fields
 - `algorithms`: the vector of clustering algorithms that will be executed in sequence.
 """
-Base.@kwdef struct ClusteringChain{T <: AbstractAlgorithm} <: AbstractAlgorithm
+struct ClusteringChain{T <: AbstractAlgorithm} <: AbstractAlgorithm
     algorithms::Vector{T}
 
     function ClusteringChain{T}(algorithms::Vector{T}) where {T <: AbstractAlgorithm}
         return new{T}(algorithms)
     end
-
-    function ClusteringChain(algorithms::T...) where {T <: AbstractAlgorithm}
-        return new{T}(collect(algorithms))
-    end
 end
 
 function ClusteringChain(algorithms::AbstractAlgorithm...)
-    return ClusteringChain{AbstractAlgorithm}(collect(algorithms))
+    if length(algorithms) == 0
+        throw(ArgumentError("ClusteringChain requires at least one algorithm"))
+    end
+
+    # Check if all algorithms are the same type
+    first_type = typeof(algorithms[1])
+    if all(algo -> typeof(algo) == first_type, algorithms)
+        return ClusteringChain{first_type}(collect(algorithms))
+    else
+        return ClusteringChain{AbstractAlgorithm}(collect(algorithms))
+    end
 end
 
 @doc """
