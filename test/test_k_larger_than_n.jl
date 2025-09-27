@@ -20,6 +20,11 @@ using Test
         @test_throws AssertionError result = fit(algorithm, data, k)
     end
 
+    @testset "KMeans++" begin
+        algorithm = KmeansPlusPlus(rng = StableRNG(1))
+        @test_throws AssertionError result = fit(algorithm, data, k)
+    end
+
     @testset "KSegmentation" begin
         algorithm = Ksegmentation()
         @test_throws AssertionError result = fit(algorithm, data, k)

@@ -24,6 +24,7 @@ export concatenate,
     GMM,
     Kmeans,
     BalancedKmeans,
+    KmeansPlusPlus,
     Kmedoids,
     BalancedKmedoids,
     Ksegmentation,
@@ -36,6 +37,7 @@ include("abstract.jl")
 
 include("local_search/gmm.jl")
 include("local_search/kmeans.jl")
+include("local_search/kmeanspp.jl")
 include("local_search/kmedoids.jl")
 include("local_search/ksegmentation.jl")
 
@@ -82,6 +84,9 @@ include("evaluation/silhouette_score.jl")
 
         balanced_kmeans = BalancedKmeans(rng = MersenneTwister(1))
         fit(balanced_kmeans, data, k)
+
+        kmeans_pp = KmeansPlusPlus(rng = MersenneTwister(1))
+        fit(kmeans_pp, data, k)
 
         ksegmentation = Ksegmentation()
         fit(ksegmentation, data, k)
