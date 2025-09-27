@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Getting Started · UnsupervisedClustering</title><meta name="title" content="Getting Started · UnsupervisedClustering"/><meta property="og:title" content="Getting Started · UnsupervisedClustering"/><meta property="twitter:title" content="Getting Started · UnsupervisedClustering"/><meta name="description" content="Documentation for UnsupervisedClustering."/><meta property="og:description" content="Documentation for UnsupervisedClustering."/><meta property="twitter:description" content="Documentation for UnsupervisedClustering."/><meta property="og:url" content="https://raphasampaio.github.io/UnsupervisedClustering.jl/getting_started/"/><meta property="twitter:url" content="https://raphasampaio.github.io/UnsupervisedClustering.jl/getting_started/"/><link rel="canonical" href="https://raphasampaio.github.io/UnsupervisedClustering.jl/getting_started/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.svg" alt="UnsupervisedClustering logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">UnsupervisedClustering</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Getting Started</a><ul class="internal"><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Basic-Usage"><span>Basic Usage</span></a></li><li><a class="tocitem" href="#Trying-Different-Algorithms"><span>Trying Different Algorithms</span></a></li><li><a class="tocitem" href="#Advanced-Algorithms"><span>Advanced Algorithms</span></a></li><li><a class="tocitem" href="#Algorithm-Composition"><span>Algorithm Composition</span></a></li><li><a class="tocitem" href="#Working-with-Real-Data"><span>Working with Real Data</span></a></li><li><a class="tocitem" href="#Performance-Tips"><span>Performance Tips</span></a></li><li><a class="tocitem" href="#Common-Patterns"><span>Common Patterns</span></a></li><li><a class="tocitem" href="#Next-Steps"><span>Next Steps</span></a></li></ul></li><li><span class="tocitem">Local Search</span><ul><li><a class="tocitem" href="../local_search/kmeans/">k-means</a></li><li><a class="tocitem" href="../local_search/kmeanspp/">k-means++</a></li><li><a class="tocitem" href="../local_search/kmedoids/">k-medoids</a></li><li><a class="tocitem" href="../local_search/gmm/">GMM</a></li></ul></li><li><span class="tocitem">Metaheuristic</span><ul><li><a class="tocitem" href="../metaheuristic/multi_start/">Multi-Start</a></li><li><a class="tocitem" href="../metaheuristic/random_swap/">Random Swap</a></li><li><a class="tocitem" href="../metaheuristic/genetic_algorithm/">Genetic Algorithm</a></li></ul></li><li><span class="tocitem">Ensemble</span><ul><li><a class="tocitem" href="../ensemble/chain/">Clustering Chain</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Getting Started</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Getting Started</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/raphasampaio/UnsupervisedClustering.jl/blob/main/docs/src/getting_started.md#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Getting-Started"><a class="docs-heading-anchor" href="#Getting-Started">Getting Started</a><a id="Getting-Started-1"></a><a class="docs-heading-anchor-permalink" href="#Getting-Started" title="Permalink"></a></h1><p>This guide will walk you through the basics of using UnsupervisedClustering.jl, from installation to advanced usage patterns.</p><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><pre><code class="language-julia hljs">using Pkg
+Pkg.add(&quot;UnsupervisedClustering&quot;)</code></pre><h2 id="Basic-Usage"><a class="docs-heading-anchor" href="#Basic-Usage">Basic Usage</a><a id="Basic-Usage-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Usage" title="Permalink"></a></h2><h3 id="Your-First-Clustering"><a class="docs-heading-anchor" href="#Your-First-Clustering">Your First Clustering</a><a id="Your-First-Clustering-1"></a><a class="docs-heading-anchor-permalink" href="#Your-First-Clustering" title="Permalink"></a></h3><pre><code class="language-julia hljs">using UnsupervisedClustering
+using Random
+
+# Set seed for reproducibility
+Random.seed!(42)
+
+# Generate sample data: 100 points in 2D space
+data = rand(100, 2)
+
+# Create a k-means algorithm instance
+kmeans = Kmeans()
+
+# Perform clustering with 3 clusters
+result = fit(kmeans, data, 3)
+
+println(&quot;Clustering completed!&quot;)
+println(&quot;Number of clusters: $(result.k)&quot;)
+println(&quot;Objective value: $(result.objective)&quot;)
+println(&quot;Converged: $(result.converged)&quot;)
+println(&quot;Iterations: $(result.iterations)&quot;)</code></pre><h3 id="Understanding-Results"><a class="docs-heading-anchor" href="#Understanding-Results">Understanding Results</a><a id="Understanding-Results-1"></a><a class="docs-heading-anchor-permalink" href="#Understanding-Results" title="Permalink"></a></h3><p>All algorithms return result objects with a consistent interface:</p><pre><code class="language-julia hljs"># Access cluster assignments
+assignments = result.assignments  # Vector indicating cluster for each point
+println(&quot;First 10 assignments: $(assignments[1:10])&quot;)
+
+# Access clustering objective (lower is usually better)
+objective = result.objective
+
+# Check convergence status
+if result.converged
+    println(&quot;Algorithm converged in $(result.iterations) iterations&quot;)
+else
+    println(&quot;Algorithm did not converge&quot;)
+end
+
+# Execution time
+println(&quot;Clustering took $(result.elapsed) seconds&quot;)</code></pre><h2 id="Trying-Different-Algorithms"><a class="docs-heading-anchor" href="#Trying-Different-Algorithms">Trying Different Algorithms</a><a id="Trying-Different-Algorithms-1"></a><a class="docs-heading-anchor-permalink" href="#Trying-Different-Algorithms" title="Permalink"></a></h2><p>The beauty of UnsupervisedClustering.jl is the unified interface. Let&#39;s compare multiple algorithms:</p><pre><code class="language-julia hljs">using UnsupervisedClustering
+Random.seed!(42)
+
+# Create a more interesting dataset
+n, d, k = 150, 2, 3
+data = vcat(
+    randn(50, 2) .+ [2, 2],   # Cluster 1
+    randn(50, 2) .+ [-2, 2],  # Cluster 2
+    randn(50, 2) .+ [0, -2]   # Cluster 3
+)
+
+# Try different algorithms
+algorithms = [
+    (&quot;K-means&quot;, Kmeans()),
+    (&quot;K-means++&quot;, KmeansPlusPlus()),
+    (&quot;K-medoids&quot;, Kmedoids()),
+]
+
+println(&quot;Algorithm Comparison:&quot;)
+println(&quot;=&quot; ^ 50)
+
+for (name, algorithm) in algorithms
+    result = fit(algorithm, data, k)
+    println(&quot;$name:&quot;)
+    println(&quot;  Objective: $(round(result.objective, digits=3))&quot;)
+    println(&quot;  Iterations: $(result.iterations)&quot;)
+    println(&quot;  Time: $(round(result.elapsed, digits=4))s&quot;)
+    println()
+end</code></pre><h2 id="Advanced-Algorithms"><a class="docs-heading-anchor" href="#Advanced-Algorithms">Advanced Algorithms</a><a id="Advanced-Algorithms-1"></a><a class="docs-heading-anchor-permalink" href="#Advanced-Algorithms" title="Permalink"></a></h2><h3 id="Metaheuristic-Approaches"><a class="docs-heading-anchor" href="#Metaheuristic-Approaches">Metaheuristic Approaches</a><a id="Metaheuristic-Approaches-1"></a><a class="docs-heading-anchor-permalink" href="#Metaheuristic-Approaches" title="Permalink"></a></h3><p>For challenging datasets where local optima are a concern:</p><pre><code class="language-julia hljs"># Genetic Algorithm for global optimization
+genetic = GeneticAlgorithm(
+    local_search = Kmeans(),
+    max_iterations = 100,
+    π_max = 50,  # Population size
+    verbose = false
+)
+
+result_genetic = fit(genetic, data, k)
+println(&quot;Genetic Algorithm objective: $(result_genetic.objective)&quot;)
+
+# Multi-Start for robust results
+multi_start = MultiStart(
+    local_search = KmeansPlusPlus(),
+    max_iterations = 20
+)
+
+result_multi = fit(multi_start, data, k)
+println(&quot;Multi-Start objective: $(result_multi.objective)&quot;)</code></pre><h3 id="Gaussian-Mixture-Models"><a class="docs-heading-anchor" href="#Gaussian-Mixture-Models">Gaussian Mixture Models</a><a id="Gaussian-Mixture-Models-1"></a><a class="docs-heading-anchor-permalink" href="#Gaussian-Mixture-Models" title="Permalink"></a></h3><p>For probabilistic clustering:</p><pre><code class="language-julia hljs"># GMM requires an estimator
+n, d = size(data)
+estimator = UnsupervisedClustering.EmpiricalCovarianceMatrix(n, d)
+
+gmm = GMM(
+    estimator = estimator,
+    max_iterations = 100,
+    tolerance = 1e-6
+)
+
+result_gmm = fit(gmm, data, k)
+println(&quot;GMM log-likelihood: $(result_gmm.objective)&quot;)</code></pre><h2 id="Algorithm-Composition"><a class="docs-heading-anchor" href="#Algorithm-Composition">Algorithm Composition</a><a id="Algorithm-Composition-1"></a><a class="docs-heading-anchor-permalink" href="#Algorithm-Composition" title="Permalink"></a></h2><h3 id="Chaining-Algorithms"><a class="docs-heading-anchor" href="#Chaining-Algorithms">Chaining Algorithms</a><a id="Chaining-Algorithms-1"></a><a class="docs-heading-anchor-permalink" href="#Chaining-Algorithms" title="Permalink"></a></h3><p>Combine algorithms for improved results:</p><pre><code class="language-julia hljs"># First apply k-means, then refine with GMM
+chain = ClusteringChain(
+    Kmeans(max_iterations = 10),
+    GMM(estimator = estimator, max_iterations = 50)
+)
+
+result_chain = fit(chain, data, k)
+println(&quot;Chained algorithm objective: $(result_chain.objective)&quot;)</code></pre><h3 id="Nested-Metaheuristics"><a class="docs-heading-anchor" href="#Nested-Metaheuristics">Nested Metaheuristics</a><a id="Nested-Metaheuristics-1"></a><a class="docs-heading-anchor-permalink" href="#Nested-Metaheuristics" title="Permalink"></a></h3><p>Use one algorithm to improve another:</p><pre><code class="language-julia hljs"># Use genetic algorithm with k-means++ as local search
+sophisticated = GeneticAlgorithm(
+    local_search = KmeansPlusPlus(max_iterations = 20),
+    max_iterations = 50
+)
+
+result_sophisticated = fit(sophisticated, data, k)</code></pre><h2 id="Working-with-Real-Data"><a class="docs-heading-anchor" href="#Working-with-Real-Data">Working with Real Data</a><a id="Working-with-Real-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-Real-Data" title="Permalink"></a></h2><h3 id="Loading-and-Preprocessing"><a class="docs-heading-anchor" href="#Loading-and-Preprocessing">Loading and Preprocessing</a><a id="Loading-and-Preprocessing-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-and-Preprocessing" title="Permalink"></a></h3><pre><code class="language-julia hljs">using DelimitedFiles
+
+# Example: Load data from CSV (replace with your data)
+# data = readdlm(&quot;your_data.csv&quot;, &#39;,&#39;, Float64)
+
+# For this example, we&#39;ll create realistic data
+Random.seed!(123)
+data = vcat(
+    randn(40, 3) .+ [1, 1, 1],    # Cluster 1: high values
+    randn(40, 3) .+ [-1, -1, -1], # Cluster 2: low values
+    randn(40, 3) .+ [1, -1, 0]    # Cluster 3: mixed
+)
+
+# Standardize features (recommended for k-means)
+using Statistics
+data_std = (data .- mean(data, dims=1)) ./ std(data, dims=1)
+
+println(&quot;Original data range: $(minimum(data)) to $(maximum(data))&quot;)
+println(&quot;Standardized data range: $(minimum(data_std)) to $(maximum(data_std))&quot;)</code></pre><h3 id="Choosing-the-Number-of-Clusters"><a class="docs-heading-anchor" href="#Choosing-the-Number-of-Clusters">Choosing the Number of Clusters</a><a id="Choosing-the-Number-of-Clusters-1"></a><a class="docs-heading-anchor-permalink" href="#Choosing-the-Number-of-Clusters" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Try different numbers of clusters
+k_values = 2:6
+objectives = Float64[]
+
+for k in k_values
+    result = fit(Kmeans(), data_std, k)
+    push!(objectives, result.objective)
+end
+
+println(&quot;Clustering objectives for different k:&quot;)
+for (i, k) in enumerate(k_values)
+    println(&quot;k=$k: objective=$(round(objectives[i], digits=3))&quot;)
+end
+
+# Choose k with steepest decrease (elbow method)
+best_k = k_values[argmin(objectives)]
+println(&quot;Suggested k: $best_k&quot;)</code></pre><h2 id="Performance-Tips"><a class="docs-heading-anchor" href="#Performance-Tips">Performance Tips</a><a id="Performance-Tips-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Tips" title="Permalink"></a></h2><h3 id="1.-Algorithm-Selection"><a class="docs-heading-anchor" href="#1.-Algorithm-Selection">1. Algorithm Selection</a><a id="1.-Algorithm-Selection-1"></a><a class="docs-heading-anchor-permalink" href="#1.-Algorithm-Selection" title="Permalink"></a></h3><pre><code class="language-julia hljs"># For speed: K-means
+fast_result = fit(Kmeans(max_iterations = 50), data, k)
+
+# For quality: K-means++
+quality_result = fit(KmeansPlusPlus(), data, k)
+
+# For robustness: Genetic Algorithm
+robust_result = fit(GeneticAlgorithm(local_search = Kmeans()), data, k)</code></pre><h3 id="2.-Parameter-Tuning"><a class="docs-heading-anchor" href="#2.-Parameter-Tuning">2. Parameter Tuning</a><a id="2.-Parameter-Tuning-1"></a><a class="docs-heading-anchor-permalink" href="#2.-Parameter-Tuning" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Fine-tune convergence
+precise_kmeans = Kmeans(
+    tolerance = 1e-8,        # Stricter convergence
+    max_iterations = 1000    # More iterations allowed
+)
+
+# Quick and dirty clustering
+fast_kmeans = Kmeans(
+    tolerance = 1e-2,        # Looser convergence
+    max_iterations = 50      # Fewer iterations
+)</code></pre><h3 id="3.-Reproducibility"><a class="docs-heading-anchor" href="#3.-Reproducibility">3. Reproducibility</a><a id="3.-Reproducibility-1"></a><a class="docs-heading-anchor-permalink" href="#3.-Reproducibility" title="Permalink"></a></h3><pre><code class="language-julia hljs">using Random, StableRNGs
+
+# Use StableRNG for cross-platform reproducibility
+rng = StableRNG(42)
+kmeans_reproducible = Kmeans(rng = rng)
+result = fit(kmeans_reproducible, data, k)</code></pre><h2 id="Common-Patterns"><a class="docs-heading-anchor" href="#Common-Patterns">Common Patterns</a><a id="Common-Patterns-1"></a><a class="docs-heading-anchor-permalink" href="#Common-Patterns" title="Permalink"></a></h2><h3 id="Batch-Processing"><a class="docs-heading-anchor" href="#Batch-Processing">Batch Processing</a><a id="Batch-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Batch-Processing" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Process multiple datasets
+datasets = [rand(100, 2), rand(150, 3), rand(200, 4)]
+k_values = [3, 4, 5]
+
+results = []
+for (data, k) in zip(datasets, k_values)
+    algorithm = KmeansPlusPlus(max_iterations = 100)
+    result = fit(algorithm, data, k)
+    push!(results, result)
+    println(&quot;Dataset $(length(results)): objective = $(result.objective)&quot;)
+end</code></pre><h3 id="Error-Handling"><a class="docs-heading-anchor" href="#Error-Handling">Error Handling</a><a id="Error-Handling-1"></a><a class="docs-heading-anchor-permalink" href="#Error-Handling" title="Permalink"></a></h3><pre><code class="language-julia hljs">function safe_clustering(data, k, algorithm)
+    try
+        if size(data, 1) &lt; k
+            error(&quot;Number of data points ($(size(data, 1))) must be ≥ k ($k)&quot;)
+        end
+
+        result = fit(algorithm, data, k)
+
+        if !result.converged
+            @warn &quot;Algorithm did not converge&quot;
+        end
+
+        return result
+    catch e
+        @error &quot;Clustering failed: $e&quot;
+        return nothing
+    end
+end
+
+# Usage
+result = safe_clustering(data, 3, Kmeans())
+if result !== nothing
+    println(&quot;Clustering successful: $(result.objective)&quot;)
+end</code></pre><h2 id="Next-Steps"><a class="docs-heading-anchor" href="#Next-Steps">Next Steps</a><a id="Next-Steps-1"></a><a class="docs-heading-anchor-permalink" href="#Next-Steps" title="Permalink"></a></h2><ul><li>Explore specific algorithms in the <a href="../local_search/kmeans/">Local Search</a> and <a href="../metaheuristic/genetic_algorithm/">Metaheuristic</a> sections</li><li>Learn about <a href="../ensemble/chain/">algorithm composition</a> for advanced workflows</li><li>Check the API documentation for detailed parameter descriptions</li><li>See the research paper for theoretical background on the optimization techniques</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../local_search/kmeans/">k-means »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Saturday 27 September 2025 21:32">Saturday 27 September 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
