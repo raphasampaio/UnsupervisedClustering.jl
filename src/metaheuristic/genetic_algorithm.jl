@@ -1,14 +1,17 @@
 @doc """
-    GeneticAlgorithm(
-        local_search::AbstractAlgorithm
+    GeneticAlgorithm{LS}(
+        local_search::LS
         verbose::Bool = DEFAULT_VERBOSE
-        max_iterations::Integer = 200
-        max_iterations_without_improvement::Integer = 150
-        π_min::Integer = 40
-        π_max::Integer = 50
-    )
+        max_iterations::Int = 200
+        max_iterations_without_improvement::Int = 150
+        π_min::Int = 40
+        π_max::Int = 50
+    ) where {LS <: AbstractAlgorithm}
 
 GeneticAlgorithm represents a clustering algorithm that utilizes a genetic algorithm approach to optimize cluster assignments. It combines evolutionary computation and local search elements to find high-quality clustering solutions.
+
+# Type Parameters
+- `LS`: the specific type of the local search algorithm (e.g., `Kmeans`, `Kmedoids`)
 
 # Fields
 - `local_search`: the clustering algorithm applied to improve the solution in each meta-heuristics iteration.
@@ -20,13 +23,13 @@ GeneticAlgorithm represents a clustering algorithm that utilizes a genetic algor
 
 # References
 """
-Base.@kwdef struct GeneticAlgorithm <: AbstractAlgorithm
-    local_search::AbstractAlgorithm
+Base.@kwdef struct GeneticAlgorithm{LS <: AbstractAlgorithm} <: AbstractAlgorithm
+    local_search::LS
     verbose::Bool = DEFAULT_VERBOSE
-    max_iterations::Integer = 200
-    max_iterations_without_improvement::Integer = 150
-    π_min::Integer = 40
-    π_max::Integer = 50
+    max_iterations::Int = 200
+    max_iterations_without_improvement::Int = 150
+    π_min::Int = 40
+    π_max::Int = 50
 end
 
 @doc """
@@ -57,8 +60,8 @@ genetic_algorithm = GeneticAlgorithm(local_search = kmeans)
 result = fit(genetic_algorithm, data, k)
 ```
 """
-function fit(meta::GeneticAlgorithm, data::AbstractMatrix{<:Real}, k::Integer)::AbstractResult
-    generation = Generation()
+function fit(meta::GeneticAlgorithm{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS <: AbstractAlgorithm}
+    generation = Generation{result_type(LS)}()
 
     best_objective = 0.0
     iterations_without_improvement = 0

@@ -1,21 +1,24 @@
 @doc """
-    MultiStart(
-        local_search::AbstractAlgorithm
+    MultiStart{LS}(
+        local_search::LS
         verbose::Bool = DEFAULT_VERBOSE
-        max_iterations::Integer = 200
-    )
+        max_iterations::Int = 200
+    ) where {LS <: AbstractAlgorithm}
 
 The MultiStart approach repeatedly applies a clustering algorithm to generate multiple solutions with different initial points and selects the best solution.
+
+# Type Parameters
+- `LS`: the specific type of the local search algorithm
 
 # Fields
 - `local_search`: the clustering algorithm applied to improve the solution in each meta-heuristics iteration.
 - `verbose`: controls whether the algorithm should display additional information during execution.
 - `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping.
 """
-Base.@kwdef struct MultiStart <: AbstractAlgorithm
-    local_search::AbstractAlgorithm
+Base.@kwdef struct MultiStart{LS <: AbstractAlgorithm} <: AbstractAlgorithm
+    local_search::LS
     verbose::Bool = DEFAULT_VERBOSE
-    max_iterations::Integer = 200
+    max_iterations::Int = 200
 end
 
 @doc """
@@ -46,7 +49,7 @@ multi_start = MultiStart(local_search = kmeans)
 result = fit(multi_start, data, k)
 ```
 """
-function fit(meta::MultiStart, data::AbstractMatrix{<:Real}, k::Integer)::AbstractResult
+function fit(meta::MultiStart{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS <: AbstractAlgorithm}
     best_result = fit(meta.local_search, data, k)
 
     if meta.verbose

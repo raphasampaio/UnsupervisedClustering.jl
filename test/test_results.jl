@@ -27,7 +27,7 @@ function get_data(filename::String)
 end
 
 @testset "Results" begin
-    verbose = true
+    verbose = false
     decompose_if_fails = true
     max_iterations = 30
     max_iterations_without_improvement = 15

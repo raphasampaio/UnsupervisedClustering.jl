@@ -1,17 +1,29 @@
 @doc """
+    ClusteringChain{T}(algorithms::Vector{T}) where {T <: AbstractAlgorithm}
     ClusteringChain(algorithms::AbstractAlgorithm...)
-    
+
 ClusteringChain represents a chain of clustering algorithms that are executed sequentially. It allows for applying multiple clustering algorithms in a specific order to refine and improve the clustering results.
+
+# Type Parameters
+- `T`: algorithm type (concrete for same types, `AbstractAlgorithm` for mixed types)
 
 # Fields
 - `algorithms`: the vector of clustering algorithms that will be executed in sequence.
 """
-Base.@kwdef struct ClusteringChain <: AbstractAlgorithm
-    algorithms::AbstractVector{<:AbstractAlgorithm}
+struct ClusteringChain{T <: AbstractAlgorithm} <: AbstractAlgorithm
+    algorithms::Vector{T}
 
-    function ClusteringChain(algorithms::AbstractAlgorithm...)
-        return new(collect(algorithms))
+    function ClusteringChain{T}(algorithms::Vector{T}) where {T <: AbstractAlgorithm}
+        return new{T}(algorithms)
     end
+end
+
+function ClusteringChain(algorithms::AbstractAlgorithm...)
+    if length(algorithms) == 0
+        throw(ArgumentError("ClusteringChain requires at least one algorithm"))
+    end
+
+    return ClusteringChain{AbstractAlgorithm}(collect(algorithms))
 end
 
 @doc """
@@ -40,7 +52,7 @@ chain = ClusteringChain(kmeans, gmm)
 result = fit(chain, data, k)
 ```
 """
-function fit(chain::ClusteringChain, data::AbstractMatrix{<:Real}, k::Integer)
+function fit(chain::ClusteringChain{T}, data::AbstractMatrix{<:Real}, k::Integer) where {T <: AbstractAlgorithm}
     size = length(chain.algorithms)
     @assert size > 0
 

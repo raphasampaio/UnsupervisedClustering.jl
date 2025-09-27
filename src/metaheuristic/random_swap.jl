@@ -1,12 +1,15 @@
 @doc """
-    RandomSwap(
-        local_search::AbstractAlgorithm
+    RandomSwap{LS}(
+        local_search::LS
         verbose::Bool = DEFAULT_VERBOSE
-        max_iterations::Integer = 200
-        max_iterations_without_improvement::Integer = 150
-    )
+        max_iterations::Int = 200
+        max_iterations_without_improvement::Int = 150
+    ) where {LS <: AbstractAlgorithm}
 
 RandomSwap is a meta-heuristic approach used for clustering problems. It follows an iterative process that combines local optimization with perturbation to explore the search space effectively. A local optimization algorithm is applied at each iteration to converge toward a local optimum. Then, a perturbation operator generates a new starting point and continues the search.
+
+# Type Parameters
+- `LS`: the specific type of the local search algorithm
 
 # Fields
 - `local_search`: the clustering algorithm applied to improve the solution in each meta-heuristics iteration.
@@ -19,11 +22,11 @@ RandomSwap is a meta-heuristic approach used for clustering problems. It follows
   Efficiency of random swap clustering.
   Journal of big data 5.1 (2018): 1-29.
 """
-Base.@kwdef struct RandomSwap <: AbstractAlgorithm
-    local_search::AbstractAlgorithm
+Base.@kwdef struct RandomSwap{LS <: AbstractAlgorithm} <: AbstractAlgorithm
+    local_search::LS
     verbose::Bool = DEFAULT_VERBOSE
-    max_iterations::Integer = 200
-    max_iterations_without_improvement::Integer = 150
+    max_iterations::Int = 200
+    max_iterations_without_improvement::Int = 150
 end
 
 @doc """
@@ -54,7 +57,7 @@ random_swap = RandomSwap(local_search = kmeans)
 result = fit(random_swap, data, k)
 ```
 """
-function fit(meta::RandomSwap, data::AbstractMatrix{<:Real}, k::Integer)::AbstractResult
+function fit(meta::RandomSwap{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS <: AbstractAlgorithm}
     iterations_without_improvement = 0
 
     best_result = fit(meta.local_search, data, k)
