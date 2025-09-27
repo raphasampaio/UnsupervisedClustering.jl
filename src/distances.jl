@@ -1,6 +1,6 @@
 function pairwise_distances!(
     metric::SemiMetric;
-    distances::AbstractMatrix{<:Real},    
+    distances::AbstractMatrix{<:Real},
     clusters::Matrix{<:Real},
     data::AbstractMatrix{<:Real},
 )
