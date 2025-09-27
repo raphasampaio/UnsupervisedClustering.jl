@@ -35,7 +35,7 @@ Documenter.makedocs(
         ],
         "Ensemble" => Any[
             "Clustering Chain"=>"ensemble/chain.md"
-        ]
+        ],
     ],
 )
 
