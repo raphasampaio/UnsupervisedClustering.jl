@@ -20,20 +20,22 @@ Documenter.makedocs(
         ],
     ),
     pages = [
-        "Home" => "index.md"
+        "Home" => "index.md",
+        "Getting Started" => "getting_started.md",
         "Local Search" => Any[
             "k-means"=>"local_search/kmeans.md",
+            "k-means++"=>"local_search/kmeanspp.md",
             "k-medoids"=>"local_search/kmedoids.md",
             "GMM"=>"local_search/gmm.md",
-        ]
+        ],
         "Metaheuristic" => Any[
             "Multi-Start"=>"metaheuristic/multi_start.md",
             "Random Swap"=>"metaheuristic/random_swap.md",
             "Genetic Algorithm"=>"metaheuristic/genetic_algorithm.md",
-        ]
+        ],
         "Ensemble" => Any[
             "Clustering Chain"=>"ensemble/chain.md"
-        ]
+        ],
     ],
 )
 
