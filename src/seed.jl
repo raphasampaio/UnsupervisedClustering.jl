@@ -17,7 +17,7 @@ function seed!(algorithm::RandomSwap, seed::Integer)
     return nothing
 end
 
-function seed!(algorithm::GeneticAlgorithm, seed::Integer)
+function seed!(algorithm::GeneticAlgorithm{LS}, seed::Integer) where {LS <: AbstractAlgorithm}
     Random.seed!(algorithm.local_search.rng, seed)
     return nothing
 end
