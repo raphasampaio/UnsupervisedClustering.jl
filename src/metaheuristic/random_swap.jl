@@ -1,12 +1,15 @@
 @doc """
-    RandomSwap(
-        local_search::AbstractAlgorithm
+    RandomSwap{LS}(
+        local_search::LS
         verbose::Bool = DEFAULT_VERBOSE
         max_iterations::Int = 200
         max_iterations_without_improvement::Int = 150
-    )
+    ) where {LS <: AbstractAlgorithm}
 
 RandomSwap is a meta-heuristic approach used for clustering problems. It follows an iterative process that combines local optimization with perturbation to explore the search space effectively. A local optimization algorithm is applied at each iteration to converge toward a local optimum. Then, a perturbation operator generates a new starting point and continues the search.
+
+# Type Parameters
+- `LS`: the specific type of the local search algorithm
 
 # Fields
 - `local_search`: the clustering algorithm applied to improve the solution in each meta-heuristics iteration.
