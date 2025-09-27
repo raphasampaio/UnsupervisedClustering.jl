@@ -8,14 +8,13 @@ using Test
 
 @testset "Distances" begin
     rng = StableRNG(1)
-    n, d, k = 3, 2, 3
+    n, d, k = 10, 3, 2
+
     data = rand(rng, n, d)
+    clusters = rand(rng, d, k)
+    metric = SqEuclidean()
 
-    kmeans = Kmeans(rng = rng)
-    result = fit(kmeans, data, k)
-
-    @test UnsupervisedClustering.pairwise_distances(kmeans; result, data) ≈
-          pairwise(kmeans.metric, result.clusters, data', dims = 2)
+    @test UnsupervisedClustering.compute_distances(metric; clusters, data) ≈ pairwise(metric, clusters, data', dims = 2)
 end
 
 end
