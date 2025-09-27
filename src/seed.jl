@@ -7,12 +7,12 @@ function seed!(algorithm::Ksegmentation, seed::Integer)
     return nothing
 end
 
-function seed!(algorithm::MultiStart{LS}, seed::Integer) where {LS<:AbstractAlgorithm}
+function seed!(algorithm::MultiStart{LS}, seed::Integer) where {LS <: AbstractAlgorithm}
     Random.seed!(algorithm.local_search.rng, seed)
     return nothing
 end
 
-function seed!(algorithm::RandomSwap{LS}, seed::Integer) where {LS<:AbstractAlgorithm}
+function seed!(algorithm::RandomSwap{LS}, seed::Integer) where {LS <: AbstractAlgorithm}
     Random.seed!(algorithm.local_search.rng, seed)
     return nothing
 end

@@ -19,7 +19,7 @@ RandomSwap is a meta-heuristic approach used for clustering problems. It follows
   Efficiency of random swap clustering.
   Journal of big data 5.1 (2018): 1-29.
 """
-Base.@kwdef struct RandomSwap{LS<:AbstractAlgorithm} <: AbstractAlgorithm
+Base.@kwdef struct RandomSwap{LS <: AbstractAlgorithm} <: AbstractAlgorithm
     local_search::LS
     verbose::Bool = DEFAULT_VERBOSE
     max_iterations::Int = 200
@@ -54,7 +54,7 @@ random_swap = RandomSwap(local_search = kmeans)
 result = fit(random_swap, data, k)
 ```
 """
-function fit(meta::RandomSwap{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS<:AbstractAlgorithm}
+function fit(meta::RandomSwap{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS <: AbstractAlgorithm}
     iterations_without_improvement = 0
 
     best_result = fit(meta.local_search, data, k)

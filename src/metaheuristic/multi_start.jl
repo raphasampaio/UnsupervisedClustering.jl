@@ -12,7 +12,7 @@ The MultiStart approach repeatedly applies a clustering algorithm to generate mu
 - `verbose`: controls whether the algorithm should display additional information during execution.
 - `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping.
 """
-Base.@kwdef struct MultiStart{LS<:AbstractAlgorithm} <: AbstractAlgorithm
+Base.@kwdef struct MultiStart{LS <: AbstractAlgorithm} <: AbstractAlgorithm
     local_search::LS
     verbose::Bool = DEFAULT_VERBOSE
     max_iterations::Int = 200
@@ -46,7 +46,7 @@ multi_start = MultiStart(local_search = kmeans)
 result = fit(multi_start, data, k)
 ```
 """
-function fit(meta::MultiStart{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS<:AbstractAlgorithm}
+function fit(meta::MultiStart{LS}, data::AbstractMatrix{<:Real}, k::Integer) where {LS <: AbstractAlgorithm}
     best_result = fit(meta.local_search, data, k)
 
     if meta.verbose
