@@ -18,7 +18,7 @@ function pairwise_distances!(
         kmeans.metric;
         distances = distances,
         clusters = result.clusters,
-        data = data',
+        data = data,
     )
     return nothing
 end
