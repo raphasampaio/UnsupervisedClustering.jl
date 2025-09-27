@@ -22,9 +22,9 @@ Documenter.makedocs(
     pages = [
         "Home" => "index.md"
         "Local Search" => Any[
-            "k-means"=>"localsearch/kmeans.md",
-            "k-medoids"=>"localsearch/kmedoids.md",
-            "GMM"=>"localsearch/gmm.md",
+            "k-means"=>"local_search/kmeans.md",
+            "k-medoids"=>"local_search/kmedoids.md",
+            "GMM"=>"local_search/gmm.md",
         ]
         "Metaheuristic" => Any[
             "Multi-Start"=>"metaheuristic/multi_start.md",
