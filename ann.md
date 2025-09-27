@@ -1,10 +1,10 @@
 [ANN] UnsupervisedClustering.jl – A unified interface for clustering with optimization techniques
 
-I'm happy to announce UnsupervisedClustering.jl (https://github.com/raphasampaio/UnsupervisedClustering.jl), a Julia package that provides a consistent interface for unsupervised clustering algorithms, along with strategies to escape local optima and reduce overfitting.
+I'm happy to announce [UnsupervisedClustering.jl](https://github.com/raphasampaio/UnsupervisedClustering.jl), a Julia package that provides a consistent interface for unsupervised clustering algorithms, along with strategies to escape local optima and reduce overfitting.
 
-This is not a brand new package, it was developed during my master's thesis research, where I explored regularization (https://github.com/raphasampaio/RegularizedCovarianceMatrices.jl) and optimization techniques in model-based clustering. The research resulted in a https://arxiv.org/abs/2302.02450 that introduces novel approaches to improve clustering quality and robustness.
- 
-It has also been used in production at PSR (https://github.com/psrenergy), a energy company and contributor to the JuMP ecosystem.
+UnsupervisedClustering.jl is not a new package, but it was not previously announced here. It was developed during my master's thesis research, where I explored [regularization](https://github.com/raphasampaio/RegularizedCovarianceMatrices.jl) and optimization techniques in model-based clustering. The study resulted in a [published paper](https://arxiv.org/abs/2302.02450) that introduces novel approaches to improve clustering quality and robustness.
+ 
+It has also been used in production at PSR (https://github.com/psrenergy), an energy company and contributor to the JuMP ecosystem.
 
 One of the main advantages of UnsupervisedClustering.jl is its consistent interface across all clustering methods. Every algorithm follows the same simple pattern:
 
