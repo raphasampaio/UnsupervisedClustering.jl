@@ -14,7 +14,7 @@ function recursive_include(path::String)
     end
 end
 
-@testset verbose = true failfast = true begin
+@testset verbose = true begin
     if length(ARGS) > 0
         include(joinpath(@__DIR__, ARGS[1]))
     else
