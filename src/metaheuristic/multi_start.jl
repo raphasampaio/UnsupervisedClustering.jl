@@ -1,11 +1,14 @@
 @doc """
-    MultiStart(
-        local_search::AbstractAlgorithm
+    MultiStart{LS}(
+        local_search::LS
         verbose::Bool = DEFAULT_VERBOSE
         max_iterations::Int = 200
-    )
+    ) where {LS <: AbstractAlgorithm}
 
 The MultiStart approach repeatedly applies a clustering algorithm to generate multiple solutions with different initial points and selects the best solution.
+
+# Type Parameters
+- `LS`: the specific type of the local search algorithm
 
 # Fields
 - `local_search`: the clustering algorithm applied to improve the solution in each meta-heuristics iteration.

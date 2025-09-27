@@ -1,7 +1,11 @@
 @doc """
+    ClusteringChain{T}(algorithms::Vector{T}) where {T <: AbstractAlgorithm}
     ClusteringChain(algorithms::AbstractAlgorithm...)
-    
+
 ClusteringChain represents a chain of clustering algorithms that are executed sequentially. It allows for applying multiple clustering algorithms in a specific order to refine and improve the clustering results.
+
+# Type Parameters
+- `T`: algorithm type (concrete for same types, `AbstractAlgorithm` for mixed types)
 
 # Fields
 - `algorithms`: the vector of clustering algorithms that will be executed in sequence.

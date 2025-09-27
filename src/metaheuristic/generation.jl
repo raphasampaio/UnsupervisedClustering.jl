@@ -1,3 +1,15 @@
+@doc """
+    Generation{R}() where {R <: AbstractResult}
+
+Generation represents a population of clustering solutions in genetic algorithms.
+
+# Type Parameters
+- `R`: the specific result type (e.g., `KmeansResult`, `KmedoidsResult`)
+
+# Fields
+- `population`: vector containing the clustering solutions
+- `empty`: set of indices marking removed solutions for efficient reuse
+"""
 mutable struct Generation{R <: AbstractResult}
     population::Vector{R}
     empty::Set{Int}
