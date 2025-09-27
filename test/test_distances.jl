@@ -11,7 +11,7 @@ using Test
     n, d, k = 10, 3, 2
 
     data = rand(rng, n, d)
-    clusters = rand(rng, k, d)
+    clusters = rand(rng, d, k)
     metric = SqEuclidean()
 
     @test UnsupervisedClustering.compute_distances(metric; clusters, data) ≈ pairwise(metric, clusters, data', dims = 2)
