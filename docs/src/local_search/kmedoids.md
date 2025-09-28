@@ -31,7 +31,7 @@ result.objective
 
 # output
 
-7.22
+7.221968512868637
 ```
 
 ## API Reference

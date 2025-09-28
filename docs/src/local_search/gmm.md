@@ -11,23 +11,27 @@ GMM uses the Expectation-Maximization (EM) algorithm:
 
 ## Usage
 
-```julia
-using UnsupervisedClustering
+```jldoctest
+using UnsupervisedClustering, Random
 
 # Generate sample data
-data = rand(100, 2)
-k = 3
+Random.seed!(42);
+data = rand(100, 2);
+k = 3;
 
 # Create covariance estimator (required for GMM)
-n, d = size(data)
-estimator = UnsupervisedClustering.EmpiricalCovarianceMatrix(n, d)
+n, d = size(data);
+estimator = UnsupervisedClustering.EmpiricalCovarianceMatrix(n, d);
 
 # Create and run GMM
-gmm = GMM(estimator = estimator)
-result = fit(gmm, data, k)
+gmm = GMM(estimator = estimator);
+result = fit(gmm, data, k);
 
-println("Log-likelihood: $(result.objective)")
-println("Converged: $(result.converged)")
+result.objective
+
+# output
+
+-0.43900384415707366
 ```
 
 ## API Reference

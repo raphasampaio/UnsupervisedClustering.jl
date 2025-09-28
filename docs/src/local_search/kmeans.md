@@ -11,19 +11,23 @@ The k-means algorithm iteratively:
 
 ## Usage
 
-```julia
-using UnsupervisedClustering
+```jldoctest
+using UnsupervisedClustering, Random
 
 # Generate sample data
-data = rand(100, 2)
-k = 3
+Random.seed!(42);
+data = rand(100, 2);
+k = 3;
 
 # Create and run k-means
-kmeans = Kmeans()
-result = fit(kmeans, data, k)
+kmeans = Kmeans();
+result = fit(kmeans, data, k);
 
-println("Objective: $(result.objective)")
-println("Converged: $(result.converged)")
+result.objective
+
+# output
+
+6.911504212197341
 ```
 
 ## API Reference

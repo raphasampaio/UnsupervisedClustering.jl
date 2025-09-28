@@ -12,19 +12,23 @@ K-means++ uses the same iterative process as standard k-means but with enhanced 
 
 ## Usage
 
-```julia
-using UnsupervisedClustering
+```jldoctest
+using UnsupervisedClustering, Random
 
 # Generate sample data
-data = rand(100, 2)
-k = 3
+Random.seed!(42);
+data = rand(100, 2);
+k = 3;
 
 # Create and run K-means++
-kmeanspp = KmeansPlusPlus()
-result = fit(kmeanspp, data, k)
+kmeanspp = KmeansPlusPlus();
+result = fit(kmeanspp, data, k);
 
-println("Objective: $(result.objective)")
-println("Converged: $(result.converged)")
+result.objective
+
+# output
+
+6.668404208820978
 ```
 
 ## API Reference
