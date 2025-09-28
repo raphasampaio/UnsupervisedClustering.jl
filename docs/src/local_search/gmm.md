@@ -2,9 +2,10 @@
 
 Gaussian Mixture Models represent data as a mixture of Gaussian distributions, providing probabilistic cluster assignments and soft clustering capabilities. Unlike k-means, GMM can model elliptical clusters and provides uncertainty estimates.
 
-## Algorithm Overview
+## Overview
 
 GMM uses the Expectation-Maximization (EM) algorithm:
+
 1. **E-step**: Calculate probabilities of each point belonging to each Gaussian component
 2. **M-step**: Update Gaussian parameters (means, covariances, mixing weights) based on probabilities
 3. **Repeat**: Continue until convergence of log-likelihood
@@ -30,7 +31,6 @@ result = fit(gmm, data, k);
 result.objective
 
 # output
-
 -0.43900384415707366
 ```
 

@@ -2,9 +2,10 @@
 
 K-medoids is a robust clustering algorithm that uses actual data points (medoids) as cluster centers instead of computed centroids. This makes it more resistant to outliers and suitable for non-Euclidean distance metrics.
 
-## Algorithm Overview
+## Overview
 
 K-medoids iteratively:
+
 1. **Initialization**: Select k data points as initial medoids
 2. **Assignment**: Assign each point to the nearest medoid
 3. **Update**: Find the optimal medoid for each cluster (point that minimizes total distance)
@@ -30,7 +31,6 @@ result = fit(kmedoids, distances, k);
 result.objective
 
 # output
-
 7.221968512868637
 ```
 

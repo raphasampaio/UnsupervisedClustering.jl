@@ -4,7 +4,7 @@ A Julia package providing a unified interface for unsupervised clustering algori
 
 ## Key Features
 
-- **Unified Interface**: All clustering algorithms use the same `fit(algorithm, data, k)` pattern
+- **Unified Interface**: Almost all clustering algorithms use the same `fit(algorithm, data, k)` pattern (the kmedoids algorithm is an exception, requiring a distance matrix)
 - **Advanced Optimization**: Metaheuristic approaches including genetic algorithms and multi-start strategies
 - **Type-Stable**: Modern Julia design with parameterized types for zero runtime overhead
 - **Composable**: Mix and match algorithms through chaining and metaheuristic composition
