@@ -2,4 +2,4 @@
 
 SET BASEPATH=%~dp0
 
-CALL julia +1.11 --project=%BASEPATH% --interactive --load=%BASEPATH%\revise.jl
+CALL julia +1.12 --project=%BASEPATH% --interactive --load=%BASEPATH%\revise.jl
