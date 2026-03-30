@@ -248,6 +248,17 @@ function fit!(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, result::Kmea
                 result.clusters[j, i] = result.clusters[j, i] / cluster_size
             end
         end
+
+        # reinitialize empty clusters with a random point from the largest cluster
+        for i in 1:k
+            if clusters_size[i] == 0
+                largest = argmax(clusters_size)
+                from = rand(kmeans.rng, [p for p in 1:n if result.assignments[p] == largest])
+                for j in 1:d
+                    result.clusters[j, i] = data[from, j]
+                end
+            end
+        end
     end
 
     result.elapsed = time() - t
