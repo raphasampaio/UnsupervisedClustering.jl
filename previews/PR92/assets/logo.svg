@@ -1,0 +1,47 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 282 282">
+    <defs>
+        <style>
+            .cluster-green,
+            .cluster-red,
+            .cluster-purple {
+                fill: none;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-width: 5px;
+                stroke-dasharray: 11.818 11.818;
+            }
+            .cluster-green { stroke: #389826; }
+            .cluster-red { stroke: #cb3c33; }
+            .cluster-purple { stroke: #9558b2; }
+            .data-green,
+            .data-red,
+            .data-purple {
+                stroke: #1d1d1b;
+                stroke-miterlimit: 10;
+            }
+            .data-green { fill: #389826; }
+            .data-red { fill: #cb3c33; }
+            .data-purple { fill: #9558b2; }
+        </style>
+    </defs>
+    <circle class="cluster-green" cx="141.5" cy="66" r="64" />
+    <circle class="cluster-red" cx="66" cy="195" r="64" />
+    <circle class="cluster-purple" cx="216" cy="195" r="64" />
+    <circle class="data-green" cx="127" cy="25" r="15" />
+    <circle class="data-green" cx="100" cy="62" r="15" />
+    <circle class="data-green" cx="147" cy="56" r="15" />
+    <circle class="data-green" cx="153" cy="89" r="15" />
+    <circle class="data-green" cx="127" cy="108" r="15" />
+    <circle class="data-green" cx="184" cy="58" r="15" />
+    <circle class="data-red" cx="52" cy="153" r="15" />
+    <circle class="data-red" cx="26" cy="190" r="15" />
+    <circle class="data-red" cx="73" cy="185" r="15" />
+    <circle class="data-red" cx="53" cy="238" r="15" />
+    <circle class="data-red" cx="102" cy="221" r="15" />
+    <circle class="data-red" cx="101" cy="169" r="15" />
+    <circle class="data-purple" cx="201" cy="172" r="15" />
+    <circle class="data-purple" cx="177" cy="212" r="15" />
+    <circle class="data-purple" cx="236" cy="206" r="15" />
+    <circle class="data-purple" cx="252" cy="176" r="15" />
+    <circle class="data-purple" cx="204" cy="238" r="15" />
+</svg>
