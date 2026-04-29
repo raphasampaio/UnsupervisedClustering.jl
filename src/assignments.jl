@@ -131,6 +131,61 @@ function assignment_step!(
 end
 
 function assignment_step!(
+    kmeans::MinSizeKmeans,
+    assignments::AbstractVector{<:Integer};
+    distances::AbstractMatrix{<:Real},
+    is_empty::AbstractVector{<:Bool},
+)
+    k, n = size(distances)
+    min_size = kmeans.min_size
+    total_candidates = k * n
+
+    candidates_distances = Vector{Float64}(undef, total_candidates)
+    candidates_point = Vector{Int}(undef, total_candidates)
+    candidates_cluster = Vector{Int}(undef, total_candidates)
+
+    index = 1
+    @inbounds for cluster in 1:k
+        for point in 1:n
+            candidates_distances[index] = distances[cluster, point]
+            candidates_point[index] = point
+            candidates_cluster[index] = cluster
+            index += 1
+        end
+    end
+
+    permutation = sortperm(candidates_distances)
+
+    fill!(assignments, 0)
+    load = zeros(Int, k)
+    assigned_count = 0
+
+    @inbounds for i in permutation
+        point = candidates_point[i]
+        cluster = candidates_cluster[i]
+
+        if assignments[point] == 0 && load[cluster] < min_size
+            assignments[point] = cluster
+            load[cluster] += 1
+
+            assigned_count += 1
+            if assigned_count == n
+                return nothing
+            end
+        end
+    end
+
+    @inbounds for point in 1:n
+        if assignments[point] == 0
+            cluster, _ = kmeans_assign(point, distances, is_empty)
+            assignments[point] = cluster
+        end
+    end
+
+    return nothing
+end
+
+function assignment_step!(
     kmeans::AbstractKmeans,
     result::KmeansResult;
     distances::AbstractMatrix{<:Real},

@@ -59,6 +59,35 @@ Base.@kwdef mutable struct BalancedKmeans <: AbstractKmeans
 end
 
 @doc """
+    MinSizeKmeans(
+        min_size::Int = 1
+        metric::SemiMetric = SqEuclidean()
+        verbose::Bool = DEFAULT_VERBOSE
+        rng::AbstractRNG = Random.GLOBAL_RNG
+        tolerance::Float64 = DEFAULT_TOLERANCE
+        max_iterations::Int = DEFAULT_MAX_ITERATIONS
+    )
+
+The min-size k-means is a variation of the k-means clustering algorithm that enforces a lower bound on the number of data points assigned to each cluster. Every cluster is guaranteed to receive at least `min_size` points; remaining points are assigned to their nearest cluster without an upper bound.
+
+# Fields
+- `min_size`: the minimum number of data points that must be assigned to each cluster. Requires `n >= min_size * k`.
+- `metric`: defines the distance metric used to compute the distances between data points and cluster centroids.
+- `verbose`: controls whether the algorithm should display additional information during execution.
+- `rng`: represents the random number generator to be used by the algorithm.
+- `tolerance`: represents the convergence criterion for the algorithm. It determines the maximum change allowed in the centroid positions between consecutive iterations.
+- `max_iterations`: represents the maximum number of iterations the algorithm will perform before stopping, even if convergence has not been reached.
+"""
+Base.@kwdef mutable struct MinSizeKmeans <: AbstractKmeans
+    min_size::Int = 1
+    metric::SemiMetric = SqEuclidean()
+    verbose::Bool = DEFAULT_VERBOSE
+    rng::AbstractRNG = Random.GLOBAL_RNG
+    tolerance::Float64 = DEFAULT_TOLERANCE
+    max_iterations::Int = DEFAULT_MAX_ITERATIONS
+end
+
+@doc """
     KmeansResult(
         assignments::AbstractVector{<:Integer}
         clusters::AbstractMatrix{<:Real}
@@ -309,6 +338,9 @@ function fit(
     @assert d > 0
     @assert k > 0
     @assert n >= k
+    if kmeans isa MinSizeKmeans
+        @assert n >= kmeans.min_size * k
+    end
 
     initialize!(result, data, initial_clusters, verbose = kmeans.verbose)
 
@@ -355,6 +387,9 @@ function fit(kmeans::AbstractKmeans, data::AbstractMatrix{<:Real}, k::Integer)::
     @assert d > 0
     @assert k > 0
     @assert n >= k
+    if kmeans isa MinSizeKmeans
+        @assert n >= kmeans.min_size * k
+    end
 
     unique_data, indices = try_sampling_unique_data(kmeans.rng, data, k)
     initialize!(result, unique_data, indices, verbose = kmeans.verbose)

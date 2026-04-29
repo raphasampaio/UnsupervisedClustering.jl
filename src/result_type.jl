@@ -10,6 +10,10 @@ function result_type(::Type{BalancedKmeans})
     return KmeansResult
 end
 
+function result_type(::Type{MinSizeKmeans})
+    return KmeansResult
+end
+
 function result_type(::Type{Kmedoids})
     return KmedoidsResult
 end
