@@ -24,6 +24,7 @@ export concatenate,
     GMM,
     Kmeans,
     BalancedKmeans,
+    MinSizeKmeans,
     KmeansPlusPlus,
     Kmedoids,
     BalancedKmedoids,
@@ -84,6 +85,9 @@ include("evaluation/silhouette_score.jl")
 
         balanced_kmeans = BalancedKmeans(rng = MersenneTwister(1))
         fit(balanced_kmeans, data, k)
+
+        min_size_kmeans = MinSizeKmeans(min_size = 1, rng = MersenneTwister(1))
+        fit(min_size_kmeans, data, k)
 
         kmeans_pp = KmeansPlusPlus(rng = MersenneTwister(1))
         fit(kmeans_pp, data, k)
