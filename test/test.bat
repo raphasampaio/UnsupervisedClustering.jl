@@ -1,9 +1,9 @@
 @echo off
 
-SET BASEPATH=%~dp0
+SET BASE_PATH=%~dp0
 
 IF "%~1"=="" (
-    CALL julia +1.12 --project=%BASEPATH%\.. -e "import Pkg; Pkg.test()"
+    CALL julia +1.12 --project=%BASE_PATH%\.. -e "import Pkg; Pkg.test()"
 ) ELSE (
-    CALL julia +1.12 --project=%BASEPATH%\.. %BASEPATH%\runtests.jl %1
+    CALL julia +1.12 --project=%BASE_PATH%\.. %BASE_PATH%\runtests.jl %1
 )

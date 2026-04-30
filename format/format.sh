@@ -1,5 +1,5 @@
 #!/bin/bash
 
-BASEPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BASE_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-julia +1.12 --project=$BASEPATH $BASEPATH/format.jl
+julia +1.12 --project=$BASE_PATH $BASE_PATH/format.jl
