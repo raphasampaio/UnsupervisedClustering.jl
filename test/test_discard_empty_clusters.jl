@@ -18,7 +18,11 @@ function UnsupervisedClustering.fit(::EmptyingLocalSearch, data::AbstractMatrix{
     return result
 end
 
-function UnsupervisedClustering.fit!(::EmptyingLocalSearch, ::AbstractMatrix{<:Real}, result::UnsupervisedClustering.KmeansResult)
+function UnsupervisedClustering.fit!(
+    ::EmptyingLocalSearch,
+    ::AbstractMatrix{<:Real},
+    result::UnsupervisedClustering.KmeansResult,
+)
     fill!(result.assignments, 1)
     result.objective = 1.0
     return nothing
