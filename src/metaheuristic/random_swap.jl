@@ -86,9 +86,9 @@ function fit(meta::RandomSwap{LS}, data::AbstractMatrix{<:Real}, k::Integer) whe
             print_result(result)
         end
 
-        discarded = meta.discard_empty_clusters && has_empty_clusters(result)
+        discard = meta.discard_empty_clusters && has_empty_clusters(result)
 
-        if !discarded && isbetter(result, best_result)
+        if !discard && isbetter(result, best_result)
             best_result = result
             iterations_without_improvement = 0
 
@@ -98,7 +98,7 @@ function fit(meta::RandomSwap{LS}, data::AbstractMatrix{<:Real}, k::Integer) whe
         else
             iterations_without_improvement += 1
 
-            if meta.verbose && discarded
+            if meta.verbose && discard
                 print_string("(discarded: empty cluster)")
             end
 
